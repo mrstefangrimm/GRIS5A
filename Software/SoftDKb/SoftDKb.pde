@@ -63,7 +63,7 @@ void draw() {
   if (led3) fill(color(255, 0, 0));
   else fill(200);
   rect(700, 150, 40, 40);
-  if (led4) fill(color(0, 0, 255));
+  if (led4) fill(color(255, 255, 0));
   else fill(200);
   rect(700, 200, 40, 40);
   
