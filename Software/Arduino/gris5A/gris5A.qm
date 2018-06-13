@@ -1,0 +1,2109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model version="4.0.3" links="0">
+ <framework name="qpn"/>
+ <package name="AOs" stereotype="0x02">
+  <class name="ManualMotion" superclass="qpn::QActive">
+   <attribute name="speed" type="uint8_t" visibility="0x00" properties="0x00"/>
+   <statechart>
+    <initial target="../1">
+     <action>me-&gt;speed = 4;
+
+Serial.println(F(&quot;ManualMotion Initialized&quot;));</action>
+     <initial_glyph conn="15,16,5,0,7,18">
+      <action box="0,-2,10,2"/>
+     </initial_glyph>
+    </initial>
+    <state name="ManualMotion">
+     <entry>// Debug: Serial.println(F(&quot;ManualMotion: Enter Active&quot;));</entry>
+     <tran trig="evUserProgramPressed" target="../../2">
+      <tran_glyph conn="18,42,3,2,35,-16">
+       <action box="0,-2,22,2"/>
+      </tran_glyph>
+     </tran>
+     <tran trig="evPreSetPressed" target="../../2">
+      <tran_glyph conn="18,45,3,2,39,-19">
+       <action box="0,-2,17,2"/>
+      </tran_glyph>
+     </tran>
+     <tran trig="evMotorButtonPressed" target="..">
+      <action>#ifdef MOTOROUT
+uint32_t par = Q_PAR(me);
+DKbInData dd(par);
+// Debug: Serial.println(par, HEX);
+
+uint8_t step = (me-&gt;speed / 3) + 1;
+
+if (dd.LUT) {
+  Serial.println(F(&quot;Move left upper lng&quot;));
+  MotorData dm(LULNG, me-&gt;speed, step);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorForward_SIG, dm.raw);
+}
+else if (dd.LUB) {
+  Serial.println(F(&quot;Move left upper lng&quot;));
+  MotorData dm(LULNG, me-&gt;speed, step);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorBackward_SIG, dm.raw);
+} 
+else if (dd.LUR) {
+  Serial.println(F(&quot;Move left upper Rtn&quot;));
+  MotorData dm(LURTN, me-&gt;speed, step);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorForward_SIG, dm.raw);
+}
+else if (dd.LUL) {
+  Serial.println(F(&quot;Move left upper Rtn&quot;));
+  MotorData dm(LURTN, me-&gt;speed, step);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorBackward_SIG, dm.raw);
+}
+
+if (dd.RUT) {
+  Serial.println(F(&quot;Move right upper lng&quot;));
+  MotorData dm(RULNG, me-&gt;speed, step);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorForward_SIG, dm.raw);
+}
+else if (dd.RUB) {
+  Serial.println(F(&quot;Move right upper lng&quot;));
+  MotorData dm(RULNG, me-&gt;speed, step);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorBackward_SIG, dm.raw);
+} 
+else if (dd.RUR) {
+  Serial.println(F(&quot;Move right upper Rtn&quot;));
+  MotorData dm(RURTN, me-&gt;speed, step);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorForward_SIG, dm.raw);
+}
+else if (dd.RUL) {
+  Serial.println(F(&quot;Move right upper Rtn&quot;));
+  MotorData dm(RURTN, me-&gt;speed, step);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorBackward_SIG, dm.raw);
+}
+
+if (dd.LLT) {
+  Serial.println(F(&quot;Move left lower lng&quot;));
+  MotorData dm(LLLNG, me-&gt;speed, step);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorForward_SIG, dm.raw);
+}
+else if (dd.LLB) {
+  Serial.println(F(&quot;Move left lower lng&quot;));
+  MotorData dm(LLLNG, me-&gt;speed, step);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorBackward_SIG, dm.raw);
+} 
+else if (dd.LLR) {
+  Serial.println(F(&quot;Move left lower Rtn&quot;));
+  MotorData dm(LLRTN, me-&gt;speed, step);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorForward_SIG, dm.raw);
+}
+else if (dd.LLL) {
+  Serial.println(F(&quot;Move left lower Rtn&quot;));
+  MotorData dm(LLRTN, me-&gt;speed, step);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorBackward_SIG, dm.raw);
+}
+
+if (dd.RLT) {
+  Serial.println(F(&quot;Move right lower lng&quot;));
+  MotorData dm(RLLNG, me-&gt;speed, step);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorForward_SIG, dm.raw);
+}
+else if (dd.RLB) {
+  Serial.println(F(&quot;Move right lower lng&quot;));
+  MotorData dm(RLLNG, me-&gt;speed, step);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorBackward_SIG, dm.raw);
+} 
+else if (dd.RLR) {
+  Serial.println(F(&quot;Move right lower Rtn&quot;));
+  MotorData dm(RLRTN, me-&gt;speed, step);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorForward_SIG, dm.raw);
+}
+else if (dd.RLL) {
+  Serial.println(F(&quot;Move right lower Rtn&quot;));
+  MotorData dm(RLRTN, me-&gt;speed, step);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorBackward_SIG, dm.raw);
+}
+
+if (dd.GAT) {
+  Serial.println(F(&quot;Move Gating lng&quot;));
+  MotorData dm(GALNG, me-&gt;speed, step);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorForward_SIG, dm.raw);
+}
+else if (dd.GAB) {
+  Serial.println(F(&quot;Move Gating lng&quot;));
+  MotorData dm(GALNG, me-&gt;speed, step);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorBackward_SIG, dm.raw);
+} 
+else if (dd.GAR) {
+  Serial.println(F(&quot;Move Gating Rtn&quot;));
+  MotorData dm(GARTN, me-&gt;speed, step);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorForward_SIG, dm.raw);
+}
+else if (dd.GAL) {
+  Serial.println(F(&quot;Move Gating Rtn&quot;));
+  MotorData dm(GARTN, me-&gt;speed, step);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorBackward_SIG, dm.raw);
+}
+
+#endif</action>
+      <tran_glyph conn="45,49,1,1,8,2,-8">
+       <action box="0,-2,17,2"/>
+      </tran_glyph>
+     </tran>
+     <tran trig="evProgramButtonPressed" target="..">
+      <action>#ifdef MOTOROUT
+Serial.println(F(&quot;Change speed&quot;));
+
+uint32_t par = Q_PAR(me);
+DKbInData dd(par);
+// Debug: Serial.println(par, HEX);
+
+if      (dd.FP1) { me-&gt;speed = 1; }
+else if (dd.FP2) { me-&gt;speed = 2; }
+else if (dd.FP3) { me-&gt;speed = 3; }
+else if (dd.FP4) { me-&gt;speed = 4; }
+else if (dd.FP5) { me-&gt;speed = 5; }
+else if (dd.FP6) { me-&gt;speed = 6; }
+else if (dd.FP7) { me-&gt;speed = 7; }
+else if (dd.FP8) { me-&gt;speed = 8; }
+
+#endif</action>
+      <tran_glyph conn="26,52,2,2,4,4,-4">
+       <action box="0,-2,20,2"/>
+      </tran_glyph>
+     </tran>
+     <state_glyph node="18,34,27,18">
+      <entry box="1,2,6,2"/>
+     </state_glyph>
+    </state>
+    <state name="Idle">
+     <entry>Serial.println(&quot;ManualMotion: Enter Idle&quot;);</entry>
+     <tran trig="evManualMotionPressed" target="../../1">
+      <tran_glyph conn="41,22,3,0,-7,12">
+       <action box="0,-2,20,2"/>
+      </tran_glyph>
+     </tran>
+     <state_glyph node="41,10,22,16">
+      <entry box="1,2,6,2"/>
+     </state_glyph>
+    </state>
+    <state_diagram size="115,88"/>
+   </statechart>
+  </class>
+  <class name="DKbIn" superclass="qpn::QActive">
+   <attribute name="dataBuffer" type="uint32_t" visibility="0x00" properties="0x00"/>
+   <operation name="shiftIn32" type="uint32_t" visibility="0x00" properties="0x00">
+    <code>uint32_t myDataIn = 0;
+
+for (int i=31; i&gt;=0; i--)
+{
+  digitalWrite(CLOCKPIN_IN, 0);
+  delayMicroseconds(2);
+  int temp = digitalRead(DATAPIN_IN);
+  if (temp) {
+    bitSet(myDataIn, i);
+    // Debug: Serial.print(i);
+  }
+  digitalWrite(CLOCKPIN_IN, 1);
+}
+return myDataIn;
+</code>
+   </operation>
+   <operation name="isMotorButtonPressed" type="bool" visibility="0x00" properties="0x00">
+    <code>DKbInData data(me-&gt;dataBuffer);
+
+return data.LUT  != 0 ||
+       data.LUR  != 0 ||
+       data.LUL  != 0 ||
+       data.LLL  != 0 ||
+       data.LUB  != 0 ||
+       data.LLT  != 0 ||
+       data.LLR  != 0 ||
+       data.LLB  != 0 ||
+       data.RUT  != 0 ||
+       data.RUR  != 0 ||
+       data.RUL  != 0 ||
+       data.RUB  != 0 ||
+       data.RLT  != 0 ||
+       data.RLL  != 0 ||
+       data.RLB  != 0 ||
+       data.RLR  != 0 ||
+       data.GAT  != 0 ||
+       data.GAR  != 0 ||
+       data.GAL  != 0 ||
+       data.GAB  != 0;</code>
+   </operation>
+   <operation name="isProgramButtonPressed" type="bool" visibility="0x00" properties="0x00">
+    <code>DKbInData data(me-&gt;dataBuffer);
+
+return data.FP1  != 0 ||
+       data.FP2  != 0 ||
+       data.FP3  != 0 ||
+       data.FP4  != 0 ||
+       data.FP5  != 0 ||
+       data.FP6  != 0 ||
+       data.FP7  != 0 ||
+       data.FP8  != 0;</code>
+   </operation>
+   <operation name="printDKbInData" type="void" visibility="0x00" properties="0x00">
+    <code>DKbInData s(me-&gt;dataBuffer);
+
+if (s.FMM) { Serial.println(F(&quot;DKbIn: Pressed Function Manual Motion&quot;)); }
+if (s.FPS) { Serial.println(F(&quot;DKbIn: Pressed Function Pre-Set&quot;)); }
+if (s.FPG) { Serial.println(F(&quot;DKbIn: Pressed Function User Program&quot;)); }
+if (s.FP2) { Serial.println(F(&quot;DKbIn: Pressed Function Program 2&quot;)); }
+if (s.FP1) { Serial.println(F(&quot;DKbIn: Pressed Function Program 1&quot;)); }
+if (s.FPP) { Serial.println(F(&quot;DKbIn: Pressed Function User Program Play&quot;)); }
+if (s.FP3) { Serial.println(F(&quot;DKbIn: Pressed Function Program 3&quot;)); }
+if (s.FP4) { Serial.println(F(&quot;DKbIn: Pressed Function Program 4&quot;)); }
+if (s.LUT) { Serial.println(F(&quot;DKbIn: Pressed Left Upper Top&quot;)); }
+if (s.LUR) { Serial.println(F(&quot;DKbIn: Pressed Left Upper Right&quot;)); }
+if (s.LUL) { Serial.println(F(&quot;DKbIn: Pressed Left Upper Left&quot;)); }
+if (s.LLL) { Serial.println(F(&quot;DKbIn: Pressed Left Lower Left&quot;)); }
+if (s.LUB) { Serial.println(F(&quot;DKbIn: Pressed Left Upper Bottom&quot;)); }
+if (s.LLT) { Serial.println(F(&quot;DKbIn: Pressed Left Lower Top&quot;)); }
+if (s.LLR) { Serial.println(F(&quot;DKbIn: Pressed Left Lower Right&quot;)); }
+if (s.LLB) { Serial.println(F(&quot;DKbIn: Pressed Left Lower Bottom&quot;)); }
+if (s.RUT) { Serial.println(F(&quot;DKbIn: Pressed Right Upper Top&quot;)); }
+if (s.RUR) { Serial.println(F(&quot;DKbIn: Pressed Right Upper Right&quot;)); }
+if (s.RUL) { Serial.println(F(&quot;DKbIn: Pressed Right Upper Left&quot;)); }
+if (s.RUB) { Serial.println(F(&quot;DKbIn: Pressed Right Upper Bottom&quot;)); }
+if (s.RLT) { Serial.println(F(&quot;DKbIn: Pressed Right Lower Top&quot;)); }
+if (s.RLL) { Serial.println(F(&quot;DKbIn: Pressed Right Lower Left&quot;)); }
+if (s.RLB) { Serial.println(F(&quot;DKbIn: Pressed Right Lower Bottom&quot;)); }
+if (s.RLR) { Serial.println(F(&quot;DKbIn: Pressed Right Lower Right&quot;)); }
+if (s.FP8) { Serial.println(F(&quot;DKbIn: Pressed Function Program 8&quot;)); }
+if (s.GAT) { Serial.println(F(&quot;DKbIn: Pressed Gating Top&quot;)); }
+if (s.GAR) { Serial.println(F(&quot;DKbIn: Pressed Gating Right&quot;)); }
+if (s.GAL) { Serial.println(F(&quot;DKbIn: Pressed Gating Left&quot;)); }
+if (s.FP5) { Serial.println(F(&quot;DKbIn: Pressed Function Program 5&quot;)); }
+if (s.FP6) { Serial.println(F(&quot;DKbIn: Pressed Function Program 6&quot;)); }
+if (s.FP7) { Serial.println(F(&quot;DKbIn: Pressed Function Program 7&quot;)); }
+if (s.GAB) { Serial.println(F(&quot;DKbIn: Pressed Gating Bottom&quot;)); }</code>
+   </operation>
+   <statechart>
+    <initial target="../1">
+     <action>QActive_armX((QActive *)me, 0U,
+  READOUTDELAY, 
+  READOUTDELAY);
+
+pinMode(LATCHPIN_IN, OUTPUT);
+pinMode(CLOCKPIN_IN, OUTPUT); 
+pinMode(DATAPIN_IN,  INPUT);
+
+Serial.println(F(&quot;DKbIn Initialized&quot;));</action>
+     <initial_glyph conn="9,5,5,0,14,5">
+      <action box="0,-2,10,2"/>
+     </initial_glyph>
+    </initial>
+    <state name="Read">
+     <entry>me-&gt;dataBuffer = 0;
+
+#ifdef DKBIN
+digitalWrite(LATCHPIN_IN, 1);
+delayMicroseconds(20);
+digitalWrite(LATCHPIN_IN,0);
+me-&gt;dataBuffer = DKbIn_shiftIn32(me);
+
+// Debug: Serial.println(me-&gt;dataBuffer, HEX);
+DKbIn_printDKbInData(me);
+#endif
+
+#ifdef SERIALIN
+if (Serial.available() &gt; 0) {
+  int bitToSet = Serial.read();
+  if (bitToSet &gt;= 48 &amp;&amp; bitToSet &lt; 80) {
+    bitToSet -= 48;
+    bitSet(me-&gt;dataBuffer, bitToSet);
+  }
+}
+#endif
+
+QACTIVE_POST((QMActive *)&amp;AO_DKbIn, evRead_SIG, me-&gt;dataBuffer);</entry>
+     <tran trig="evRead" target="../../2">
+      <tran_glyph conn="20,20,2,0,8">
+       <action box="0,-2,10,2"/>
+      </tran_glyph>
+     </tran>
+     <state_glyph node="14,10,26,10">
+      <entry box="1,2,6,2"/>
+     </state_glyph>
+    </state>
+    <state name="Dispatch">
+     <entry>//Debug: DKbIn_printDKbInData(me);
+
+DKbInData data(me-&gt;dataBuffer);
+
+// Do some valitity checks here
+
+// Raise input event to all active object, even though they do not handle the event
+if (data.FMM) {
+  #ifdef MANUALMOTION
+  QACTIVE_POST((QMActive *)&amp;AO_ManualMotion, evManualMotionPressed_SIG, 0L);
+  #endif
+  #ifdef PRESET
+  QACTIVE_POST((QMActive *)&amp;AO_PreSet, evManualMotionPressed_SIG, 0L);
+  #endif
+  #ifdef USERPROGRAM
+  QACTIVE_POST((QMActive *)&amp;AO_UserProgram, evManualMotionPressed_SIG, 0L);
+  #endif
+  #ifdef DKBOUT
+  QACTIVE_POST((QMActive *)&amp;AO_DKbOut, evManualMotionPressed_SIG, 0L);
+  #endif
+} else if (data.FPS) {
+  #ifdef MANUALMOTION
+  QACTIVE_POST((QMActive *)&amp;AO_ManualMotion, evPreSetPressed_SIG, 0L);
+  #endif
+  #ifdef PRESET
+  QACTIVE_POST((QMActive *)&amp;AO_PreSet, evPreSetPressed_SIG, 0L);
+  #endif
+  #ifdef USERPROGRAM
+  QACTIVE_POST((QMActive *)&amp;AO_UserProgram, evPreSetPressed_SIG, 0L);
+  #endif
+  #ifdef DKBOUT
+  QACTIVE_POST((QMActive *)&amp;AO_DKbOut, evPreSetPressed_SIG, 0L);
+  #endif
+} else if (data.FPG) {
+  #ifdef MANUALMOTION
+  QACTIVE_POST((QMActive *)&amp;AO_ManualMotion, evUserProgramPressed_SIG, 0L);
+  #endif
+  #ifdef PRESET
+  QACTIVE_POST((QMActive *)&amp;AO_PreSet, evUserProgramPressed_SIG, 0L);
+  #endif
+  #ifdef USERPROGRAM
+  QACTIVE_POST((QMActive *)&amp;AO_UserProgram, evUserProgramPressed_SIG, 0L);
+  #endif
+  #ifdef DKBOUT
+  QACTIVE_POST((QMActive *)&amp;AO_DKbOut, evUserProgramPressed_SIG, 0L);
+  #endif
+} else if (DKbIn_isMotorButtonPressed(me)) {
+  #ifdef MANUALMOTION
+  QACTIVE_POST((QMActive *)&amp;AO_ManualMotion, evMotorButtonPressed_SIG, me-&gt;dataBuffer);
+  #endif
+  #ifdef PRESET
+  QACTIVE_POST((QMActive *)&amp;AO_PreSet, evMotorButtonPressed_SIG, me-&gt;dataBuffer);
+  #endif
+  #ifdef USERPROGRAM
+  QACTIVE_POST((QMActive *)&amp;AO_UserProgram, evMotorButtonPressed_SIG, me-&gt;dataBuffer);
+  #endif
+  #ifdef DKBOUT
+  QACTIVE_POST((QMActive *)&amp;AO_DKbOut, evMotorButtonPressed_SIG, me-&gt;dataBuffer);
+  #endif
+} else if (DKbIn_isProgramButtonPressed(me)) {
+  #ifdef MANUALMOTION
+  QACTIVE_POST((QMActive *)&amp;AO_ManualMotion, evProgramButtonPressed_SIG, me-&gt;dataBuffer);
+  #endif
+  #ifdef PRESET
+  QACTIVE_POST((QMActive *)&amp;AO_PreSet, evProgramButtonPressed_SIG, me-&gt;dataBuffer);
+  #endif
+  #ifdef USERPROGRAM
+  QACTIVE_POST((QMActive *)&amp;AO_UserProgram, evProgramButtonPressed_SIG, me-&gt;dataBuffer);
+  #endif
+  #ifdef DKBOUT
+  QACTIVE_POST((QMActive *)&amp;AO_DKbOut, evProgramButtonPressed_SIG, me-&gt;dataBuffer);
+  #endif
+} else if (data.FPP) {
+  #ifdef MANUALMOTION
+  QACTIVE_POST((QMActive *)&amp;AO_ManualMotion, evUserProgramPlayPressed_SIG, me-&gt;dataBuffer);
+  #endif
+  #ifdef PRESET
+  QACTIVE_POST((QMActive *)&amp;AO_PreSet, evUserProgramPlayPressed_SIG, me-&gt;dataBuffer);
+  #endif
+  #ifdef USERPROGRAM
+  QACTIVE_POST((QMActive *)&amp;AO_UserProgram, evUserProgramPlayPressed_SIG, me-&gt;dataBuffer);
+  #endif
+  #ifdef DKBOUT
+  QACTIVE_POST((QMActive *)&amp;AO_DKbOut, evUserProgramPlayPressed_SIG, me-&gt;dataBuffer);
+  #endif
+}
+
+</entry>
+     <tran trig="Q_TIMEOUT" target="../../1">
+      <tran_glyph conn="38,37,1,1,11,-23,-9">
+       <action box="0,-2,10,2"/>
+      </tran_glyph>
+     </tran>
+     <state_glyph node="14,28,24,11">
+      <entry box="1,2,6,2"/>
+     </state_glyph>
+    </state>
+    <state_diagram size="66,50"/>
+   </statechart>
+  </class>
+  <class name="PreSet" superclass="qpn::QActive">
+   <attribute name="currentPreSet" type="uint8_t" visibility="0x00" properties="0x00"/>
+   <attribute name="preSetCounter" type="uint16_t" visibility="0x00" properties="0x00"/>
+   <attribute name="baselineShift" type="uint8_t" visibility="0x00" properties="0x00"/>
+   <operation name="isCurrentPreSet" type="bool" visibility="0x00" properties="0x00">
+    <code>uint32_t par = Q_PAR(me);
+DKbInData dd(par);
+
+if      (dd.FP1 &amp;&amp; me-&gt;currentPreSet == 1) return true;
+else if (dd.FP2 &amp;&amp; me-&gt;currentPreSet == 2) return true;
+else if (dd.FP3 &amp;&amp; me-&gt;currentPreSet == 3) return true;
+else if (dd.FP4 &amp;&amp; me-&gt;currentPreSet == 4) return true;
+else if (dd.FP5 &amp;&amp; me-&gt;currentPreSet == 5) return true;
+else if (dd.FP6 &amp;&amp; me-&gt;currentPreSet == 6) return true;
+else if (dd.FP7 &amp;&amp; me-&gt;currentPreSet == 7) return true;
+else if (dd.FP8 &amp;&amp; me-&gt;currentPreSet == 8) return true;
+else return false;
+</code>
+   </operation>
+   <operation name="prog3" type="void" visibility="0x00" properties="0x00">
+    <code>// Marker Position 0 &lt;-&gt; 1
+
+const float stepsz1 = (167 - 127) / 40.0;
+const float stepsz2 = (137 - 127) / 40.0;
+
+
+if (me-&gt;preSetCounter == 0) {
+  static const uint8_t PROGMEM STEPSZ = 2;
+  MotorData lulng(LULNG, 127, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
+  MotorData lurtn(LURTN, 127, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lurtn.raw);
+  MotorData rulng(RULNG, 127, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rulng.raw);
+  MotorData rurtn(RURTN, 127, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rurtn.raw);
+  MotorData lllng(LLLNG, 127, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lllng.raw);
+  MotorData llrtn(LLRTN, 127, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, llrtn.raw);
+  MotorData rllng(RLLNG, 127, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
+  MotorData rlrtn(RLRTN, 127, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rlrtn.raw);
+
+  MotorData galng(GALNG, 0, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
+  MotorData gartn(GARTN, 127, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, gartn.raw);
+}
+else if (me-&gt;preSetCounter &gt;= 20 &amp;&amp; me-&gt;preSetCounter &lt; 60) {
+  static const uint8_t PROGMEM STEPSZ = 1;
+  MotorData lulng(LULNG, 127 + (me-&gt;preSetCounter - 20) * stepsz1, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
+  MotorData lurtn(LURTN, 127 + (me-&gt;preSetCounter - 20) * stepsz1, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lurtn.raw);
+  MotorData rulng(RULNG, 127 - (me-&gt;preSetCounter - 20) * stepsz2, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rulng.raw);
+  MotorData rurtn(RURTN, 127 - (me-&gt;preSetCounter - 20) * stepsz2, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rurtn.raw);
+  MotorData lllng(LLLNG, 127 + (me-&gt;preSetCounter - 20) * stepsz2, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lllng.raw);
+  MotorData llrtn(LLRTN, 127 + (me-&gt;preSetCounter - 20) * stepsz2, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, llrtn.raw);
+  MotorData rllng(RLLNG, 127 - (me-&gt;preSetCounter - 20) * stepsz1, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
+  MotorData rlrtn(RLRTN, 127 - (me-&gt;preSetCounter - 20) * stepsz1, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rlrtn.raw);
+}
+else if (me-&gt;preSetCounter &gt;= 70 &amp;&amp; me-&gt;preSetCounter &lt; 110) {
+  static const uint8_t PROGMEM STEPSZ = 1;
+  MotorData lulng(LULNG, 167 - (me-&gt;preSetCounter - 70) * stepsz1, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
+  MotorData lurtn(LURTN, 167 - (me-&gt;preSetCounter - 70) * stepsz1, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lurtn.raw);
+  MotorData rulng(RULNG, 117 + (me-&gt;preSetCounter - 70) * stepsz2, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rulng.raw);
+  MotorData rurtn(RURTN, 117 + (me-&gt;preSetCounter - 70) * stepsz2, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rurtn.raw);
+  MotorData lllng(LLLNG, 137 - (me-&gt;preSetCounter - 70) * stepsz2, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lllng.raw);
+  MotorData llrtn(LLRTN, 137 - (me-&gt;preSetCounter - 70) * stepsz2, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, llrtn.raw);
+  MotorData rllng(RLLNG, 87 + (me-&gt;preSetCounter - 70) * stepsz1, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
+  MotorData rlrtn(RLRTN, 87 + (me-&gt;preSetCounter - 70) * stepsz1, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rlrtn.raw);
+}
+
+if (me-&gt;preSetCounter &gt; 111) {
+  me-&gt;preSetCounter = 20;
+}
+else {
+  me-&gt;preSetCounter++;
+}</code>
+   </operation>
+   <operation name="prog1" type="void" visibility="0x00" properties="0x00">
+    <code>// Marker Position 0
+
+static const uint8_t PROGMEM STEPSZ = 2;
+if (me-&gt;preSetCounter == 0) {
+  MotorData lulng(LULNG, 100, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
+  MotorData lurtn(LURTN, 100, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lurtn.raw);
+  MotorData rulng(RULNG, 100, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rulng.raw);
+  MotorData rurtn(RURTN, 100, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rurtn.raw);
+  MotorData lllng(LLLNG, 100, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lllng.raw);
+  MotorData llrtn(LLRTN, 100, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, llrtn.raw);
+  MotorData rllng(RLLNG, 100, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
+  MotorData rlrtn(RLRTN, 100, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rlrtn.raw);
+
+  MotorData galng(GALNG, 0, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
+  MotorData gartn(GARTN, 127, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, gartn.raw);
+}
+else if (me-&gt;preSetCounter == 15) {
+  MotorData lulng(LULNG, 127, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
+  MotorData lurtn(LURTN, 127, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lurtn.raw);
+  MotorData rulng(RULNG, 127, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rulng.raw);
+  MotorData rurtn(RURTN, 127, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rurtn.raw);
+  MotorData lllng(LLLNG, 127, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lllng.raw);
+  MotorData llrtn(LLRTN, 127, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, llrtn.raw);
+  MotorData rllng(RLLNG, 127, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
+  MotorData rlrtn(RLRTN, 127, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rlrtn.raw);
+}
+
+if (me-&gt;preSetCounter &lt; 16) {
+  me-&gt;preSetCounter++;
+}
+</code>
+   </operation>
+   <operation name="prog2" type="void" visibility="0x00" properties="0x00">
+    <code>// Marker Position 1
+
+static const uint8_t PROGMEM STEPSZ = 2;
+if (me-&gt;preSetCounter == 0) {
+  MotorData lulng(LULNG, 100, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
+  MotorData lurtn(LURTN, 100, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lurtn.raw);
+  MotorData rulng(RULNG, 100, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rulng.raw);
+  MotorData rurtn(RURTN, 100, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rurtn.raw);
+  MotorData lllng(LLLNG, 100, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lllng.raw);
+  MotorData llrtn(LLRTN, 100, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, llrtn.raw);
+  MotorData rllng(RLLNG, 70, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
+  MotorData rlrtn(RLRTN, 70, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rlrtn.raw);
+
+  MotorData galng(GALNG, 0, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
+  MotorData gartn(GARTN, 127, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, gartn.raw);
+}
+else if (me-&gt;preSetCounter == 15) {
+  MotorData lulng(LULNG, 167, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
+  MotorData lurtn(LURTN, 167, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lurtn.raw);
+  MotorData rulng(RULNG, 117, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rulng.raw);
+  MotorData rurtn(RURTN, 117, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rurtn.raw);
+  MotorData lllng(LLLNG, 137, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lllng.raw);
+  MotorData llrtn(LLRTN, 137, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, llrtn.raw);
+  MotorData rllng(RLLNG, 87, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
+  MotorData rlrtn(RLRTN, 87, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rlrtn.raw);
+}
+
+if (me-&gt;preSetCounter &lt; 16) {
+  me-&gt;preSetCounter++;
+}
+</code>
+   </operation>
+   <operation name="prog4" type="void" visibility="0x00" properties="0x00">
+    <code>// Free-breathe Gating
+
+if (me-&gt;preSetCounter == 0) {
+  static const uint8_t PROGMEM STEPSZ = 2;
+  MotorData lulng(LULNG, 50, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
+  MotorData lurtn(LURTN, 127, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lurtn.raw);
+  MotorData rulng(RULNG, 50, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rulng.raw);
+  MotorData rurtn(RURTN, 127, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rurtn.raw);
+  MotorData lllng(LLLNG, 50, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lllng.raw);
+  MotorData llrtn(LLRTN, 127, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, llrtn.raw);
+  MotorData rllng(RLLNG, 50, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
+  MotorData rlrtn(RLRTN, 127, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rlrtn.raw);
+  MotorData galng(GALNG, 50, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
+  MotorData gartn(GARTN, 127, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, gartn.raw);
+}
+else if (me-&gt;preSetCounter == 30) {
+  static const uint8_t PROGMEM STEPSZ = 1;
+  MotorData lulng(LULNG, 255, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
+  MotorData rulng(RULNG, 255, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rulng.raw);
+  MotorData lllng(LLLNG, 255, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lllng.raw);
+  MotorData rllng(RLLNG, 255, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
+  MotorData galng(GALNG, 255, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
+}
+else if (me-&gt;preSetCounter == 50) {
+  static const uint8_t PROGMEM STEPSZ = 1;
+  MotorData lulng(LULNG, 0, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
+  MotorData rulng(RULNG, 0, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rulng.raw);
+  MotorData lllng(LLLNG, 0, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lllng.raw);
+  MotorData rllng(RLLNG, 0, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
+  MotorData galng(GALNG, 0, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
+}
+
+if (me-&gt;preSetCounter == 70) {
+  me-&gt;preSetCounter = 30;
+}
+else {
+  me-&gt;preSetCounter++;
+}</code>
+   </operation>
+   <operation name="prog5" type="void" visibility="0x00" properties="0x00">
+    <code>// Breath-hold Gating
+
+if (me-&gt;preSetCounter == 0) {
+  static const uint8_t PROGMEM STEPSZ = 2;
+  MotorData lulng(LULNG, 0, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
+  MotorData lurtn(LURTN, 127, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lurtn.raw);
+  MotorData rulng(RULNG, 0, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rulng.raw);
+  MotorData rurtn(RURTN, 127, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rurtn.raw);
+  MotorData lllng(LLLNG, 0, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lllng.raw);
+  MotorData llrtn(LLRTN, 127, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, llrtn.raw);
+  MotorData rllng(RLLNG, 0, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
+  MotorData rlrtn(RLRTN, 127, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rlrtn.raw);
+  MotorData galng(GALNG, 0, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
+  MotorData gartn(GARTN, 127, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, gartn.raw);
+}
+else if (me-&gt;preSetCounter == 30 ||
+         me-&gt;preSetCounter == 70 ||
+         me-&gt;preSetCounter == 110 ||
+         me-&gt;preSetCounter == 150 ||
+         me-&gt;preSetCounter == 190 ||
+         me-&gt;preSetCounter == 230) {
+  static const uint8_t PROGMEM STEPSZ = 1;
+  MotorData lulng(LULNG, 255, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
+  MotorData rulng(RULNG, 255, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rulng.raw);
+  MotorData lllng(LLLNG, 255, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lllng.raw);
+  MotorData rllng(RLLNG, 255, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
+  MotorData galng(GALNG, 255, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
+}
+else if (me-&gt;preSetCounter == 270) {
+  static const uint8_t PROGMEM STEPSZ = 2;
+  MotorData lulng(LULNG, 255, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
+  MotorData rulng(RULNG, 255, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rulng.raw);
+  MotorData lllng(LLLNG, 255, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lllng.raw);
+  MotorData rllng(RLLNG, 255, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
+  MotorData galng(GALNG, 255, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
+}
+else if (me-&gt;preSetCounter == 50 ||
+         me-&gt;preSetCounter == 90 ||
+         me-&gt;preSetCounter == 130 ||
+         me-&gt;preSetCounter == 170 ||
+         me-&gt;preSetCounter == 210 ||
+         me-&gt;preSetCounter == 250) {
+  static const uint8_t PROGMEM STEPSZ = 1;
+  MotorData lulng(LULNG, 0, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
+  MotorData rulng(RULNG, 0, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rulng.raw);
+  MotorData lllng(LLLNG, 0, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lllng.raw);
+  MotorData rllng(RLLNG, 0, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
+  MotorData galng(GALNG, 0, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
+}
+else if (me-&gt;preSetCounter == 450) {
+  static const uint8_t PROGMEM STEPSZ = 2;
+  MotorData lulng(LULNG, 0, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
+  MotorData rulng(RULNG, 0, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rulng.raw);
+  MotorData lllng(LLLNG, 0, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lllng.raw);
+  MotorData rllng(RLLNG, 0, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
+  MotorData galng(GALNG, 0, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
+}
+
+if (me-&gt;preSetCounter == 480) {
+  me-&gt;preSetCounter = 110;
+}
+else {
+  me-&gt;preSetCounter++;
+}</code>
+   </operation>
+   <operation name="prog6" type="void" visibility="0x00" properties="0x00">
+    <code>// Free-breathe Gating, Marker Pos 0 &lt;-&gt; 1
+
+const float stepsz1 = (167 - 127) / 20.0;
+const float stepsz2 = (137 - 127) / 20.0;
+
+if (me-&gt;preSetCounter == 0) {
+  static const uint8_t PROGMEM STEPSZ = 2;
+  MotorData lulng(LULNG, 127, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
+  MotorData lurtn(LURTN, 127, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lurtn.raw);
+  MotorData rulng(RULNG, 127, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rulng.raw);
+  MotorData rurtn(RURTN, 127, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rurtn.raw);
+  MotorData lllng(LLLNG, 127, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lllng.raw);
+  MotorData llrtn(LLRTN, 127, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, llrtn.raw);
+  MotorData rllng(RLLNG, 127, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
+  MotorData rlrtn(RLRTN, 127, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rlrtn.raw);
+
+  MotorData galng(GALNG, 50, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
+  MotorData gartn(GARTN, 127, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, gartn.raw);
+}
+else if (me-&gt;preSetCounter &gt;= 30 &amp;&amp; me-&gt;preSetCounter &lt; 50) {
+  static const uint8_t PROGMEM STEPSZ = 1;
+  MotorData lulng(LULNG, 127 + (me-&gt;preSetCounter - 30) * stepsz1, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
+  MotorData lurtn(LURTN, 127 + (me-&gt;preSetCounter - 30) * stepsz1, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lurtn.raw);
+  MotorData rulng(RULNG, 127 - (me-&gt;preSetCounter - 30) * stepsz2, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rulng.raw);
+  MotorData rurtn(RURTN, 127 - (me-&gt;preSetCounter - 30) * stepsz2, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rurtn.raw);
+  MotorData lllng(LLLNG, 127 + (me-&gt;preSetCounter - 30) * stepsz2, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lllng.raw);
+  MotorData llrtn(LLRTN, 127 + (me-&gt;preSetCounter - 30) * stepsz2, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, llrtn.raw);
+  MotorData rllng(RLLNG, 127 - (me-&gt;preSetCounter - 30) * stepsz1, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
+  MotorData rlrtn(RLRTN, 127 - (me-&gt;preSetCounter - 30) * stepsz1, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rlrtn.raw);
+
+  MotorData galng(GALNG, 255, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
+}
+else if (me-&gt;preSetCounter &gt; 50 &amp;&amp; me-&gt;preSetCounter &lt; 70) {
+  static const uint8_t PROGMEM STEPSZ = 1;
+  MotorData lulng(LULNG, 167 - (me-&gt;preSetCounter - 50) * stepsz1, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
+  MotorData lurtn(LURTN, 167 - (me-&gt;preSetCounter - 50) * stepsz1, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lurtn.raw);
+  MotorData rulng(RULNG, 117 + (me-&gt;preSetCounter - 50) * stepsz2, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rulng.raw);
+  MotorData rurtn(RURTN, 117 + (me-&gt;preSetCounter - 50) * stepsz2, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rurtn.raw);
+  MotorData lllng(LLLNG, 137 - (me-&gt;preSetCounter - 50) * stepsz2, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lllng.raw);
+  MotorData llrtn(LLRTN, 137 - (me-&gt;preSetCounter - 50) * stepsz2, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, llrtn.raw);
+  MotorData rllng(RLLNG, 87 + (me-&gt;preSetCounter - 50) * stepsz1, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
+  MotorData rlrtn(RLRTN, 87 + (me-&gt;preSetCounter - 50) * stepsz1, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rlrtn.raw);
+
+  MotorData galng(GALNG, 0, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
+}
+
+if (me-&gt;preSetCounter == 70) {
+  me-&gt;preSetCounter = 30;
+}
+else {
+  me-&gt;preSetCounter++;
+}</code>
+   </operation>
+   <operation name="prog7" type="void" visibility="0x00" properties="0x00">
+    <code>// Free-breathe Gating loosing signal
+
+if (me-&gt;preSetCounter == 0) {
+  static const uint8_t PROGMEM STEPSZ = 2;
+  MotorData lulng(LULNG, 50, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
+  MotorData lurtn(LURTN, 127, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lurtn.raw);
+  MotorData rulng(RULNG, 50, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rulng.raw);
+  MotorData rurtn(RURTN, 127, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rurtn.raw);
+  MotorData lllng(LLLNG, 50, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lllng.raw);
+  MotorData llrtn(LLRTN, 127, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, llrtn.raw);
+  MotorData rllng(RLLNG, 50, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
+  MotorData rlrtn(RLRTN, 127, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rlrtn.raw);
+  MotorData galng(GALNG, 50, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
+  MotorData gartn(GARTN, 127, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, gartn.raw);
+}
+else if (me-&gt;preSetCounter == 30 ||
+         me-&gt;preSetCounter == 70 ||
+         me-&gt;preSetCounter == 110 ||
+         me-&gt;preSetCounter == 150 ||
+         me-&gt;preSetCounter == 190 ||
+         me-&gt;preSetCounter == 230 ||
+         me-&gt;preSetCounter == 270 ||
+         me-&gt;preSetCounter == 310 ||
+         me-&gt;preSetCounter == 350 ||
+         me-&gt;preSetCounter == 390) {
+  static const uint8_t PROGMEM STEPSZ = 1;
+  MotorData lulng(LULNG, 255, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
+  MotorData rulng(RULNG, 255, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rulng.raw);
+  MotorData lllng(LLLNG, 255, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lllng.raw);
+  MotorData rllng(RLLNG, 255, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
+  MotorData galng(GALNG, 255, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
+}
+else if (me-&gt;preSetCounter == 50 ||
+         me-&gt;preSetCounter == 90 ||
+         me-&gt;preSetCounter == 130 ||
+         me-&gt;preSetCounter == 170 ||
+         me-&gt;preSetCounter == 210 ||
+         me-&gt;preSetCounter == 250 ||
+         me-&gt;preSetCounter == 290 ||
+         me-&gt;preSetCounter == 330 ||
+         me-&gt;preSetCounter == 370 ||
+         me-&gt;preSetCounter == 410) {
+  static const uint8_t PROGMEM STEPSZ = 1;
+  MotorData lulng(LULNG, 0, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
+  MotorData rulng(RULNG, 0, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rulng.raw);
+  MotorData lllng(LLLNG, 0, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lllng.raw);
+  MotorData rllng(RLLNG, 0, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
+  MotorData galng(GALNG, 0, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
+}
+
+if (me-&gt;preSetCounter == 300) {
+  static const uint8_t PROGMEM STEPSZ = 2;
+  MotorData lurtn(LURTN, 255, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lurtn.raw);
+  MotorData rurtn(RURTN, 255, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rurtn.raw);
+  MotorData llrtn(LLRTN, 255, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, llrtn.raw);
+  MotorData rlrtn(RLRTN, 255, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rlrtn.raw);
+  MotorData gartn(GARTN, 255, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, gartn.raw);
+}
+else if (me-&gt;preSetCounter == 400) {
+  static const uint8_t PROGMEM STEPSZ = 2;
+  MotorData lurtn(LURTN, 127, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lurtn.raw);
+  MotorData rurtn(RURTN, 127, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rurtn.raw);
+  MotorData llrtn(LLRTN, 127, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, llrtn.raw);
+  MotorData rlrtn(RLRTN, 127, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rlrtn.raw);
+  MotorData gartn(GARTN, 127, STEPSZ);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, gartn.raw);
+}
+
+if (me-&gt;preSetCounter == 430) {
+  me-&gt;preSetCounter = 30;
+}
+else {
+  me-&gt;preSetCounter++;
+}</code>
+   </operation>
+   <operation name="prog8" type="void" visibility="0x00" properties="0x00">
+    <code>// Free-breathe Gating base line shift
+
+uint8_t step = 0;
+uint8_t target = 0;
+
+if (me-&gt;preSetCounter &lt; 15) {
+  step = 4;
+  target = 0;
+}
+else if (
+me-&gt;preSetCounter == 15 ||
+me-&gt;preSetCounter ==  (uint16_t)35 + me-&gt;baselineShift
+) {
+  step = 0;
+  target = 255;
+}
+else if (
+me-&gt;preSetCounter == 16 ||
+me-&gt;preSetCounter == 17 ||
+me-&gt;preSetCounter == (uint16_t)33 + me-&gt;baselineShift ||
+me-&gt;preSetCounter == (uint16_t)34 + me-&gt;baselineShift
+) {
+  step = 1;
+  target = 255;
+}
+else if (
+(me-&gt;preSetCounter &gt;= (uint16_t)18 &amp;&amp; me-&gt;preSetCounter &lt;= (uint16_t)32 + me-&gt;baselineShift)
+) {
+  step = 2;
+  target = 255;
+}
+if (
+me-&gt;preSetCounter == (uint16_t)36 + me-&gt;baselineShift ||
+me-&gt;preSetCounter == (uint16_t)56 + me-&gt;baselineShift
+) {
+  step = 0;
+  target = 0;
+}
+if (
+me-&gt;preSetCounter == (uint16_t)37 + me-&gt;baselineShift ||
+me-&gt;preSetCounter == (uint16_t)38 + me-&gt;baselineShift ||
+me-&gt;preSetCounter == (uint16_t)54 + me-&gt;baselineShift ||
+me-&gt;preSetCounter == (uint16_t)55 + me-&gt;baselineShift
+) {
+  step = 1;
+  target = 0;
+}
+if (
+(me-&gt;preSetCounter &gt;= (uint16_t)39 + me-&gt;baselineShift &amp;&amp;
+me-&gt;preSetCounter &lt;= (uint16_t)53 + me-&gt;baselineShift)
+) {
+  step = 2;
+  target = 0;
+}
+
+MotorData lulng(LULNG, target, step);
+QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
+MotorData rulng(RULNG, target, step);
+QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rulng.raw);
+MotorData lllng(LLLNG, target, step);
+QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lllng.raw);
+MotorData rllng(RLLNG, target, step);
+QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
+MotorData galng(GALNG, target, step);
+QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
+
+if (me-&gt;preSetCounter == 57) {
+  me-&gt;preSetCounter = 15;
+  me-&gt;baselineShift = 1;
+  return;
+}
+me-&gt;preSetCounter++;</code>
+   </operation>
+   <statechart>
+    <initial target="../1">
+     <action>QActive_armX((QActive *)me, 0U,
+  PRESETCOUNTERDELAY,
+  PRESETCOUNTERDELAY);
+
+Serial.println(F(&quot;PreSet Initialized&quot;));</action>
+     <initial_glyph conn="24,3,5,0,14,4">
+      <action box="0,-2,10,2"/>
+     </initial_glyph>
+    </initial>
+    <state name="Idle">
+     <entry>Serial.println(&quot;PreSet: Enter Idle&quot;);
+</entry>
+     <tran trig="evPreSetPressed" target="../../2">
+      <tran_glyph conn="25,18,3,0,5,11">
+       <action box="0,-2,14,2"/>
+      </tran_glyph>
+     </tran>
+     <state_glyph node="25,7,26,14">
+      <entry box="1,2,6,2"/>
+     </state_glyph>
+    </state>
+    <state name="WaitForProgram">
+     <entry>Serial.println(F(&quot;PreSet: Enter WaitForProgram&quot;));
+
+me-&gt;preSetCounter = 0;
+/*
+MotorData lulng(LULNG, 0, 3);
+QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
+MotorData lurtn(LURTN, 0, 3);
+QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lurtn.raw);
+MotorData rulng(RULNG, 0, 3);
+QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rulng.raw);
+MotorData rurtn(RURTN, 0, 3);
+QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rurtn.raw);
+MotorData lllng(LLLNG, 0, 3);
+QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lllng.raw);
+MotorData llrtn(LLRTN, 0, 3);
+QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, llrtn.raw);
+MotorData rllng(RLLNG, 0, 3);
+QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
+MotorData rlrtn(RLRTN, 0, 3);
+QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rlrtn.raw);
+MotorData galng(GALNG, 0, 3);
+QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
+MotorData gartn(GARTN, 0, 3);
+QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, gartn.raw);
+*/</entry>
+     <tran trig="evManualMotionPressed" target="../../1">
+      <tran_glyph conn="15,34,3,2,29,-13">
+       <action box="0,-2,19,2"/>
+      </tran_glyph>
+     </tran>
+     <tran trig="evUserProgramPressed" target="../../1">
+      <tran_glyph conn="15,37,3,2,33,-16">
+       <action box="0,-2,19,2"/>
+      </tran_glyph>
+     </tran>
+     <tran trig="evProgramButtonPressed" target="../../3">
+      <action>uint32_t par = Q_PAR(me);
+DKbInData dd(par);
+
+if      (dd.FP1) { me-&gt;currentPreSet = 1; }
+else if (dd.FP2) { me-&gt;currentPreSet = 2; }
+else if (dd.FP3) { me-&gt;currentPreSet = 3; }
+else if (dd.FP4) { me-&gt;currentPreSet = 4; }
+else if (dd.FP5) { me-&gt;currentPreSet = 5; }
+else if (dd.FP6) { me-&gt;currentPreSet = 6; }
+else if (dd.FP7) { me-&gt;currentPreSet = 7; }
+else if (dd.FP8) { me-&gt;currentPreSet = 8; }
+
+me-&gt;preSetCounter = 0;
+me-&gt;baselineShift = 0;</action>
+      <tran_glyph conn="15,40,3,3,37">
+       <action box="0,-2,20,2"/>
+      </tran_glyph>
+     </tran>
+     <state_glyph node="15,29,24,19">
+      <entry box="1,2,6,2"/>
+     </state_glyph>
+    </state>
+    <state name="RunProgram">
+     <entry>// Debug: Serial.println(F(&quot;PreSet: Enter RunProgram&quot;));
+
+// Debug:
+//Serial.print(me-&gt;currentPreSet);
+//Serial.print(&quot; &quot;);
+//Serial.println(me-&gt;preSetCounter);
+
+#ifdef MOTOROUT
+if (me-&gt;currentPreSet == 1) {
+  PreSet_prog1(me);
+}
+else if (me-&gt;currentPreSet == 2) {
+  PreSet_prog2(me);
+}
+else if (me-&gt;currentPreSet == 3) {
+  PreSet_prog3(me);
+}
+else if (me-&gt;currentPreSet == 4) {
+  PreSet_prog4(me);
+}
+else if (me-&gt;currentPreSet == 5) {
+  PreSet_prog5(me);
+}
+else if (me-&gt;currentPreSet == 6) {
+  PreSet_prog6(me);
+}
+else if (me-&gt;currentPreSet == 7) {
+  PreSet_prog7(me);
+}
+else if (me-&gt;currentPreSet == 8) {
+  PreSet_prog8(me);
+}
+#endif</entry>
+     <tran trig="evUserProgramPressed" target="../../1">
+      <tran_glyph conn="52,33,3,1,39,-17,-40">
+       <action box="0,-2,19,2"/>
+      </tran_glyph>
+     </tran>
+     <tran trig="evProgramButtonPressed">
+      <choice target="../../../2">
+       <guard brief="else">!PreSet_isCurrentPreSet(me)</guard>
+       <choice_glyph conn="77,42,4,2,15,-48,-9">
+        <action box="1,0,17,2"/>
+       </choice_glyph>
+      </choice>
+      <choice target="../..">
+       <guard brief="current PreSet">PreSet_isCurrentPreSet(me)</guard>
+       <choice_glyph conn="77,42,4,1,-2,12">
+        <action box="0,-5,14,2"/>
+       </choice_glyph>
+      </choice>
+      <tran_glyph conn="52,42,3,-1,25">
+       <action box="0,-2,20,2"/>
+      </tran_glyph>
+     </tran>
+     <tran trig="Q_TIMEOUT" target="..">
+      <tran_glyph conn="57,48,2,2,6,6,-6">
+       <action box="0,-2,10,2"/>
+      </tran_glyph>
+     </tran>
+     <tran trig="evPreSetPressed" target="../../2">
+      <tran_glyph conn="52,45,3,1,-13">
+       <action box="0,-2,17,2"/>
+      </tran_glyph>
+     </tran>
+     <tran trig="evManualMotionPressed" target="../../1">
+      <tran_glyph conn="52,36,3,1,40,-22,-41">
+       <action box="0,-2,19,2"/>
+      </tran_glyph>
+     </tran>
+     <state_glyph node="52,26,37,22">
+      <entry box="1,2,6,2"/>
+     </state_glyph>
+    </state>
+    <state_diagram size="571,59"/>
+   </statechart>
+  </class>
+  <class name="UserProgram" superclass="qpn::QActive">
+   <attribute name="userProgramCounter" type="uint8_t" visibility="0x00" properties="0x00"/>
+   <attribute name="userProgram[NUMSERVOS][8]" type="uint8_t" visibility="0x00" properties="0x00"/>
+   <statechart>
+    <initial target="../1">
+     <action>QActive_armX((QActive *)me, 0U,
+  USERPROGRAMCOUNTERDELAY, 
+  USERPROGRAMCOUNTERDELAY);
+
+Serial.println(F(&quot;UserProgram Initialized&quot;));</action>
+     <initial_glyph conn="7,8,5,0,21,5">
+      <action box="0,-2,10,2"/>
+     </initial_glyph>
+    </initial>
+    <state name="Idle">
+     <entry>Serial.println(F(&quot;UserProgram: Enter Idle&quot;));</entry>
+     <tran trig="evUserProgramPressed" target="../../2">
+      <action>memset(me-&gt;userProgram, 0, sizeof(me-&gt;userProgram));</action>
+      <tran_glyph conn="34,28,2,0,10">
+       <action box="0,-2,19,2"/>
+      </tran_glyph>
+     </tran>
+     <state_glyph node="24,13,18,15">
+      <entry box="1,2,6,2"/>
+     </state_glyph>
+    </state>
+    <state name="Record">
+     <entry>Serial.println(F(&quot;UserProgram: Enter Record&quot;));</entry>
+     <tran trig="evManualMotionPressed" target="../../1">
+      <tran_glyph conn="24,44,3,3,-5,-20,5">
+       <action box="0,-2,20,2"/>
+      </tran_glyph>
+     </tran>
+     <tran trig="evUserProgramPlayPressed" target="../../3">
+      <action>me-&gt;userProgramCounter = 0;</action>
+      <tran_glyph conn="59,43,1,2,16,-15">
+       <action box="0,-2,22,2"/>
+      </tran_glyph>
+     </tran>
+     <tran trig="evMotorButtonPressed" target="..">
+      <action>#ifdef MOTOROUT
+uint32_t par = Q_PAR(me);
+DKbInData dd(par);
+// Debug: Serial.println(par, HEX);
+
+const uint8_t SPEED = 6;
+const uint8_t STEP = 2;
+
+if (dd.LUT) {
+  Serial.println(F(&quot;Move left upper lng&quot;));
+  MotorData dm(LULNG, SPEED, STEP);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorForward_SIG, dm.raw);
+}
+else if (dd.LUB) {
+  Serial.println(F(&quot;Move left upper lng&quot;));
+  MotorData dm(LULNG, SPEED, STEP);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorBackward_SIG, dm.raw);
+} 
+else if (dd.LUR) {
+  Serial.println(F(&quot;Move left upper Rtn&quot;));
+  MotorData dm(LURTN, SPEED, STEP);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorForward_SIG, dm.raw);
+}
+else if (dd.LUL) {
+  Serial.println(F(&quot;Move left upper Rtn&quot;));
+  MotorData dm(LURTN, SPEED, STEP);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorBackward_SIG, dm.raw);
+}
+
+if (dd.RUT) {
+  Serial.println(F(&quot;Move right upper lng&quot;));
+  MotorData dm(RULNG, SPEED, STEP);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorForward_SIG, dm.raw);
+}
+else if (dd.RUB) {
+  Serial.println(F(&quot;Move right upper lng&quot;));
+  MotorData dm(RULNG, SPEED, STEP);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorBackward_SIG, dm.raw);
+} 
+else if (dd.RUR) {
+  Serial.println(F(&quot;Move right upper Rtn&quot;));
+  MotorData dm(RURTN, SPEED, STEP);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorForward_SIG, dm.raw);
+}
+else if (dd.RUL) {
+  Serial.println(F(&quot;Move right upper Rtn&quot;));
+  MotorData dm(RURTN, SPEED, STEP);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorBackward_SIG, dm.raw);
+}
+
+if (dd.LLT) {
+  Serial.println(F(&quot;Move left lower lng&quot;));
+  MotorData dm(LLLNG, SPEED, STEP);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorForward_SIG, dm.raw);
+}
+else if (dd.LLB) {
+  Serial.println(F(&quot;Move left lower lng&quot;));
+  MotorData dm(LLLNG, SPEED, STEP);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorBackward_SIG, dm.raw);
+} 
+else if (dd.LLR) {
+  Serial.println(F(&quot;Move left lower Rtn&quot;));
+  MotorData dm(LLRTN, SPEED, STEP);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorForward_SIG, dm.raw);
+}
+else if (dd.LLL) {
+  Serial.println(F(&quot;Move left lower Rtn&quot;));
+  MotorData dm(LLRTN, SPEED, STEP);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorBackward_SIG, dm.raw);
+}
+
+if (dd.RLT) {
+  Serial.println(F(&quot;Move right lower lng&quot;));
+  MotorData dm(RLLNG, SPEED, STEP);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorForward_SIG, dm.raw);
+}
+else if (dd.RLB) {
+  Serial.println(F(&quot;Move right lower lng&quot;));
+  MotorData dm(RLLNG, SPEED, STEP);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorBackward_SIG, dm.raw);
+} 
+else if (dd.RLR) {
+  Serial.println(F(&quot;Move right lower Rtn&quot;));
+  MotorData dm(RLRTN, SPEED, STEP);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorForward_SIG, dm.raw);
+}
+else if (dd.RLL) {
+  Serial.println(F(&quot;Move right lower Rtn&quot;));
+  MotorData dm(RLRTN, SPEED, STEP);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorBackward_SIG, dm.raw);
+}
+
+if (dd.GAT) {
+  Serial.println(F(&quot;Move Gating lng&quot;));
+  MotorData dm(GALNG, SPEED, STEP);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorForward_SIG, dm.raw);
+}
+else if (dd.GAB) {
+  Serial.println(F(&quot;Move Gating lng&quot;));
+  MotorData dm(GALNG, SPEED, STEP);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorBackward_SIG, dm.raw);
+}
+else if (dd.GAR) {
+  Serial.println(F(&quot;Move Gating Rtn&quot;));
+  MotorData dm(GARTN, SPEED, STEP);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorForward_SIG, dm.raw);
+}
+else if (dd.GAL) {
+  Serial.println(F(&quot;Move Gating Rtn&quot;));
+  MotorData dm(GARTN, SPEED, STEP);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorBackward_SIG, dm.raw);
+}
+
+#endif</action>
+      <tran_glyph conn="24,50,3,2,-2,7,10,-4">
+       <action box="0,-2,19,2"/>
+      </tran_glyph>
+     </tran>
+     <tran trig="evProgramButtonPressed" target="..">
+      <action>#ifdef MOTOROUT
+uint32_t par = Q_PAR(me);
+DKbInData dd(par);
+
+uint8_t selection = 0;
+if (dd.FP1) { selection = 0; }
+else if (dd.FP2) { selection = 1; }
+else if (dd.FP3) { selection = 2; }
+else if (dd.FP4) { selection = 3; }
+else if (dd.FP5) { selection = 4; }
+else if (dd.FP6) { selection = 5; }
+else if (dd.FP7) { selection = 6; }
+else if (dd.FP8) { selection = 7; }
+
+
+Serial.print(F(&quot;Programmed positions at second: &quot;));
+Serial.println(selection);
+
+me-&gt;userProgram[0][selection] = AO_MotorsOut.servoPosition[0];
+me-&gt;userProgram[1][selection] = AO_MotorsOut.servoPosition[1];
+me-&gt;userProgram[2][selection] = AO_MotorsOut.servoPosition[2];
+me-&gt;userProgram[3][selection] = AO_MotorsOut.servoPosition[3];
+me-&gt;userProgram[4][selection] = AO_MotorsOut.servoPosition[4];
+me-&gt;userProgram[5][selection] = AO_MotorsOut.servoPosition[5];
+me-&gt;userProgram[6][selection] = AO_MotorsOut.servoPosition[6];
+me-&gt;userProgram[7][selection] = AO_MotorsOut.servoPosition[7];
+me-&gt;userProgram[8][selection] = AO_MotorsOut.servoPosition[8];
+me-&gt;userProgram[9][selection] = AO_MotorsOut.servoPosition[9];
+#endif</action>
+      <tran_glyph conn="40,53,2,1,4,24,-9,-5">
+       <action box="0,-3,18,3"/>
+      </tran_glyph>
+     </tran>
+     <tran trig="evPreSetPressed" target="../../1">
+      <tran_glyph conn="24,47,3,3,-7,-28,7">
+       <action box="0,-2,15,2"/>
+      </tran_glyph>
+     </tran>
+     <state_glyph node="24,38,35,15">
+      <entry box="1,2,6,2"/>
+     </state_glyph>
+    </state>
+    <state name="Play">
+     <entry>Serial.println(F(&quot;UserProgram: Enter Play&quot;));
+
+#ifdef MOTOROUT
+
+for (int motor=0; motor &lt; NUMSERVOS; motor++) {
+  MotorData lulng(ServoNumber(motor), me-&gt;userProgram[motor][me-&gt;userProgramCounter], 2);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
+}
+
+me-&gt;userProgramCounter++;
+if (me-&gt;userProgramCounter &gt;=8) { me-&gt;userProgramCounter = 0; }
+
+
+#endif</entry>
+     <tran trig="evUserProgramPressed" target="../../2">
+      <tran_glyph conn="81,28,2,1,18,-22">
+       <action box="0,-2,18,2"/>
+      </tran_glyph>
+     </tran>
+     <tran trig="evManualMotionPressed" target="../../1">
+      <tran_glyph conn="59,18,3,1,-17">
+       <action box="0,-2,19,2"/>
+      </tran_glyph>
+     </tran>
+     <tran trig="Q_TIMEOUT" target="..">
+      <tran_glyph conn="93,22,1,1,4,-6,-4">
+       <action box="0,-2,10,2"/>
+      </tran_glyph>
+     </tran>
+     <tran trig="evPreSetPressed" target="../../1">
+      <tran_glyph conn="59,22,3,1,-17">
+       <action box="0,-2,17,2"/>
+      </tran_glyph>
+     </tran>
+     <state_glyph node="59,12,34,16">
+      <entry box="1,2,6,2"/>
+     </state_glyph>
+    </state>
+    <state_diagram size="109,66"/>
+   </statechart>
+  </class>
+  <class name="DKbOut" superclass="qpn::QActive">
+   <statechart>
+    <initial target="../1">
+     <action>pinMode(CLOCKPIN_OUT, OUTPUT);
+pinMode(LATCHPIN_OUT, OUTPUT);
+pinMode(DATAPIN_OUT,  OUTPUT);
+
+Serial.println(F(&quot;DKbOut Initialized&quot;));</action>
+     <initial_glyph conn="9,3,5,0,19,4">
+      <action box="0,-2,10,2"/>
+     </initial_glyph>
+    </initial>
+    <state name="ManualMotionLED">
+     <entry>Serial.println(F(&quot;DKbOut: Enter ManualMotionLED |A|&quot;));
+
+byte whichPin = 1; // DKb r0: 5;
+byte bitsToSend = 0;
+
+digitalWrite(LATCHPIN_OUT, LOW);
+bitWrite(bitsToSend, whichPin, HIGH);
+shiftOut(DATAPIN_OUT, CLOCKPIN_OUT, MSBFIRST, bitsToSend);
+digitalWrite(LATCHPIN_OUT, HIGH);</entry>
+     <tran trig="evPreSetPressed" target="../../2">
+      <tran_glyph conn="24,17,2,0,13">
+       <action box="0,-2,13,2"/>
+      </tran_glyph>
+     </tran>
+     <tran trig="evUserProgramPressed" target="../../3">
+      <tran_glyph conn="40,16,1,0,10,45">
+       <action box="0,-2,18,2"/>
+      </tran_glyph>
+     </tran>
+     <state_glyph node="20,7,20,10">
+      <entry box="1,2,6,2"/>
+     </state_glyph>
+    </state>
+    <state name="PreSetLED">
+     <entry>Serial.println(F(&quot;DKbOut: Enter PreSetLED |B|&quot;));
+
+byte whichPin = 0; // DKb r0: 4;
+byte bitsToSend = 0;
+
+digitalWrite(LATCHPIN_OUT, LOW);
+bitWrite(bitsToSend, whichPin, HIGH);
+shiftOut(DATAPIN_OUT, CLOCKPIN_OUT, MSBFIRST, bitsToSend);
+digitalWrite(LATCHPIN_OUT, HIGH);</entry>
+     <tran trig="evManualMotionPressed" target="../../1">
+      <tran_glyph conn="14,30,0,3,-16,6">
+       <action box="0,-3,18,3"/>
+      </tran_glyph>
+     </tran>
+     <tran trig="evUserProgramPressed" target="../../3">
+      <tran_glyph conn="24,40,2,3,24,9">
+       <action box="0,-2,19,2"/>
+      </tran_glyph>
+     </tran>
+     <state_glyph node="8,30,22,10">
+      <entry box="1,2,6,2"/>
+     </state_glyph>
+    </state>
+    <state name="UserProgramRecordLED">
+     <entry>Serial.println(F(&quot;DKbOut: Enter UserProgramRecordLED |C|&quot;));
+
+byte whichPin = 3; // DKb r0: 2;
+byte bitsToSend = 0;
+
+digitalWrite(LATCHPIN_OUT, LOW);
+bitWrite(bitsToSend, whichPin, HIGH);
+shiftOut(DATAPIN_OUT, CLOCKPIN_OUT, MSBFIRST, bitsToSend);
+digitalWrite(LATCHPIN_OUT, HIGH);</entry>
+     <tran trig="evManualMotionPressed" target="../../1">
+      <tran_glyph conn="36,61,0,2,-44">
+       <action box="0,-3,18,2"/>
+      </tran_glyph>
+     </tran>
+     <tran trig="evPreSetPressed" target="../../2">
+      <tran_glyph conn="33,66,3,2,-16,-26">
+       <action box="0,-2,15,2"/>
+      </tran_glyph>
+     </tran>
+     <tran trig="evUserProgramPlayPressed" target="../../4">
+      <tran_glyph conn="55,68,1,2,21,-29">
+       <action box="0,-2,22,2"/>
+      </tran_glyph>
+     </tran>
+     <state_glyph node="33,61,22,10">
+      <entry box="1,2,6,2"/>
+     </state_glyph>
+    </state>
+    <state name="UserProgramPlayLED">
+     <entry>Serial.println(F(&quot;DKbOut: Enter UserProgramPlayLED |D|&quot;));
+
+byte whichPin = 2; // DKb r0: 3;
+byte bitsToSend = 0;
+
+digitalWrite(LATCHPIN_OUT, LOW);
+bitWrite(bitsToSend, whichPin, HIGH);
+shiftOut(DATAPIN_OUT, CLOCKPIN_OUT, MSBFIRST, bitsToSend);
+digitalWrite(LATCHPIN_OUT, HIGH);</entry>
+     <tran trig="evManualMotionPressed" target="../../1">
+      <tran_glyph conn="65,29,0,1,-17,-25">
+       <action box="0,-2,18,2"/>
+      </tran_glyph>
+     </tran>
+     <tran trig="evPreSetPressed" target="../../2">
+      <tran_glyph conn="61,37,3,1,-31">
+       <action box="0,-2,15,2"/>
+      </tran_glyph>
+     </tran>
+     <tran trig="evUserProgramPressed" target="../../3">
+      <tran_glyph conn="67,39,2,1,25,-12">
+       <action box="0,-2,21,2"/>
+      </tran_glyph>
+     </tran>
+     <state_glyph node="61,29,18,10">
+      <entry box="1,2,6,2"/>
+     </state_glyph>
+    </state>
+    <state_diagram size="97,81"/>
+   </statechart>
+  </class>
+  <class name="MotorsOut" superclass="qpn::QActive">
+   <attribute name="servoPosition[NUMSERVOS]" type="uint8_t" visibility="0x00" properties="0x00"/>
+   <attribute name="target[NUMSERVOS]" type="uint8_t" visibility="0x00" properties="0x00"/>
+   <attribute name="stepSize[NUMSERVOS]" type="uint8_t" visibility="0x00" properties="0x00"/>
+   <attribute name="_sendPositionCounter" type="uint16_t" visibility="0x00" properties="0x00"/>
+   <statechart>
+    <initial target="../2">
+     <action>QActive_armX((QActive *)me, 0U,
+  MOTORSTARTUPDELAY,
+  MOTORSTARTUPDELAY);
+
+servoLib.begin();
+
+Serial.println(F(&quot;MotorOut Initialized&quot;));</action>
+     <initial_glyph conn="6,7,5,3,18">
+      <action box="0,-2,10,2"/>
+     </initial_glyph>
+    </initial>
+    <state name="Active">
+     <entry>//Serial.println(F(&quot;MotorsOut: Enter Active&quot;));</entry>
+     <tran trig="evMotorForward" target="..">
+      <action>uint32_t par = Q_PAR(me);
+MotorData dm(par);
+// Debug: Serial.println(par, HEX);
+
+me-&gt;stepSize[dm.ServoNum] = dm.StepSize;
+int pos = me-&gt;servoPosition[dm.ServoNum] + dm.relpos(); // relpos() can be negative or positive
+if (pos &lt; 0) { pos = 0; }
+else if (pos &gt; 255) { pos = 255; }
+
+me-&gt;target[dm.ServoNum] = pos;</action>
+      <tran_glyph conn="25,26,3,1,20,-2,-3">
+       <action box="0,-2,14,2"/>
+      </tran_glyph>
+     </tran>
+     <tran trig="evMotorBackward" target="..">
+      <action>uint32_t par = Q_PAR(me);
+MotorData dm(par);
+// Debug: Serial.println(par, HEX);
+
+me-&gt;stepSize[dm.ServoNum] = dm.StepSize;
+// Debug: Serial.println(dm.StepSize);
+int pos = me-&gt;servoPosition[dm.ServoNum] - dm.relpos(); // pos() can be negative or positive
+if (pos &lt; 0) { pos = 0; }
+else if (pos &gt; 255) { pos = 255; }
+
+me-&gt;target[dm.ServoNum] = pos;</action>
+      <tran_glyph conn="25,31,3,1,20,-2,-3">
+       <action box="0,-2,14,2"/>
+      </tran_glyph>
+     </tran>
+     <tran trig="evMotorAbsMove" target="..">
+      <action>uint32_t par = Q_PAR(me);
+MotorData dm(par);
+// Debug: Serial.println(par, HEX);
+
+me-&gt;stepSize[dm.ServoNum] = dm.StepSize;
+if (dm.abspos() &gt;= 0 &amp;&amp; dm.abspos() &lt;= 255) {
+  me-&gt;target[dm.ServoNum] = dm.abspos();
+} else {
+  me-&gt;target[dm.ServoNum] = me-&gt;servoPosition[dm.ServoNum];
+}</action>
+      <tran_glyph conn="25,35,3,1,20,-2,-3">
+       <action box="0,-2,14,2"/>
+      </tran_glyph>
+     </tran>
+     <tran trig="Q_TIMEOUT" target="..">
+      <action>#ifdef SERIALIN
+bool isMoving = false;
+#endif
+for (int n=0; n &lt; NUMSERVOS; n++) {
+
+  int newPos = me-&gt;servoPosition[n];
+  if (me-&gt;servoPosition[n] &lt; me-&gt;target[n]) {
+    newPos = min(me-&gt;servoPosition[n]+me-&gt;stepSize[n], me-&gt;target[n]);
+  }
+  if (me-&gt;target[n] &lt; me-&gt;servoPosition[n]) {
+    newPos = max(me-&gt;servoPosition[n]-me-&gt;stepSize[n], me-&gt;target[n]);
+  }
+  if (newPos != me-&gt;servoPosition[n]) {
+    me-&gt;servoPosition[n] = newPos;
+    #ifdef SERIALIN
+    isMoving = true;
+    #endif
+    servoLib.write(n, me-&gt;servoPosition[n]);
+  }
+}
+#ifdef SERIALIN
+if (!isMoving) {
+  if (me-&gt;_sendPositionCounter % 10  == 0) {
+    int servo = (me-&gt;_sendPositionCounter / 10) - 1;
+    Serial.print(&quot;|&quot;);
+    Serial.print(servo);
+    Serial.print(me-&gt;servoPosition[servo]);
+    Serial.print(&quot;|&quot;);
+    if (me-&gt;_sendPositionCounter == 100) me-&gt;_sendPositionCounter = 0;
+  }
+  me-&gt;_sendPositionCounter++;
+}
+#endif</action>
+      <tran_glyph conn="30,40,2,2,5,6,-5">
+       <action box="0,-2,10,2"/>
+      </tran_glyph>
+     </tran>
+     <state_glyph node="25,18,17,22">
+      <entry box="1,2,6,2"/>
+     </state_glyph>
+    </state>
+    <state name="Wait">
+     <tran trig="Q_TIMEOUT" target="../../1">
+      <action>QActive_armX((QActive *)me, 0U,
+  MOTOROUTDELAY, 
+  MOTOROUTDELAY);
+
+// Set the servo to the initial position
+for (int n=0; n&lt;NUMSERVOS; n++) {
+  servoLib.write(n, 127);
+}
+
+for (int n=0; n &lt; NUMSERVOS; n++) {
+  me-&gt;servoPosition[n] = 127;
+  me-&gt;target[n] = 127;
+  me-&gt;stepSize[n] = 1;
+}
+//memset(me-&gt;servoPosition, 127, NUMSERVOS*sizeof(uint8_t));
+
+Serial.println(F(&quot;MotorsOut: Enter Active&quot;));</action>
+      <tran_glyph conn="32,10,2,0,8">
+       <action box="0,-2,10,2"/>
+      </tran_glyph>
+     </tran>
+     <state_glyph node="24,4,19,6"/>
+    </state>
+    <state_diagram size="89,50"/>
+   </statechart>
+  </class>
+ </package>
+ <directory name=".">
+  <file name="gris5A.ino">
+   <text>#include &quot;qpn.h&quot;     // QP-nano framework
+#include &quot;Arduino.h&quot; // Arduino API
+
+#define DKBIN
+#define SERIALIN
+#define MANUALMOTION
+#define PRESET
+#define USERPROGRAM
+#define DKBOUT
+#define MOTOROUT
+
+#ifdef MOTOROUT
+#include &quot;_Adafruit_PWMServoDriver.h&quot;
+#include &quot;prfServo.h&quot;
+
+class ServoShieldPCA9685Linear : public prfServoImplBase&lt;uint16_t, float&gt; {
+  public:
+  void begin() {
+    pwm.begin();
+    pwm.setPWMFreq(60);
+    startPos = 0;
+    // Set pwm signal to off.
+    // The servo shield does not like signal when it is powered. 1.5 Amperes are flowing.
+    // setPWMOn() has interestingly the same effect.
+    pwm.setPWMOff();
+  }
+
+  void get(float** params) const {
+    // LURTN
+    params[0][0] = 140;
+    params[0][1] = 1.647;
+    // LULNG
+    params[1][0] = 4.4153846153846140e+002;
+    params[1][1] = -1.6206560324207273e+000;
+    params[1][2] = 6.3136914347985870e-003;
+    params[1][3] = -1.3647931869430087e-005;
+    // LLRTN
+    params[2][0] = 140;
+    params[2][1] = 1.647;
+    // LLLNG
+    params[3][0] = 1.6e+002;
+    params[3][1] = 1.8400444871033017e+000;
+    params[3][2] = -5.8655941008881270e-003;
+    params[3][3] = 1.0836340754697708e-005;
+    // RLLNG
+    params[4][0] = 5.3912587412587410e+002;
+    params[4][1] = -1.5669515669515590e+000;
+    params[4][2] = 4.3151773255578690e-003;
+    params[4][3] = -9.4305451973315200e-006;
+    // RLRTN
+    params[5][0] = 140;
+    params[5][1] = 1.647;
+    // RULNG
+    params[6][0] = 2.3982517482517500e+002;
+    params[6][1] = 1.5140088669500340e+000;
+    params[6][2] = -5.3054724335000170e-003;
+    params[6][3] = 1.1597813348271060e-005;
+    // RURTN
+    params[7][0] = 140;
+    params[7][1] = 1.647;
+    // GALNG
+    params[8][0] = 4.6569930069930063e+002;
+    params[8][1] = -1.5909471791824652e+000;
+    params[8][2] = 4.7856795261638710e-003;
+    params[8][3] = -9.9577185313438400e-006;
+    // GARTN
+    params[9][0] = 140;
+    params[9][1] = 1.647;
+  }
+
+  void write(uint8_t num, uint16_t servoVal) {
+    int16_t endPos = (startPos + servoVal) % 4096;
+    // Debug: Serial.print(num);
+    //        Serial.print(&quot;  &quot;);
+    //        Serial.print(servoVal);
+    //        Serial.print(&quot;  &quot;);
+    //        Serial.print(startPos);
+    //        Serial.print(&quot; &quot;);
+    //        Serial.print(endPos);
+    //        Serial.println();
+    pwm.setPWM(num, startPos, endPos);
+    startPos = endPos;
+  }
+
+  private:
+  Adafruit_PWMServoDriver pwm;
+  uint16_t startPos;
+};
+
+ServoShieldPCA9685Linear impl;
+prfServo&lt;uint32_t, uint8_t, uint16_t, float&gt; servoLib(&amp;impl, 0x777DD);
+
+#define NUMSERVOS 10
+
+//Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
+//#define SERVOFREQ  60
+//static const uint16_t SERVOMIN[NUMSERVOS] = { 130, 130, 130, 130, 130, 130, 130, 130, 130, 170};
+//static const uint16_t SERVOMAX[NUMSERVOS] = { 535, 535, 535, 535, 535, 535, 535, 535, 535, 530 };
+#endif
+
+#define Q_PARAM_SIZE   4
+
+//============================================================================
+// declare all AO classes...
+$declare(AOs::DKbIn)
+#ifdef MANUALMOTION
+$declare(AOs::ManualMotion)
+#endif
+#ifdef PRESET
+$declare(AOs::PreSet)
+#endif
+#ifdef USERPROGRAM
+$declare(AOs::UserProgram)
+#endif
+#ifdef DKBOUT
+$declare(AOs::DKbOut)
+#endif
+#ifdef MOTOROUT
+$declare(AOs::MotorsOut)
+#endif
+
+// AO instances and event queue buffers for them...
+DKbIn AO_DKbIn;
+static QEvt l_DKbInQSto[5];
+#ifdef MANUALMOTION
+ManualMotion AO_ManualMotion;
+static QEvt l_ManualMotionQSto[5];
+#endif
+#ifdef PRESET
+PreSet AO_PreSet;
+static QEvt l_PreSetQSto[5];
+#endif
+#ifdef USERPROGRAM
+UserProgram AO_UserProgram;
+static QEvt l_UserProgramQSto[5];
+#endif
+#ifdef DKBOUT
+DKbOut AO_DKbOut;
+static QEvt l_DKbOutQSto[2];
+#endif
+#ifdef MOTOROUT
+MotorsOut AO_MotorsOut;
+static QEvt l_MotorsOutQSto[NUMSERVOS*2];
+#endif
+
+
+//============================================================================
+// events used in this application...
+enum Signals {
+  evRead_SIG = Q_USER_SIG, // PEDestrians-waiting button press event
+  evManualMotionPressed_SIG,
+  evPreSetPressed_SIG,
+  evUserProgramPressed_SIG,
+  evUserProgramPlayPressed_SIG,
+  evMotorButtonPressed_SIG,
+  evProgramButtonPressed_SIG,
+  evMotorForward_SIG,
+  evMotorBackward_SIG,
+  evMotorAbsMove_SIG
+};
+
+enum Pins {
+  CLOCKPIN_IN = 4, // yellow 1
+  LATCHPIN_IN = 3, // green 1
+  DATAPIN_IN = 2, // blue 1
+  CLOCKPIN_OUT = 7, // yellow 2
+  LATCHPIN_OUT = 6, // green 2
+  DATAPIN_OUT = 5 // blue 2
+};
+
+
+// various constants for the application...
+enum Constants {
+  BSP_TICKS_PER_SEC = 100, // number of system clock ticks in one second
+  READOUTDELAY = BSP_TICKS_PER_SEC / 5, // read control panel every 200 ms (100 ms makes problems)
+  MOTOROUTDELAY = BSP_TICKS_PER_SEC / 40, // A move of a motor takes 25 ms. the term step is used in the source code
+  PRESETCOUNTERDELAY = BSP_TICKS_PER_SEC / 10, // discrete step size between the positions is 100 ms
+  USERPROGRAMCOUNTERDELAY = BSP_TICKS_PER_SEC, // discrete step size between positions is 1000 ms
+  MOTORSTARTUPDELAY = BSP_TICKS_PER_SEC * 2 // Wait until the motor driver board is powered up before moving the motors to the init position
+};
+
+typedef struct DKbInData_r1_t {
+  DKbInData_r1_t () : raw(0) {}
+  DKbInData_r1_t (const struct DKbInData_r1_t&amp; t) : raw(t.raw) {}
+  DKbInData_r1_t (uint32_t rawValue) : raw(rawValue) {}
+  union {
+    struct {
+      uint32_t GAL : 1;
+      uint32_t GAT : 1;
+      uint32_t GAB : 1;
+      uint32_t GAR : 1;
+      uint32_t FP7 : 1;
+      uint32_t FP6 : 1;
+      uint32_t FP5 : 1;
+      uint32_t FP8 : 1;
+      uint32_t RLB : 1;
+      uint32_t RLR : 1;
+      uint32_t RLL : 1;
+      uint32_t RLT : 1;
+      uint32_t RUR : 1;
+      uint32_t RUL : 1;
+      uint32_t RUT : 1;
+      uint32_t RUB : 1;
+      uint32_t FP4 : 1;
+      uint32_t FP3 : 1;
+      uint32_t FP2 : 1;
+      uint32_t FP1 : 1;
+      uint32_t FPG : 1;
+      uint32_t FPS : 1;
+      uint32_t FMM : 1;
+      uint32_t FPP : 1;
+      uint32_t LLB : 1;
+      uint32_t LLR : 1;
+      uint32_t LLL : 1;
+      uint32_t LLT : 1;
+      uint32_t LUR : 1;
+      uint32_t LUL : 1;
+      uint32_t LUT : 1;
+      uint32_t LUB : 1;
+    };
+    uint32_t raw;
+  };
+} DKbInData;
+
+#ifdef DKBOUT
+typedef struct DKbOutData_t {
+  DKbOutData_t() : raw(0) {}
+  DKbOutData_t(const struct DKbOutData_t&amp; t) : raw(t.raw) {}
+  DKbOutData_t(uint8_t rawValue) : raw(rawValue) {}
+  union {
+    struct {
+      uint8_t FPR : 1;
+      uint8_t FPP : 1;
+      uint8_t FPS : 1;
+      uint8_t FMM : 1;
+    };
+    int raw;
+  };
+} DKbOutData;
+#endif
+
+#ifdef MOTOROUT
+enum ServoNumber {
+  LURTN=0,
+  LULNG,
+  LLRTN,
+  LLLNG,
+  RLLNG,
+  RLRTN,
+  RULNG,
+  RURTN,
+  GALNG,
+  GARTN
+};
+
+typedef struct MotorData_t {
+  MotorData_t () : raw(0) {}
+  MotorData_t (const struct MotorData_t&amp; t) : raw(t.raw) {}
+  MotorData_t (uint16_t rawValue) : raw(rawValue) {}
+  MotorData_t (ServoNumber m, uint8_t pos, uint8_t step)
+    : raw((pos &lt;&lt; 8) | (step &lt;&lt; 4) | m) {}
+  uint8_t abspos() {
+    switch(ServoNum) {
+      default: return Pos;
+      // Not required with prfServo
+      // case RLLNG:
+      // case RULNG:
+      //   return 255 - Pos;
+    }
+  }
+  int16_t relpos() {
+    switch(ServoNum) {
+      default: return Pos;
+      // Not required with prfServo
+      // case RLLNG:
+      // case RULNG:
+      //   return -Pos;
+    }
+  }
+  union {
+    struct {
+      uint16_t ServoNum : 4;
+      uint16_t StepSize : 4;
+      uint16_t Pos   : 8;
+    };
+    uint16_t raw;
+  };
+} MotorData;
+#endif
+
+//============================================================================
+
+//============================================================================
+// QF_active[] array defines all active object control blocks ----------------
+QActiveCB const Q_ROM QF_active[] = {
+  { (QActive *)0, (QEvt *)0, 0U}, // SGR: required...
+  { (QActive *)&amp;AO_DKbIn, l_DKbInQSto, Q_DIM(l_DKbInQSto) },
+  #ifdef MANUALMOTION
+  { (QActive *)&amp;AO_ManualMotion, l_ManualMotionQSto, Q_DIM(l_ManualMotionQSto) },
+  #endif
+  #ifdef PRESET
+  { (QActive *)&amp;AO_PreSet, l_PreSetQSto, Q_DIM(l_PreSetQSto) },
+  #endif
+  #ifdef USERPROGRAM
+  { (QActive *)&amp;AO_UserProgram, l_UserProgramQSto, Q_DIM(l_UserProgramQSto) },
+  #endif
+  #ifdef DKBOUT
+  { (QActive *)&amp;AO_DKbOut, l_DKbOutQSto, Q_DIM(l_DKbOutQSto) },
+  #endif
+  #ifdef MOTOROUT
+  { (QActive *)&amp;AO_MotorsOut, l_MotorsOutQSto, Q_DIM(l_MotorsOutQSto) },
+  #endif
+};
+
+
+//............................................................................
+void setup() {
+  // initialize the QF-nano framework
+  QF_init(Q_DIM(QF_active));
+
+  // initialize all AOs...
+  QActive_ctor(&amp;AO_DKbIn.super, Q_STATE_CAST(&amp;DKbIn_initial));
+  #ifdef MANUALMOTION
+  QActive_ctor(&amp;AO_ManualMotion.super, Q_STATE_CAST(&amp;ManualMotion_initial));
+  #endif
+  #ifdef PRESET
+  QActive_ctor(&amp;AO_PreSet.super, Q_STATE_CAST(&amp;PreSet_initial));
+  #endif
+  #ifdef USERPROGRAM
+  QActive_ctor(&amp;AO_UserProgram.super, Q_STATE_CAST(&amp;UserProgram_initial));
+  #endif
+  #ifdef DKBOUT
+  QActive_ctor(&amp;AO_DKbOut.super, Q_STATE_CAST(&amp;DKbOut_initial));
+  #endif
+  #ifdef MOTOROUT
+  QActive_ctor(&amp;AO_MotorsOut.super, Q_STATE_CAST(&amp;MotorsOut_initial));
+  #endif
+
+  // initialize the hardware used in this sketch...
+  Serial.begin(9600);   // set the highest stanard baud rate of 115200 bps
+  Serial.print(F(&quot;Start, QP-nano: &quot;));
+  Serial.println(F(QP_VERSION_STR));
+
+}
+
+//............................................................................
+void loop() {
+  QF_run(); // run the QF-nano framework
+}
+
+//============================================================================
+// interrupts...
+ISR(TIMER2_COMPA_vect) {
+  QF_tickXISR(0); // process time events for tick rate 0
+}
+
+//============================================================================
+// QF callbacks...
+void QF_onStartup(void) {
+  // set Timer2 in CTC mode, 1/1024 prescaler, start the timer ticking...
+  TCCR2A = (1U &lt;&lt; WGM21) | (0U &lt;&lt; WGM20);
+  TCCR2B = (1U &lt;&lt; CS22 ) | (1U &lt;&lt; CS21) | (1U &lt;&lt; CS20); // 1/2^10
+  ASSR  &amp;= ~(1U &lt;&lt; AS2);
+  TIMSK2 = (1U &lt;&lt; OCIE2A); // enable TIMER2 compare Interrupt
+  TCNT2  = 0U;
+
+  // set the output-compare register based on the desired tick frequency
+  OCR2A  = (F_CPU / BSP_TICKS_PER_SEC / 1024U) - 1U;
+}
+//............................................................................
+void QV_onIdle(void) {   // called with interrupts DISABLED
+  // Put the CPU and peripherals to the low-power mode. You might
+  // need to customize the clock management for your application,
+  // see the datasheet for your particular AVR MCU.
+  SMCR = (0 &lt;&lt; SM0) | (1 &lt;&lt; SE); // idle mode, adjust to your project
+  QV_CPU_SLEEP();  // atomically go to sleep and enable interrupts
+}
+//............................................................................
+void Q_onAssert(char const Q_ROM * const file, int line) {
+  // implement the error-handling policy for your application!!!
+  QF_INT_DISABLE(); // disable all interrupts
+  QF_RESET();  // reset the CPU
+}
+
+//============================================================================
+// define all AO classes (state machine)...
+$define(AOs::DKbIn)
+#ifdef MANUALMOTION
+$define(AOs::ManualMotion)
+#endif
+#ifdef PRESET
+$define(AOs::PreSet)
+#endif
+#ifdef USERPROGRAM
+$define(AOs::UserProgram)
+#endif
+#ifdef DKBOUT
+$define(AOs::DKbOut)
+#endif
+#ifdef MOTOROUT
+$define(AOs::MotorsOut)
+#endif
+</text>
+  </file>
+ </directory>
+</model>
