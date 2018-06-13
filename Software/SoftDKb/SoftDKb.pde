@@ -168,44 +168,45 @@ void mousePressed() {
     println("No device attached");
     return;
   }
-  if (mousePressedFMM() == true) { comPort.write('0'); sendBuffer = '0'; } 
-  else if (mousePressedFPS() == true) { comPort.write('1'); sendBuffer = '1'; }
-  else if (mousePressedFPG() == true) { comPort.write('2'); sendBuffer = '2'; } 
-  else if (mousePressedFPP() == true) { comPort.write('5'); sendBuffer = '5'; }
+  if (mousePressedGAL() == true) { comPort.write('0'); sendBuffer = '0'; }
+  else if (mousePressedGAT() == true) { comPort.write('1'); sendBuffer = '1'; } 
+  else if (mousePressedGAB() == true) { comPort.write('2'); sendBuffer = '2'; }
+  else if (mousePressedGAR() == true) { comPort.write('3'); sendBuffer = '3'; } 
   
-  else if (mousePressedFP1() == true) { comPort.write('4'); sendBuffer = '4'; } 
-  else if (mousePressedFP2() == true) { comPort.write('3'); sendBuffer = '3'; }
-  else if (mousePressedFP3() == true) { comPort.write('6'); sendBuffer = '6'; } 
-  else if (mousePressedFP4() == true) { comPort.write('7'); sendBuffer = '7'; }
-  else if (mousePressedFP5() == true) { comPort.write('L'); sendBuffer = 'L'; } 
-  else if (mousePressedFP6() == true) { comPort.write('M'); sendBuffer = 'M'; }
-  else if (mousePressedFP7() == true) { comPort.write('N'); sendBuffer = 'N'; } 
-  else if (mousePressedFP8() == true) { comPort.write('H'); sendBuffer = 'H'; }
+  else if (mousePressedFP7() == true) { comPort.write('4'); sendBuffer = '4'; } 
+  else if (mousePressedFP6() == true) { comPort.write('5'); sendBuffer = '5'; }
+  else if (mousePressedFP5() == true) { comPort.write('6'); sendBuffer = '6'; }
+  else if (mousePressedFP8() == true) { comPort.write('7'); sendBuffer = '7'; }
+  
+  else if (mousePressedRLB() == true) { comPort.write('8'); sendBuffer = '8'; }
+  else if (mousePressedRLR() == true) { comPort.write('9'); sendBuffer = '9'; } 
+  else if (mousePressedRLL() == true) { comPort.write(':'); sendBuffer = ':'; }
+  else if (mousePressedRLT() == true) { comPort.write(';'); sendBuffer = ';'; } 
+    
+  else if (mousePressedRUR() == true) { comPort.write('<'); sendBuffer = '<'; } 
+  else if (mousePressedRUL() == true) { comPort.write('='); sendBuffer = '='; }
+  else if (mousePressedRUT() == true) { comPort.write('>'); sendBuffer = '>'; }
+  else if (mousePressedRUB() == true) { comPort.write('?'); sendBuffer = '?'; }
+  
+  else if (mousePressedFP4() == true) { comPort.write('@'); sendBuffer = '@'; }
+  else if (mousePressedFP3() == true) { comPort.write('A'); sendBuffer = 'A'; } 
+  else if (mousePressedFP2() == true) { comPort.write('B'); sendBuffer = 'B'; } 
+  else if (mousePressedFP1() == true) { comPort.write('C'); sendBuffer = 'C'; } 
+      
+  else if (mousePressedFPG() == true) { comPort.write('D'); sendBuffer = 'D'; } 
+  else if (mousePressedFPS() == true) { comPort.write('E'); sendBuffer = 'E'; }   
+  else if (mousePressedFMM() == true) { comPort.write('F'); sendBuffer = 'F'; } 
+  else if (mousePressedFPP() == true) { comPort.write('G'); sendBuffer = 'G'; }
+  
+  else if (mousePressedLLB() == true) { comPort.write('H'); sendBuffer = 'H'; }
+  else if (mousePressedLLR() == true) { comPort.write('I'); sendBuffer = 'I'; } 
+  else if (mousePressedLLL() == true) { comPort.write('J'); sendBuffer = 'J'; }
+  else if (mousePressedLLT() == true) { comPort.write('K'); sendBuffer = 'K'; } 
 
-  else if (mousePressedLUT() == true) { comPort.write('8'); sendBuffer = '8'; } 
-  else if (mousePressedLUL() == true) { comPort.write(':'); sendBuffer = ':'; }
-  else if (mousePressedLUR() == true) { comPort.write('9'); sendBuffer = '9'; } 
-  else if (mousePressedLUB() == true) { comPort.write('<'); sendBuffer = '<'; }
-  
-  else if (mousePressedLLT() == true) { comPort.write('='); sendBuffer = '='; } 
-  else if (mousePressedLLL() == true) { comPort.write(';'); sendBuffer = ';'; }
-  else if (mousePressedLLR() == true) { comPort.write('>'); sendBuffer = '>'; } 
-  else if (mousePressedLLB() == true) { comPort.write('?'); sendBuffer = '?'; }
-  
-  else if (mousePressedRLT() == true) { comPort.write('D'); sendBuffer = 'D'; } 
-  else if (mousePressedRLL() == true) { comPort.write('E'); sendBuffer = 'E'; }
-  else if (mousePressedRLR() == true) { comPort.write('G'); sendBuffer = 'G'; } 
-  else if (mousePressedRLB() == true) { comPort.write('F'); sendBuffer = 'F'; }
-
-  else if (mousePressedRUT() == true) { comPort.write('@'); sendBuffer = '@'; } 
-  else if (mousePressedRUL() == true) { comPort.write('B'); sendBuffer = 'B'; }
-  else if (mousePressedRUR() == true) { comPort.write('A'); sendBuffer = 'A'; } 
-  else if (mousePressedRUB() == true) { comPort.write('C'); sendBuffer = 'C'; }
-  
-  else if (mousePressedGAT() == true) { comPort.write('I'); sendBuffer = 'I'; } 
-  else if (mousePressedGAL() == true) { comPort.write('K'); sendBuffer = 'K'; }
-  else if (mousePressedGAR() == true) { comPort.write('J'); sendBuffer = 'J'; } 
-  else if (mousePressedGAB() == true) { comPort.write('O'); sendBuffer = 'O'; }
+  else if (mousePressedLUR() == true) { comPort.write('L'); sendBuffer = 'L'; } 
+  else if (mousePressedLUL() == true) { comPort.write('M'); sendBuffer = 'M'; }
+  else if (mousePressedLUT() == true) { comPort.write('N'); sendBuffer = 'N'; } 
+  else if (mousePressedLUB() == true) { comPort.write('O'); sendBuffer = 'O'; }
 }
 
 boolean mousePressedFMM() { return ((mouseX >= 50) && (mouseX <= 90) && (mouseY >= 500) && (mouseY <= 540)); }
