@@ -19,7 +19,7 @@
 #include "Arduino.h" // Arduino API
 
 #define DKBIN
-#define SERIALIN
+//#define SERIALIN
 #define MANUALMOTION
 #define PRESET
 #define USERPROGRAM
@@ -169,7 +169,6 @@ typedef struct PreSet {
 /* public: */
     uint8_t currentPreSet;
     uint16_t preSetCounter;
-    uint8_t baselineShift;
 } PreSet;
 
 /* public: */
@@ -991,29 +990,25 @@ static bool PreSet_isCurrentPreSet(PreSet * const me) {
 }
 /*${AOs::PreSet::prog3} ....................................................*/
 static void PreSet_prog3(PreSet * const me) {
-    // Marker Position 0 <-> 1
-
-    const float stepsz1 = (167 - 127) / 40.0;
-    const float stepsz2 = (137 - 127) / 40.0;
-
+    // Marker Position 1 <-> 2
 
     if (me->preSetCounter == 0) {
       static const uint8_t PROGMEM STEPSZ = 2;
-      MotorData lulng(LULNG, 127, STEPSZ);
+      MotorData lulng(LULNG, 147, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
-      MotorData lurtn(LURTN, 127, STEPSZ);
+      MotorData lurtn(LURTN, 147, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lurtn.raw);
-      MotorData rulng(RULNG, 127, STEPSZ);
+      MotorData rulng(RULNG, 122, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rulng.raw);
-      MotorData rurtn(RURTN, 127, STEPSZ);
+      MotorData rurtn(RURTN, 122, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rurtn.raw);
-      MotorData lllng(LLLNG, 127, STEPSZ);
+      MotorData lllng(LLLNG, 107, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lllng.raw);
-      MotorData llrtn(LLRTN, 127, STEPSZ);
+      MotorData llrtn(LLRTN, 132, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, llrtn.raw);
-      MotorData rllng(RLLNG, 127, STEPSZ);
+      MotorData rllng(RLLNG, 132, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
-      MotorData rlrtn(RLRTN, 127, STEPSZ);
+      MotorData rlrtn(RLRTN, 107, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rlrtn.raw);
 
       MotorData galng(GALNG, 0, STEPSZ);
@@ -1021,47 +1016,31 @@ static void PreSet_prog3(PreSet * const me) {
       MotorData gartn(GARTN, 127, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, gartn.raw);
     }
-    else if (me->preSetCounter >= 20 && me->preSetCounter < 60) {
+    else if (me->preSetCounter >= 30) {
       static const uint8_t PROGMEM STEPSZ = 1;
-      MotorData lulng(LULNG, 127 + (me->preSetCounter - 20) * stepsz1, STEPSZ);
+      float targetDeltaSmall = 10 * sin((me->preSetCounter - 30) / 80.0 * PI);
+      float targetDeltaLarge = 40 * sin((me->preSetCounter - 30) / 80.0 * PI);
+
+      MotorData lulng(LULNG, 147 + targetDeltaLarge, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
-      MotorData lurtn(LURTN, 127 + (me->preSetCounter - 20) * stepsz1, STEPSZ);
+      MotorData lurtn(LURTN, 147 + targetDeltaLarge, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lurtn.raw);
-      MotorData rulng(RULNG, 127 - (me->preSetCounter - 20) * stepsz2, STEPSZ);
+      MotorData rulng(RULNG, 122 - targetDeltaSmall, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rulng.raw);
-      MotorData rurtn(RURTN, 127 - (me->preSetCounter - 20) * stepsz2, STEPSZ);
+      MotorData rurtn(RURTN, 122 - targetDeltaSmall, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rurtn.raw);
-      MotorData lllng(LLLNG, 127 + (me->preSetCounter - 20) * stepsz2, STEPSZ);
+      MotorData lllng(LLLNG, 107 - targetDeltaLarge, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lllng.raw);
-      MotorData llrtn(LLRTN, 127 + (me->preSetCounter - 20) * stepsz2, STEPSZ);
+      MotorData llrtn(LLRTN, 132 + targetDeltaSmall, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, llrtn.raw);
-      MotorData rllng(RLLNG, 127 - (me->preSetCounter - 20) * stepsz1, STEPSZ);
+      MotorData rllng(RLLNG, 132 + targetDeltaSmall, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
-      MotorData rlrtn(RLRTN, 127 - (me->preSetCounter - 20) * stepsz1, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rlrtn.raw);
-    }
-    else if (me->preSetCounter >= 70 && me->preSetCounter < 110) {
-      static const uint8_t PROGMEM STEPSZ = 1;
-      MotorData lulng(LULNG, 167 - (me->preSetCounter - 70) * stepsz1, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
-      MotorData lurtn(LURTN, 167 - (me->preSetCounter - 70) * stepsz1, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lurtn.raw);
-      MotorData rulng(RULNG, 117 + (me->preSetCounter - 70) * stepsz2, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rulng.raw);
-      MotorData rurtn(RURTN, 117 + (me->preSetCounter - 70) * stepsz2, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rurtn.raw);
-      MotorData lllng(LLLNG, 137 - (me->preSetCounter - 70) * stepsz2, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lllng.raw);
-      MotorData llrtn(LLRTN, 137 - (me->preSetCounter - 70) * stepsz2, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, llrtn.raw);
-      MotorData rllng(RLLNG, 87 + (me->preSetCounter - 70) * stepsz1, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
-      MotorData rlrtn(RLRTN, 87 + (me->preSetCounter - 70) * stepsz1, STEPSZ);
+      MotorData rlrtn(RLRTN, 107 - targetDeltaLarge, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rlrtn.raw);
     }
 
-    if (me->preSetCounter > 111) {
-      me->preSetCounter = 20;
+    if (me->preSetCounter == 190) {
+      me->preSetCounter = 30;
     }
     else {
       me->preSetCounter++;
@@ -1069,7 +1048,7 @@ static void PreSet_prog3(PreSet * const me) {
 }
 /*${AOs::PreSet::prog1} ....................................................*/
 static void PreSet_prog1(PreSet * const me) {
-    // Marker Position 0
+    // Marker Position 1
 
     static const uint8_t PROGMEM STEPSZ = 2;
     if (me->preSetCounter == 0) {
@@ -1095,7 +1074,7 @@ static void PreSet_prog1(PreSet * const me) {
       MotorData gartn(GARTN, 127, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, gartn.raw);
     }
-    else if (me->preSetCounter == 15) {
+    else if (me->preSetCounter == 30) {
       MotorData lulng(LULNG, 127, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
       MotorData lurtn(LURTN, 127, STEPSZ);
@@ -1114,14 +1093,14 @@ static void PreSet_prog1(PreSet * const me) {
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rlrtn.raw);
     }
 
-    if (me->preSetCounter < 16) {
+    if (me->preSetCounter < 30) {
       me->preSetCounter++;
     }
 
 }
 /*${AOs::PreSet::prog2} ....................................................*/
 static void PreSet_prog2(PreSet * const me) {
-    // Marker Position 1
+    // Marker Position 2
 
     static const uint8_t PROGMEM STEPSZ = 2;
     if (me->preSetCounter == 0) {
@@ -1147,7 +1126,7 @@ static void PreSet_prog2(PreSet * const me) {
       MotorData gartn(GARTN, 127, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, gartn.raw);
     }
-    else if (me->preSetCounter == 15) {
+    else if (me->preSetCounter == 30) {
       MotorData lulng(LULNG, 167, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
       MotorData lurtn(LURTN, 167, STEPSZ);
@@ -1156,72 +1135,63 @@ static void PreSet_prog2(PreSet * const me) {
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rulng.raw);
       MotorData rurtn(RURTN, 117, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rurtn.raw);
-      MotorData lllng(LLLNG, 137, STEPSZ);
+      MotorData lllng(LLLNG, 87, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lllng.raw);
       MotorData llrtn(LLRTN, 137, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, llrtn.raw);
-      MotorData rllng(RLLNG, 87, STEPSZ);
+      MotorData rllng(RLLNG, 137, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
       MotorData rlrtn(RLRTN, 87, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rlrtn.raw);
     }
 
-    if (me->preSetCounter < 16) {
+    if (me->preSetCounter < 30) {
       me->preSetCounter++;
     }
 
 }
 /*${AOs::PreSet::prog4} ....................................................*/
 static void PreSet_prog4(PreSet * const me) {
-    // Free-breathe Gating
+    // Free-breath Gating
 
     if (me->preSetCounter == 0) {
       static const uint8_t PROGMEM STEPSZ = 2;
-      MotorData lulng(LULNG, 50, STEPSZ);
+      MotorData lulng(LULNG, 127, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
       MotorData lurtn(LURTN, 127, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lurtn.raw);
-      MotorData rulng(RULNG, 50, STEPSZ);
+      MotorData rulng(RULNG, 127, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rulng.raw);
       MotorData rurtn(RURTN, 127, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rurtn.raw);
-      MotorData lllng(LLLNG, 50, STEPSZ);
+      MotorData lllng(LLLNG, 127, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lllng.raw);
       MotorData llrtn(LLRTN, 127, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, llrtn.raw);
-      MotorData rllng(RLLNG, 50, STEPSZ);
+      MotorData rllng(RLLNG, 127, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
       MotorData rlrtn(RLRTN, 127, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rlrtn.raw);
-      MotorData galng(GALNG, 50, STEPSZ);
+
+      MotorData galng(GALNG, 127, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
       MotorData gartn(GARTN, 127, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, gartn.raw);
     }
-    else if (me->preSetCounter == 30) {
+    else if (me->preSetCounter >= 30) {
       static const uint8_t PROGMEM STEPSZ = 1;
-      MotorData lulng(LULNG, 255, STEPSZ);
+      float target = 127 + 80 * sin((me->preSetCounter - 30) / 20.0 * PI);
+
+      MotorData lulng(LULNG, target, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
-      MotorData rulng(RULNG, 255, STEPSZ);
+      MotorData rulng(RULNG, target, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rulng.raw);
-      MotorData lllng(LLLNG, 255, STEPSZ);
+      MotorData lllng(LLLNG, target, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lllng.raw);
-      MotorData rllng(RLLNG, 255, STEPSZ);
+      MotorData rllng(RLLNG, target, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
-      MotorData galng(GALNG, 255, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
-    }
-    else if (me->preSetCounter == 50) {
-      static const uint8_t PROGMEM STEPSZ = 1;
-      MotorData lulng(LULNG, 0, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
-      MotorData rulng(RULNG, 0, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rulng.raw);
-      MotorData lllng(LLLNG, 0, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lllng.raw);
-      MotorData rllng(RLLNG, 0, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
-      MotorData galng(GALNG, 0, STEPSZ);
+
+      MotorData galng(GALNG, target, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
     }
 
@@ -1238,43 +1208,40 @@ static void PreSet_prog5(PreSet * const me) {
 
     if (me->preSetCounter == 0) {
       static const uint8_t PROGMEM STEPSZ = 2;
-      MotorData lulng(LULNG, 0, STEPSZ);
+      MotorData lulng(LULNG, 60, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
       MotorData lurtn(LURTN, 127, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lurtn.raw);
-      MotorData rulng(RULNG, 0, STEPSZ);
+      MotorData rulng(RULNG, 60, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rulng.raw);
       MotorData rurtn(RURTN, 127, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rurtn.raw);
-      MotorData lllng(LLLNG, 0, STEPSZ);
+      MotorData lllng(LLLNG, 60, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lllng.raw);
       MotorData llrtn(LLRTN, 127, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, llrtn.raw);
-      MotorData rllng(RLLNG, 0, STEPSZ);
+      MotorData rllng(RLLNG, 60, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
       MotorData rlrtn(RLRTN, 127, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rlrtn.raw);
-      MotorData galng(GALNG, 0, STEPSZ);
+      MotorData galng(GALNG, 60, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
       MotorData gartn(GARTN, 127, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, gartn.raw);
     }
-    else if (me->preSetCounter == 30 ||
-             me->preSetCounter == 70 ||
-             me->preSetCounter == 110 ||
-             me->preSetCounter == 150 ||
-             me->preSetCounter == 190 ||
-             me->preSetCounter == 230) {
+    else if (me->preSetCounter >= 30 && me->preSetCounter < 270) {
       static const uint8_t PROGMEM STEPSZ = 1;
-      MotorData lulng(LULNG, 255, STEPSZ);
+      float target = 60 + 50 * sin((me->preSetCounter - 30) / 20.0 * PI);
+
+      MotorData lulng(LULNG, target, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
-      MotorData rulng(RULNG, 255, STEPSZ);
+      MotorData rulng(RULNG, target, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rulng.raw);
-      MotorData lllng(LLLNG, 255, STEPSZ);
+      MotorData lllng(LLLNG, target, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lllng.raw);
-      MotorData rllng(RLLNG, 255, STEPSZ);
+      MotorData rllng(RLLNG, target, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
-      MotorData galng(GALNG, 255, STEPSZ);
+      MotorData galng(GALNG, target, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
     }
     else if (me->preSetCounter == 270) {
@@ -1288,24 +1255,6 @@ static void PreSet_prog5(PreSet * const me) {
       MotorData rllng(RLLNG, 255, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
       MotorData galng(GALNG, 255, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
-    }
-    else if (me->preSetCounter == 50 ||
-             me->preSetCounter == 90 ||
-             me->preSetCounter == 130 ||
-             me->preSetCounter == 170 ||
-             me->preSetCounter == 210 ||
-             me->preSetCounter == 250) {
-      static const uint8_t PROGMEM STEPSZ = 1;
-      MotorData lulng(LULNG, 0, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
-      MotorData rulng(RULNG, 0, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rulng.raw);
-      MotorData lllng(LLLNG, 0, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lllng.raw);
-      MotorData rllng(RLLNG, 0, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
-      MotorData galng(GALNG, 0, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
     }
     else if (me->preSetCounter == 450) {
@@ -1331,10 +1280,69 @@ static void PreSet_prog5(PreSet * const me) {
 }
 /*${AOs::PreSet::prog6} ....................................................*/
 static void PreSet_prog6(PreSet * const me) {
-    // Free-breathe Gating, Marker Pos 0 <-> 1
+    // Free-breath Gating, Marker Position 1 <-> 2
 
-    const float stepsz1 = (167 - 127) / 20.0;
-    const float stepsz2 = (137 - 127) / 20.0;
+    if (me->preSetCounter == 0) {
+      static const uint8_t PROGMEM STEPSZ = 2;
+      MotorData lulng(LULNG, 147, STEPSZ);
+      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
+      MotorData lurtn(LURTN, 147, STEPSZ);
+      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lurtn.raw);
+      MotorData rulng(RULNG, 122, STEPSZ);
+      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rulng.raw);
+      MotorData rurtn(RURTN, 122, STEPSZ);
+      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rurtn.raw);
+      MotorData lllng(LLLNG, 107, STEPSZ);
+      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lllng.raw);
+      MotorData llrtn(LLRTN, 132, STEPSZ);
+      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, llrtn.raw);
+      MotorData rllng(RLLNG, 132, STEPSZ);
+      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
+      MotorData rlrtn(RLRTN, 107, STEPSZ);
+      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rlrtn.raw);
+
+      MotorData galng(GALNG, 127, STEPSZ);
+      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
+      MotorData gartn(GARTN, 127, STEPSZ);
+      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, gartn.raw);
+    }
+    else if (me->preSetCounter >= 30) {
+      static const uint8_t PROGMEM STEPSZ = 1;
+      float targetDeltaSmall = 10 * sin((me->preSetCounter - 30) / 20.0 * PI);
+      float targetDeltaLarge = 40 * sin((me->preSetCounter - 30) / 20.0 * PI);
+      float targetGating = 127 + 80 * sin((me->preSetCounter - 30) / 20.0 * PI);
+
+      MotorData lulng(LULNG, 147 + targetDeltaLarge, STEPSZ);
+      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
+      MotorData lurtn(LURTN, 147 + targetDeltaLarge, STEPSZ);
+      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lurtn.raw);
+      MotorData rulng(RULNG, 122 - targetDeltaSmall, STEPSZ);
+      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rulng.raw);
+      MotorData rurtn(RURTN, 122 - targetDeltaSmall, STEPSZ);
+      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rurtn.raw);
+      MotorData lllng(LLLNG, 107 - targetDeltaLarge, STEPSZ);
+      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lllng.raw);
+      MotorData llrtn(LLRTN, 132 + targetDeltaSmall, STEPSZ);
+      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, llrtn.raw);
+      MotorData rllng(RLLNG, 132 + targetDeltaSmall, STEPSZ);
+      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
+      MotorData rlrtn(RLRTN, 107 - targetDeltaLarge, STEPSZ);
+      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rlrtn.raw);
+
+      MotorData galng(GALNG, targetGating, STEPSZ);
+      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
+    }
+
+    if (me->preSetCounter == 70) {
+      me->preSetCounter = 30;
+    }
+    else {
+      me->preSetCounter++;
+    }
+}
+/*${AOs::PreSet::prog7} ....................................................*/
+static void PreSet_prog7(PreSet * const me) {
+    // Free-breath Gating loosing signal
 
     if (me->preSetCounter == 0) {
       static const uint8_t PROGMEM STEPSZ = 2;
@@ -1354,133 +1362,24 @@ static void PreSet_prog6(PreSet * const me) {
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
       MotorData rlrtn(RLRTN, 127, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rlrtn.raw);
-
-      MotorData galng(GALNG, 50, STEPSZ);
+      MotorData galng(GALNG, 127, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
       MotorData gartn(GARTN, 127, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, gartn.raw);
     }
-    else if (me->preSetCounter >= 30 && me->preSetCounter < 50) {
+    else if (me->preSetCounter >= 30) {
       static const uint8_t PROGMEM STEPSZ = 1;
-      MotorData lulng(LULNG, 127 + (me->preSetCounter - 30) * stepsz1, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
-      MotorData lurtn(LURTN, 127 + (me->preSetCounter - 30) * stepsz1, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lurtn.raw);
-      MotorData rulng(RULNG, 127 - (me->preSetCounter - 30) * stepsz2, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rulng.raw);
-      MotorData rurtn(RURTN, 127 - (me->preSetCounter - 30) * stepsz2, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rurtn.raw);
-      MotorData lllng(LLLNG, 127 + (me->preSetCounter - 30) * stepsz2, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lllng.raw);
-      MotorData llrtn(LLRTN, 127 + (me->preSetCounter - 30) * stepsz2, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, llrtn.raw);
-      MotorData rllng(RLLNG, 127 - (me->preSetCounter - 30) * stepsz1, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
-      MotorData rlrtn(RLRTN, 127 - (me->preSetCounter - 30) * stepsz1, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rlrtn.raw);
+      float target = 127 + 80 * sin((me->preSetCounter - 30) / 20.0 * PI);
 
-      MotorData galng(GALNG, 255, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
-    }
-    else if (me->preSetCounter > 50 && me->preSetCounter < 70) {
-      static const uint8_t PROGMEM STEPSZ = 1;
-      MotorData lulng(LULNG, 167 - (me->preSetCounter - 50) * stepsz1, STEPSZ);
+      MotorData lulng(LULNG, target, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
-      MotorData lurtn(LURTN, 167 - (me->preSetCounter - 50) * stepsz1, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lurtn.raw);
-      MotorData rulng(RULNG, 117 + (me->preSetCounter - 50) * stepsz2, STEPSZ);
+      MotorData rulng(RULNG, target, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rulng.raw);
-      MotorData rurtn(RURTN, 117 + (me->preSetCounter - 50) * stepsz2, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rurtn.raw);
-      MotorData lllng(LLLNG, 137 - (me->preSetCounter - 50) * stepsz2, STEPSZ);
+      MotorData lllng(LLLNG, target, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lllng.raw);
-      MotorData llrtn(LLRTN, 137 - (me->preSetCounter - 50) * stepsz2, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, llrtn.raw);
-      MotorData rllng(RLLNG, 87 + (me->preSetCounter - 50) * stepsz1, STEPSZ);
+      MotorData rllng(RLLNG, target, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
-      MotorData rlrtn(RLRTN, 87 + (me->preSetCounter - 50) * stepsz1, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rlrtn.raw);
-
-      MotorData galng(GALNG, 0, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
-    }
-
-    if (me->preSetCounter == 70) {
-      me->preSetCounter = 30;
-    }
-    else {
-      me->preSetCounter++;
-    }
-}
-/*${AOs::PreSet::prog7} ....................................................*/
-static void PreSet_prog7(PreSet * const me) {
-    // Free-breathe Gating loosing signal
-
-    if (me->preSetCounter == 0) {
-      static const uint8_t PROGMEM STEPSZ = 2;
-      MotorData lulng(LULNG, 50, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
-      MotorData lurtn(LURTN, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lurtn.raw);
-      MotorData rulng(RULNG, 50, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rulng.raw);
-      MotorData rurtn(RURTN, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rurtn.raw);
-      MotorData lllng(LLLNG, 50, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lllng.raw);
-      MotorData llrtn(LLRTN, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, llrtn.raw);
-      MotorData rllng(RLLNG, 50, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
-      MotorData rlrtn(RLRTN, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rlrtn.raw);
-      MotorData galng(GALNG, 50, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
-      MotorData gartn(GARTN, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, gartn.raw);
-    }
-    else if (me->preSetCounter == 30 ||
-             me->preSetCounter == 70 ||
-             me->preSetCounter == 110 ||
-             me->preSetCounter == 150 ||
-             me->preSetCounter == 190 ||
-             me->preSetCounter == 230 ||
-             me->preSetCounter == 270 ||
-             me->preSetCounter == 310 ||
-             me->preSetCounter == 350 ||
-             me->preSetCounter == 390) {
-      static const uint8_t PROGMEM STEPSZ = 1;
-      MotorData lulng(LULNG, 255, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
-      MotorData rulng(RULNG, 255, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rulng.raw);
-      MotorData lllng(LLLNG, 255, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lllng.raw);
-      MotorData rllng(RLLNG, 255, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
-      MotorData galng(GALNG, 255, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
-    }
-    else if (me->preSetCounter == 50 ||
-             me->preSetCounter == 90 ||
-             me->preSetCounter == 130 ||
-             me->preSetCounter == 170 ||
-             me->preSetCounter == 210 ||
-             me->preSetCounter == 250 ||
-             me->preSetCounter == 290 ||
-             me->preSetCounter == 330 ||
-             me->preSetCounter == 370 ||
-             me->preSetCounter == 410) {
-      static const uint8_t PROGMEM STEPSZ = 1;
-      MotorData lulng(LULNG, 0, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
-      MotorData rulng(RULNG, 0, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rulng.raw);
-      MotorData lllng(LLLNG, 0, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lllng.raw);
-      MotorData rllng(RLLNG, 0, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
-      MotorData galng(GALNG, 0, STEPSZ);
+      MotorData galng(GALNG, target, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
     }
 
@@ -1512,7 +1411,7 @@ static void PreSet_prog7(PreSet * const me) {
     }
 
     if (me->preSetCounter == 430) {
-      me->preSetCounter = 30;
+      me->preSetCounter = 110;
     }
     else {
       me->preSetCounter++;
@@ -1520,78 +1419,54 @@ static void PreSet_prog7(PreSet * const me) {
 }
 /*${AOs::PreSet::prog8} ....................................................*/
 static void PreSet_prog8(PreSet * const me) {
-    // Free-breathe Gating base line shift
+    // Free-breath Gating base line shift
 
-    uint8_t step = 0;
-    uint8_t target = 0;
+    if (me->preSetCounter == 0) {
+      static const uint8_t PROGMEM STEPSZ = 2;
+      MotorData lulng(LULNG, 130, STEPSZ);
+      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
+      MotorData lurtn(LURTN, 127, STEPSZ);
+      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lurtn.raw);
+      MotorData rulng(RULNG, 130, STEPSZ);
+      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rulng.raw);
+      MotorData rurtn(RURTN, 127, STEPSZ);
+      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rurtn.raw);
+      MotorData lllng(LLLNG, 130, STEPSZ);
+      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lllng.raw);
+      MotorData llrtn(LLRTN, 127, STEPSZ);
+      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, llrtn.raw);
+      MotorData rllng(RLLNG, 130, STEPSZ);
+      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
+      MotorData rlrtn(RLRTN, 127, STEPSZ);
+      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rlrtn.raw);
+      MotorData galng(GALNG, 130, STEPSZ);
+      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
+      MotorData gartn(GARTN, 127, STEPSZ);
+      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, gartn.raw);
+    }
+    else if (me->preSetCounter >= 30) {
+      static const uint8_t PROGMEM STEPSZ = 1;
+      float baseline = 130 + 70 * sin((me->preSetCounter - 30) / 320.0 * PI);
+      float target = baseline + 50 * sin((me->preSetCounter - 30) / 20.0 * PI);
 
-    if (me->preSetCounter < 15) {
-      step = 4;
-      target = 0;
-    }
-    else if (
-    me->preSetCounter == 15 ||
-    me->preSetCounter ==  (uint16_t)35 + me->baselineShift
-    ) {
-      step = 0;
-      target = 255;
-    }
-    else if (
-    me->preSetCounter == 16 ||
-    me->preSetCounter == 17 ||
-    me->preSetCounter == (uint16_t)33 + me->baselineShift ||
-    me->preSetCounter == (uint16_t)34 + me->baselineShift
-    ) {
-      step = 1;
-      target = 255;
-    }
-    else if (
-    (me->preSetCounter >= (uint16_t)18 && me->preSetCounter <= (uint16_t)32 + me->baselineShift)
-    ) {
-      step = 2;
-      target = 255;
-    }
-    if (
-    me->preSetCounter == (uint16_t)36 + me->baselineShift ||
-    me->preSetCounter == (uint16_t)56 + me->baselineShift
-    ) {
-      step = 0;
-      target = 0;
-    }
-    if (
-    me->preSetCounter == (uint16_t)37 + me->baselineShift ||
-    me->preSetCounter == (uint16_t)38 + me->baselineShift ||
-    me->preSetCounter == (uint16_t)54 + me->baselineShift ||
-    me->preSetCounter == (uint16_t)55 + me->baselineShift
-    ) {
-      step = 1;
-      target = 0;
-    }
-    if (
-    (me->preSetCounter >= (uint16_t)39 + me->baselineShift &&
-    me->preSetCounter <= (uint16_t)53 + me->baselineShift)
-    ) {
-      step = 2;
-      target = 0;
+      MotorData lulng(LULNG, target, STEPSZ);
+      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
+      MotorData rulng(RULNG, target, STEPSZ);
+      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rulng.raw);
+      MotorData lllng(LLLNG, target, STEPSZ);
+      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lllng.raw);
+      MotorData rllng(RLLNG, target, STEPSZ);
+      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
+      MotorData galng(GALNG, target, STEPSZ);
+      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
     }
 
-    MotorData lulng(LULNG, target, step);
-    QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
-    MotorData rulng(RULNG, target, step);
-    QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rulng.raw);
-    MotorData lllng(LLLNG, target, step);
-    QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lllng.raw);
-    MotorData rllng(RLLNG, target, step);
-    QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
-    MotorData galng(GALNG, target, step);
-    QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
-
-    if (me->preSetCounter == 57) {
-      me->preSetCounter = 15;
-      me->baselineShift = 1;
-      return;
+    if (me->preSetCounter == 670) {
+      me->preSetCounter = 110;
     }
-    me->preSetCounter++;
+    else {
+      me->preSetCounter++;
+    }
 }
 /*${AOs::PreSet::SM} .......................................................*/
 static QState PreSet_initial(PreSet * const me) {
@@ -1635,28 +1510,6 @@ static QState PreSet_WaitForProgram(PreSet * const me) {
             Serial.println(F("PreSet: Enter WaitForProgram"));
 
             me->preSetCounter = 0;
-            /*
-            MotorData lulng(LULNG, 0, 3);
-            QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
-            MotorData lurtn(LURTN, 0, 3);
-            QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lurtn.raw);
-            MotorData rulng(RULNG, 0, 3);
-            QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rulng.raw);
-            MotorData rurtn(RURTN, 0, 3);
-            QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rurtn.raw);
-            MotorData lllng(LLLNG, 0, 3);
-            QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lllng.raw);
-            MotorData llrtn(LLRTN, 0, 3);
-            QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, llrtn.raw);
-            MotorData rllng(RLLNG, 0, 3);
-            QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
-            MotorData rlrtn(RLRTN, 0, 3);
-            QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rlrtn.raw);
-            MotorData galng(GALNG, 0, 3);
-            QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
-            MotorData gartn(GARTN, 0, 3);
-            QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, gartn.raw);
-            */
             status_ = Q_HANDLED();
             break;
         }
@@ -1685,7 +1538,6 @@ static QState PreSet_WaitForProgram(PreSet * const me) {
             else if (dd.FP8) { me->currentPreSet = 8; }
 
             me->preSetCounter = 0;
-            me->baselineShift = 0;
             status_ = Q_TRAN(&PreSet_RunProgram);
             break;
         }
