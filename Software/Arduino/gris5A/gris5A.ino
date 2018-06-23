@@ -15,6 +15,10 @@
 * for more details.
 *****************************************************************************/
 /*${.::gris5A.ino} .........................................................*/
+/* gris5A.qm - Arduino software for the GRIS5A (C) motion phantom
+ * Copyright (C) 2018 by Stefan Grimm
+ */
+
 #include "qpn.h"     // QP-nano framework
 #include "Arduino.h" // Arduino API
 
@@ -35,7 +39,6 @@ class ServoShieldPCA9685Linear : public prfServoImplBase<uint16_t, float> {
   void begin() {
     pwm.begin();
     pwm.setPWMFreq(60);
-    startPos = 0;
     // Set pwm signal to off.
     // The servo shield does not like signal when it is powered. 1.5 Amperes are flowing.
     // setPWMOn() has interestingly the same effect.
@@ -86,22 +89,11 @@ class ServoShieldPCA9685Linear : public prfServoImplBase<uint16_t, float> {
   }
 
   void write(uint8_t num, uint16_t servoVal) {
-    int16_t endPos = (startPos + servoVal) % 4096;
-    // Debug: Serial.print(num);
-    //        Serial.print("  ");
-    //        Serial.print(servoVal);
-    //        Serial.print("  ");
-    //        Serial.print(startPos);
-    //        Serial.print(" ");
-    //        Serial.print(endPos);
-    //        Serial.println();
-    pwm.setPWM(num, startPos, endPos);
-    startPos = endPos;
+    pwm.setPWM(num, 0, servoVal);
   }
 
   private:
   Adafruit_PWMServoDriver pwm;
-  uint16_t startPos;
 };
 
 ServoShieldPCA9685Linear impl;
@@ -109,10 +101,6 @@ prfServo<uint32_t, uint8_t, uint16_t, float> servoLib(&impl, 0x777DD);
 
 #define NUMSERVOS 10
 
-//Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
-//#define SERVOFREQ  60
-//static const uint16_t SERVOMIN[NUMSERVOS] = { 130, 130, 130, 130, 130, 130, 130, 130, 130, 170};
-//static const uint16_t SERVOMAX[NUMSERVOS] = { 535, 535, 535, 535, 535, 535, 535, 535, 535, 530 };
 #endif
 
 #define Q_PARAM_SIZE   4
