@@ -62,28 +62,28 @@ void loop() {
 
   if (key >= '0' && key <= 'O') {
     // Debug: Serial.println(key);
-    if      (key == '9') { _currentPosition[LURTN] += 5; }
-    else if (key == ':') { _currentPosition[LURTN] -= 5; }
-    else if (key == '8') { _currentPosition[LULNG] -= 5; }
-    else if (key == '<') { _currentPosition[LULNG] += 5; }
-    else if (key == ';') { _currentPosition[LLRTN] -= 5; }
-    else if (key == '>') { _currentPosition[LLRTN] += 5; }
-    else if (key == '=') { _currentPosition[LLLNG] += 5; }
-    else if (key == '?') { _currentPosition[LLLNG] -= 5; }
+    if      (key == 'L') { _currentPosition[LURTN] += 5; }
+    else if (key == 'M') { _currentPosition[LURTN] -= 5; }
+    else if (key == 'N') { _currentPosition[LULNG] -= 5; }
+    else if (key == 'O') { _currentPosition[LULNG] += 5; }
+    else if (key == 'J') { _currentPosition[LLRTN] -= 5; }
+    else if (key == 'I') { _currentPosition[LLRTN] += 5; }
+    else if (key == 'K') { _currentPosition[LLLNG] += 5; }
+    else if (key == 'H') { _currentPosition[LLLNG] -= 5; }
 
-    else if (key == 'A') { _currentPosition[RURTN] += 5; }
-    else if (key == 'B') { _currentPosition[RURTN] -= 5; }
-    else if (key == '@') { _currentPosition[RULNG] += 5; }
-    else if (key == 'C') { _currentPosition[RULNG] -= 5; }
-    else if (key == 'G') { _currentPosition[RLRTN] -= 5; }
-    else if (key == 'E') { _currentPosition[RLRTN] += 5; }
-    else if (key == 'D') { _currentPosition[RLLNG] -= 5; }
-    else if (key == 'F') { _currentPosition[RLLNG] += 5; }
+    else if (key == '<') { _currentPosition[RURTN] += 5; }
+    else if (key == '=') { _currentPosition[RURTN] -= 5; }
+    else if (key == '>') { _currentPosition[RULNG] += 5; }
+    else if (key == '?') { _currentPosition[RULNG] -= 5; }
+    else if (key == ':') { _currentPosition[RLRTN] -= 5; }
+    else if (key == '9') { _currentPosition[RLRTN] += 5; }
+    else if (key == ';') { _currentPosition[RLLNG] -= 5; }
+    else if (key == '8') { _currentPosition[RLLNG] += 5; }
 
-    else if (key == 'J') { _currentPosition[GARTN] += 5; }
-    else if (key == 'K') { _currentPosition[GARTN] -= 5; }
-    else if (key == 'I') { _currentPosition[GALNG] -= 5; }
-    else if (key == 'O') { _currentPosition[GALNG] += 5; }
+    else if (key == '0') { _currentPosition[GARTN] += 5; }
+    else if (key == '3') { _currentPosition[GARTN] -= 5; }
+    else if (key == '1') { _currentPosition[GALNG] -= 5; }
+    else if (key == '2') { _currentPosition[GALNG] += 5; }
 
     for (int n=0; n<NUMSERVOS; n++) {
       pwm.setPWM(n, 0, _currentPosition[n]);
