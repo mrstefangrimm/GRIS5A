@@ -58,10 +58,10 @@ class ServoShieldPCA9685Linear : public prfServoImplBase<uint16_t, float> {
     params[2][0] = 140;
     params[2][1] = 1.647;
     // LLLNG
-    params[3][0] = 1.6e+002;
-    params[3][1] = 1.8400444871033017e+000;
-    params[3][2] = -5.8655941008881270e-003;
-    params[3][3] = 1.0836340754697708e-005;
+    params[3][0] = 1.9835664335664530e+002;
+    params[3][1] = 1.2534850770143883e+000;
+    params[3][2] = -3.2218198308154130e-003;
+    params[3][3] = 7.9076000101825910e-006;
     // RLLNG
     params[4][0] = 5.3912587412587410e+002;
     params[4][1] = -1.5669515669515590e+000;
@@ -1234,15 +1234,30 @@ static void PreSet_prog5(PreSet * const me) {
     }
     else if (me->preSetCounter == 270) {
       static const uint8_t PROGMEM STEPSZ = 2;
-      MotorData lulng(LULNG, 255, STEPSZ);
+      MotorData lulng(LULNG, 250, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
-      MotorData rulng(RULNG, 255, STEPSZ);
+      MotorData rulng(RULNG, 250, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rulng.raw);
-      MotorData lllng(LLLNG, 255, STEPSZ);
+      MotorData lllng(LLLNG, 250, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lllng.raw);
-      MotorData rllng(RLLNG, 255, STEPSZ);
+      MotorData rllng(RLLNG, 250, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
-      MotorData galng(GALNG, 255, STEPSZ);
+      MotorData galng(GALNG, 250, STEPSZ);
+      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
+    }
+    else if (me->preSetCounter > 300 && me->preSetCounter < 450) {
+      static const uint8_t PROGMEM STEPSZ = 1;
+      float target = 200 + 50 * cos((me->preSetCounter - 300) / 400.0 * PI);
+      Serial.println(target);
+      MotorData lulng(LULNG, target, STEPSZ);
+      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
+      MotorData rulng(RULNG, target, STEPSZ);
+      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rulng.raw);
+      MotorData lllng(LLLNG, target, STEPSZ);
+      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lllng.raw);
+      MotorData rllng(RLLNG, target, STEPSZ);
+      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
+      MotorData galng(GALNG, target, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
     }
     else if (me->preSetCounter == 450) {
@@ -1260,7 +1275,7 @@ static void PreSet_prog5(PreSet * const me) {
     }
 
     if (me->preSetCounter == 480) {
-      me->preSetCounter = 110;
+      me->preSetCounter = 30;
     }
     else {
       me->preSetCounter++;
@@ -1399,7 +1414,7 @@ static void PreSet_prog7(PreSet * const me) {
     }
 
     if (me->preSetCounter == 430) {
-      me->preSetCounter = 110;
+      me->preSetCounter = 30;
     }
     else {
       me->preSetCounter++;
