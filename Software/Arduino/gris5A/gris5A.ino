@@ -1167,8 +1167,8 @@ static void PreSet_prog4(PreSet * const me) {
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, gartn.raw);
     }
     else if (me->preSetCounter >= 30) {
-      static const uint8_t PROGMEM STEPSZ = 1;
-      float target = 127 + 80 * sin((me->preSetCounter - 30) / 20.0 * PI);
+      static const uint8_t PROGMEM STEPSZ = 10;
+      float target = 127 + 80 * sin((me->preSetCounter - 30) / 30.0 * PI);
 
       MotorData lulng(LULNG, target, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
@@ -1183,7 +1183,7 @@ static void PreSet_prog4(PreSet * const me) {
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
     }
 
-    if (me->preSetCounter == 70) {
+    if (me->preSetCounter == 90) {
       me->preSetCounter = 30;
     }
     else {
@@ -1217,9 +1217,9 @@ static void PreSet_prog5(PreSet * const me) {
       MotorData gartn(GARTN, 127, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, gartn.raw);
     }
-    else if (me->preSetCounter >= 30 && me->preSetCounter < 270) {
-      static const uint8_t PROGMEM STEPSZ = 1;
-      float target = 60 + 50 * sin((me->preSetCounter - 30) / 20.0 * PI);
+    else if (me->preSetCounter >= 30 && me->preSetCounter < 330) {
+      static const uint8_t PROGMEM STEPSZ = 10;
+      float target = 60 + 50 * sin((me->preSetCounter - 30) / 30.0 * PI);
 
       MotorData lulng(LULNG, target, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
@@ -1232,7 +1232,7 @@ static void PreSet_prog5(PreSet * const me) {
       MotorData galng(GALNG, target, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
     }
-    else if (me->preSetCounter == 270) {
+    else if (me->preSetCounter == 330) {
       static const uint8_t PROGMEM STEPSZ = 2;
       MotorData lulng(LULNG, 250, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
@@ -1245,9 +1245,9 @@ static void PreSet_prog5(PreSet * const me) {
       MotorData galng(GALNG, 250, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
     }
-    else if (me->preSetCounter > 300 && me->preSetCounter < 450) {
+    else if (me->preSetCounter > 360 && me->preSetCounter < 450) {
       static const uint8_t PROGMEM STEPSZ = 1;
-      float target = 200 + 50 * cos((me->preSetCounter - 300) / 400.0 * PI);
+      float target = 200 + 50 * cos((me->preSetCounter - 300) / 500.0 * PI);
       Serial.println(target);
       MotorData lulng(LULNG, target, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
@@ -1262,19 +1262,19 @@ static void PreSet_prog5(PreSet * const me) {
     }
     else if (me->preSetCounter == 450) {
       static const uint8_t PROGMEM STEPSZ = 2;
-      MotorData lulng(LULNG, 0, STEPSZ);
+      MotorData lulng(LULNG, 60, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
-      MotorData rulng(RULNG, 0, STEPSZ);
+      MotorData rulng(RULNG, 60, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rulng.raw);
-      MotorData lllng(LLLNG, 0, STEPSZ);
+      MotorData lllng(LLLNG, 60, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lllng.raw);
-      MotorData rllng(RLLNG, 0, STEPSZ);
+      MotorData rllng(RLLNG, 60, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
-      MotorData galng(GALNG, 0, STEPSZ);
+      MotorData galng(GALNG, 60, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
     }
 
-    if (me->preSetCounter == 480) {
+    if (me->preSetCounter == 470) {
       me->preSetCounter = 30;
     }
     else {
@@ -1310,10 +1310,10 @@ static void PreSet_prog6(PreSet * const me) {
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, gartn.raw);
     }
     else if (me->preSetCounter >= 30) {
-      static const uint8_t PROGMEM STEPSZ = 1;
-      float targetDeltaSmall = 10 * sin((me->preSetCounter - 30) / 20.0 * PI);
-      float targetDeltaLarge = 40 * sin((me->preSetCounter - 30) / 20.0 * PI);
-      float targetGating = 127 + 80 * sin((me->preSetCounter - 30) / 20.0 * PI);
+      static const uint8_t PROGMEM STEPSZ = 10;
+      float targetDeltaSmall = 10 * sin((me->preSetCounter - 30) / 30.0 * PI);
+      float targetDeltaLarge = 40 * sin((me->preSetCounter - 30) / 30.0 * PI);
+      float targetGating = 127 + 80 * sin((me->preSetCounter - 30) / 30.0 * PI);
 
       MotorData lulng(LULNG, 147 + targetDeltaLarge, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
@@ -1336,7 +1336,7 @@ static void PreSet_prog6(PreSet * const me) {
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
     }
 
-    if (me->preSetCounter == 70) {
+    if (me->preSetCounter == 90) {
       me->preSetCounter = 30;
     }
     else {
@@ -1371,8 +1371,8 @@ static void PreSet_prog7(PreSet * const me) {
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, gartn.raw);
     }
     else if (me->preSetCounter >= 30) {
-      static const uint8_t PROGMEM STEPSZ = 1;
-      float target = 127 + 80 * sin((me->preSetCounter - 30) / 20.0 * PI);
+      static const uint8_t PROGMEM STEPSZ = 10;
+      float target = 127 + 80 * sin((me->preSetCounter - 30) / 30.0 * PI);
 
       MotorData lulng(LULNG, target, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
@@ -1413,7 +1413,7 @@ static void PreSet_prog7(PreSet * const me) {
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, gartn.raw);
     }
 
-    if (me->preSetCounter == 430) {
+    if (me->preSetCounter == 450) {
       me->preSetCounter = 30;
     }
     else {
@@ -1448,9 +1448,9 @@ static void PreSet_prog8(PreSet * const me) {
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, gartn.raw);
     }
     else if (me->preSetCounter >= 30) {
-      static const uint8_t PROGMEM STEPSZ = 1;
-      float baseline = 130 + 70 * sin((me->preSetCounter - 30) / 320.0 * PI);
-      float target = baseline + 50 * sin((me->preSetCounter - 30) / 20.0 * PI);
+      static const uint8_t PROGMEM STEPSZ = 10;
+      float baseline = 130 + 30 * sin((me->preSetCounter - 30) / 320.0 * PI);
+      float target = baseline + 50 * sin((me->preSetCounter - 30) / 30.0 * PI);
 
       MotorData lulng(LULNG, target, STEPSZ);
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
@@ -1464,8 +1464,8 @@ static void PreSet_prog8(PreSet * const me) {
       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
     }
 
-    if (me->preSetCounter == 670) {
-      me->preSetCounter = 110;
+    if (me->preSetCounter == 630) {
+      me->preSetCounter = 30;
     }
     else {
       me->preSetCounter++;
