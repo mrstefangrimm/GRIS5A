@@ -491,7 +491,7 @@ else if (me-&gt;preSetCounter &gt;= 30) {
   QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rlrtn.raw);
 }
 
-if (me-&gt;preSetCounter == 190) {
+if (me-&gt;preSetCounter == 189) {
   me-&gt;preSetCounter = 30;
 }
 else {
@@ -644,7 +644,7 @@ else if (me-&gt;preSetCounter &gt;= 30) {
   QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
 }
 
-if (me-&gt;preSetCounter == 90) {
+if (me-&gt;preSetCounter == 89) {
   me-&gt;preSetCounter = 30;
 }
 else {
@@ -734,7 +734,7 @@ else if (me-&gt;preSetCounter == 450) {
   QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
 }
 
-if (me-&gt;preSetCounter == 470) {
+if (me-&gt;preSetCounter == 469) {
   me-&gt;preSetCounter = 30;
 }
 else {
@@ -795,7 +795,7 @@ else if (me-&gt;preSetCounter &gt;= 30) {
   QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
 }
 
-if (me-&gt;preSetCounter == 90) {
+if (me-&gt;preSetCounter == 89) {
   me-&gt;preSetCounter = 30;
 }
 else {
@@ -871,7 +871,7 @@ else if (me-&gt;preSetCounter == 400) {
   QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, gartn.raw);
 }
 
-if (me-&gt;preSetCounter == 450) {
+if (me-&gt;preSetCounter == 449) {
   me-&gt;preSetCounter = 30;
 }
 else {
@@ -921,7 +921,7 @@ else if (me-&gt;preSetCounter &gt;= 30) {
   QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
 }
 
-if (me-&gt;preSetCounter == 630) {
+if (me-&gt;preSetCounter == 629) {
   me-&gt;preSetCounter = 30;
 }
 else {
