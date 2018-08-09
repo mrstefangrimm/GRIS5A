@@ -23,7 +23,7 @@
 #include "Arduino.h" // Arduino API
 
 #define DKBIN
-//#define SERIALIN
+#define SERIALIN
 #define MANUALMOTION
 #define PRESET
 #define USERPROGRAM
@@ -58,10 +58,10 @@ class ServoShieldPCA9685Linear : public prfServoImplBase<uint16_t, float> {
     params[2][0] = 140;
     params[2][1] = 1.647;
     // LLLNG
-    params[3][0] = 1.9835664335664530e+002;
-    params[3][1] = 1.2534850770143883e+000;
-    params[3][2] = -3.2218198308154130e-003;
-    params[3][3] = 7.9076000101825910e-006;
+    params[3][0] = 220; //2.0891608391608386e+002;
+    params[3][1] = 1.5197982845041706e+000;
+    params[3][2] = -3.7998653915609324e-003;
+    params[3][3] = 6.9118281570506850e-006;
     // RLLNG
     params[4][0] = 5.3912587412587410e+002;
     params[4][1] = -1.5669515669515590e+000;
