@@ -18,5 +18,3 @@ The body and the four cylindrical probe holders are made out of wood. This might
 __TODO__
 
 - case for the electronics (Arduino and ServoShield)
-- Add all the SketchUp models to github
-- BOM

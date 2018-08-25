@@ -4,7 +4,7 @@ Anz. | Beschreibung
 1 | Micro Servo Motor Tower Pro MG90S mit mitgeliefertem Servo Arm und 2 Befestigungsschrauben
 2 | Stahl Rundprofile d4 x 176 mit M4 x 15 Gewinde an einer Seite
 1 | Holz Rundprofil d6 x 120
-13 | M2 x 16 Senkkopfschrauben Spax Z1
+13 | M2 x 10 Universal Senkkopfschrauben mit S-Spitze
 1 | M4 x 20 Senkkopfschrauben
 1 | M3 x 10 Zylinderkopfschraube
 2 | M4 Unterlagsscheiben
