@@ -38,7 +38,7 @@ Tool | Licence
 
 ### Software
 
-Application || Licence
+Application | Licence
 ----------- | -------
 gris5A | GPL
 calibration | LGPL
