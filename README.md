@@ -61,6 +61,6 @@ twi.h | LGPL
 Wire.h | LGPL
 Arduino.h | LGPL
 Stream.h | LGPL
-Adafruit_PWMServoDriver.h | ?
+Adafruit_PWMServoDriver.h | BSD
 qpn.h | GPL
 Processing Core | LPGL
