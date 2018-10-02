@@ -27,3 +27,5 @@ Anz. | Beschreibung
 1 | LnR-ChassisLinks-PLA oder LnR-ChassisRechts-PLA für das PLA Modell anstelle der nicht-PLA Variante
 1 | LnR-ChassisHaube-PLA für das PLA Modell anstelle der nicht-PLA Variante
 2 | LnR-SchraubVerstaerkung-PLA für das PLA Modell
+
+<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
