@@ -43,6 +43,7 @@ Application | Licence
 gris5A | GPL
 calibration | LGPL
 SoftDKb | LGPL
+VirtualGris5A  | LGPL
 
 Tool | Licence
 ---- | -------
@@ -51,6 +52,7 @@ avrdude | GPL
 QM | GPL
 Processing | GPL
 gcc | GPL
+VS2017 community | MS license
 
 Libraries
 
@@ -64,3 +66,5 @@ Stream.h | LGPL
 Adafruit_PWMServoDriver.h | BSD
 qpn.h | GPL
 Processing Core | LPGL
+.NET 3.6.2 | MS license
+Helix toolkit | MIT
