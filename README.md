@@ -66,5 +66,5 @@ Stream.h | LGPL
 Adafruit_PWMServoDriver.h | BSD
 qpn.h | GPL
 Processing Core | LPGL
-.NET 3.6.2 | MS license
+.NET 4.6.2 | MS license
 Helix toolkit | MIT
