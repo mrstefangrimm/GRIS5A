@@ -28,6 +28,9 @@
   <Window.DataContext>
     <local:ViewModel/>
   </Window.DataContext>
+  <Window.Resources>
+    <local:NegateDoubleConverter x:Key="negConverter"/>
+  </Window.Resources>
   <Grid>
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="*"/>
@@ -116,21 +119,21 @@
           <h:SphereVisual3D x:Name="markerLU"  Center="-14.4 14.4 0" Radius="2" Fill="Gold" />
           <h:BindableTranslateManipulator Direction="0 0 -1" Value="{Binding LU.LNGExt, Mode=OneWay}" TargetTransform="{Binding ElementName=markerLU, Path=Transform}"/>
           <h:BindableTranslateManipulator Direction="0 0 -1" Value="{Binding LU.LNGExt, Mode=OneWay}" TargetTransform="{Binding ElementName=cylinderLU, Path=Transform}"/>
-          <h:BindableRotateManipulator Position="-25 25 0" Axis="0 0 1"  Value="{Binding LU.RTNExt, Mode=OneWay}" TargetTransform="{Binding ElementName=markerLU, Path=Transform}"/>
+          <h:BindableRotateManipulator Position="-25 25 0" Axis="0 0 -1"  Value="{Binding LU.RTNExt, Mode=OneWay}" TargetTransform="{Binding ElementName=markerLU, Path=Transform}"/>
 
-          <h:TruncatedConeVisual3D  x:Name="cylinderLL"  Origin="-25 -25 -30" Normal="0 0 1" BaseRadius="15" TopRadius="15" Height="100" Fill="BurlyWood"/>
+          <h:TruncatedConeVisual3D  x:Name="cylinderLL"  Origin="-25 -25 -50" Normal="0 0 1" BaseRadius="15" TopRadius="15" Height="100" Fill="BurlyWood"/>
           <h:SphereVisual3D x:Name="markerLL"  Center="-14.4 -14.4 20" Radius="2" Fill="Gold" />
           <h:BindableTranslateManipulator Direction="0 0 -1" Value="{Binding LL.LNGExt, Mode=OneWay}" TargetTransform="{Binding ElementName=markerLL, Path=Transform}"/>
           <h:BindableTranslateManipulator Direction="0 0 -1" Value="{Binding LL.LNGExt, Mode=OneWay}" TargetTransform="{Binding ElementName=cylinderLL, Path=Transform}"/>
-          <h:BindableRotateManipulator Position="-25 -25 0" Axis="0 0 1"  Value="{Binding LL.RTNExt, Mode=OneWay}" TargetTransform="{Binding ElementName=markerLL, Path=Transform}"/>
+          <h:BindableRotateManipulator Position="-25 -25 0" Axis="0 0 -1"  Value="{Binding LL.RTNExt, Mode=OneWay}" TargetTransform="{Binding ElementName=markerLL, Path=Transform}"/>
 
-          <h:TruncatedConeVisual3D  x:Name="cylinderRU"  Origin="25 25 27" Normal="0 0 -1" BaseRadius="15" TopRadius="15" Height="100" Fill="BurlyWood"/>
+          <h:TruncatedConeVisual3D  x:Name="cylinderRU"  Origin="25 25 50" Normal="0 0 -1" BaseRadius="15" TopRadius="15" Height="100" Fill="BurlyWood"/>
           <h:SphereVisual3D x:Name="markerRU"  Center="14.4 14.4 -23" Radius="2" Fill="Gold" />
           <h:BindableTranslateManipulator Direction="0 0 -1" Value="{Binding RU.LNGExt, Mode=OneWay}" TargetTransform="{Binding ElementName=markerRU, Path=Transform}"/>
           <h:BindableTranslateManipulator Direction="0 0 -1" Value="{Binding RU.LNGExt, Mode=OneWay}" TargetTransform="{Binding ElementName=cylinderRU, Path=Transform}"/>
           <h:BindableRotateManipulator Position="25 25 0" Axis="0 0 -1"  Value="{Binding RU.RTNExt, Mode=OneWay}" TargetTransform="{Binding ElementName=markerRU, Path=Transform}"/>
 
-          <h:TruncatedConeVisual3D  x:Name="cylinderRL"  Origin="25 -25 49" Normal="0 0 -1" BaseRadius="15" TopRadius="15" Height="100" Fill="BurlyWood"/>
+          <h:TruncatedConeVisual3D  x:Name="cylinderRL"  Origin="25 -25 50" Normal="0 0 -1" BaseRadius="15" TopRadius="15" Height="100" Fill="BurlyWood"/>
           <h:SphereVisual3D x:Name="markerRL"  Center="14.4 -14.4 -1" Radius="2" Fill="Gold" />
           <h:BindableTranslateManipulator Direction="0 0 -1" Value="{Binding RL.LNGExt, Mode=OneWay}" TargetTransform="{Binding ElementName=markerRL, Path=Transform}"/>
           <h:BindableTranslateManipulator Direction="0 0 -1" Value="{Binding RL.LNGExt, Mode=OneWay}" TargetTransform="{Binding ElementName=cylinderRL, Path=Transform}"/>
@@ -227,7 +230,7 @@
 
             <h:SphereVisual3D x:Name="markerRLRL"  Center="14.4 -14.4 1" Radius="1" Fill="White" />
             <h:BindableTranslateManipulator Direction="0 0 1" Value="{Binding RL.LNGExt, Mode=OneWay}" TargetTransform="{Binding ElementName=markerRLRL, Path=Transform}"/>
-            <h:BindableRotateManipulator Position="25 -25 0" Axis="0 0 -1"  Value="{Binding RL.RTNExt, Mode=OneWay}" TargetTransform="{Binding ElementName=markerRLRL, Path=Transform}"/>
+            <h:BindableRotateManipulator Position="25 -25 0" Axis="0 0 -1" Value="{Binding RL.RTNExt, Mode=OneWay}" TargetTransform="{Binding ElementName=markerRLRL, Path=Transform}"/>
 
             <!-- static parts -->
             <h:BoxVisual3D x:Name="bodyRL" Center="0, -11.5, 0" Height="100" Width="145" Length="102" Fill="#19FFFFFF"/>
@@ -246,7 +249,7 @@
 
         <Polyline Name="GatingHistory" Grid.Column="0"  SizeChanged="_OnSizeChanged" Stroke="White" />
         <Canvas Grid.Column="1">
-          <Line  Name="Pointer" X1="0" Y1="{Binding GA.LNGExt}" X2="20" Y2="{Binding GA.LNGExt}" Stroke="White" StrokeThickness="5" />
+          <Line  Name="Pointer" X1="0" Y1="{Binding GA.LNGExt, Converter={StaticResource negConverter}}" X2="20" Y2="{Binding GA.LNGExt, Converter={StaticResource negConverter}}" Stroke="White" StrokeThickness="5" />
           <Line  X1="5" Y1="0" X2="5" Y2="{Binding ElementName=GatingPanel, Path=ActualHeight}" Stroke="White" StrokeThickness="5"/>
         </Canvas>
       </Grid>
