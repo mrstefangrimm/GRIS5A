@@ -221,7 +221,11 @@ typedef struct MotorsOut {
     uint8_t target[NUMSERVOS];
     uint8_t stepSize[NUMSERVOS];
     uint16_t _sendPositionCounter;
+    uint8_t initializeCounter;
 } MotorsOut;
+
+/* public: */
+static bool MotorsOut_isInitialized(MotorsOut * const me);
 
 /* protected: */
 static QState MotorsOut_initial(MotorsOut * const me);
@@ -294,8 +298,8 @@ enum Constants {
   MOTORSENDINTERVAL = 2,            // A move of a motor takes 20 ms. the term step is used in the source code
   PRESETTIMERINTERVAL = 4,          // Discrete step size between the positions is 40 ms
   USERPROGRAMCOUNTERINTERVAL = 100, // Discrete step size between positions is 1000 ms
-  MOTORSTARTUPDELAY = 200,          // Wait until the motor driver board is powered up before moving the motors to the init position
-  PRESETTIMERINCR = 40              // Increment the presettimer by 40 ms on every PRESETTIMERINTERVAL
+  MOTORSTARTUPDELAY = 20,           // Wait 200 ms between the initialization of the motors (all at once results in too high voltage drop)
+  PRESETTIMERINCR = 40              // Increment the preset timer by 40 ms on every PRESETTIMERINTERVAL
 };
 
 typedef struct DKbInData_r1_t {
@@ -2070,14 +2074,20 @@ static QState DKbOut_UserProgramPlayLED(DKbOut * const me) {
 #endif
 #ifdef MOTOROUT
 /*${AOs::MotorsOut} ........................................................*/
+/*${AOs::MotorsOut::isInitialized} .........................................*/
+static bool MotorsOut_isInitialized(MotorsOut * const me) {
+    return me->initializeCounter == NUMSERVOS;
+}
 /*${AOs::MotorsOut::SM} ....................................................*/
 static QState MotorsOut_initial(MotorsOut * const me) {
     /* ${AOs::MotorsOut::SM::initial} */
+    // Give the capacitor time to load
     QActive_armX((QActive *)me, 0U,
-      MOTORSTARTUPDELAY,
-      MOTORSTARTUPDELAY);
+      MOTORSTARTUPDELAY*5,
+      MOTORSTARTUPDELAY*5);
 
     servoLib.begin();
+    me->initializeCounter = 0;
 
     Serial.println(F("MotorOut Initialized"));
     return Q_TRAN(&MotorsOut_Wait);
@@ -2198,23 +2208,29 @@ static QState MotorsOut_Wait(MotorsOut * const me) {
         /* ${AOs::MotorsOut::SM::Wait::Q_TIMEOUT} */
         case Q_TIMEOUT_SIG: {
             QActive_armX((QActive *)me, 0U,
-              MOTORSENDINTERVAL,
-              MOTORSENDINTERVAL);
+              MOTORSTARTUPDELAY,
+              MOTORSTARTUPDELAY);
+            /* ${AOs::MotorsOut::SM::Wait::Q_TIMEOUT::[isinitialized]} */
+            if (MotorsOut_isInitialized(me)) {
+                QActive_armX((QActive *)me, 0U,
+                  MOTORSENDINTERVAL,
+                  MOTORSENDINTERVAL);
 
-            // Set the servo to the initial position
-            for (int n=0; n<NUMSERVOS; n++) {
-              servoLib.write(n, 127);
+                Serial.println(F("MotorsOut: Enter Active"));
+                status_ = Q_TRAN(&MotorsOut_Active);
             }
+            /* ${AOs::MotorsOut::SM::Wait::Q_TIMEOUT::[else]} */
+            else {
+                // Debug: Serial.print("Initialize: "); Serial.println(me->initializeCounter);
 
-            for (int n=0; n < NUMSERVOS; n++) {
-              me->servoPosition[n] = 127;
-              me->target[n] = 127;
-              me->stepSize[n] = 1;
+                servoLib.write(me->initializeCounter, 127);
+                me->servoPosition[me->initializeCounter] = 127;
+                me->target[me->initializeCounter] = 127;
+                me->stepSize[me->initializeCounter] = 1;
+
+                me->initializeCounter++;
+                status_ = Q_TRAN(&MotorsOut_Wait);
             }
-            //memset(me->servoPosition, 127, NUMSERVOS*sizeof(uint8_t));
-
-            Serial.println(F("MotorsOut: Enter Active"));
-            status_ = Q_TRAN(&MotorsOut_Active);
             break;
         }
         default: {

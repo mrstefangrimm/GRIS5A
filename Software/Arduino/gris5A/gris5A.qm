@@ -1426,13 +1426,19 @@ digitalWrite(LATCHPIN_OUT, HIGH);</entry>
    <attribute name="target[NUMSERVOS]" type="uint8_t" visibility="0x00" properties="0x00"/>
    <attribute name="stepSize[NUMSERVOS]" type="uint8_t" visibility="0x00" properties="0x00"/>
    <attribute name="_sendPositionCounter" type="uint16_t" visibility="0x00" properties="0x00"/>
+   <attribute name="initializeCounter" type="uint8_t" visibility="0x00" properties="0x00"/>
+   <operation name="isInitialized" type="bool" visibility="0x00" properties="0x00">
+    <code>return me-&gt;initializeCounter == NUMSERVOS;</code>
+   </operation>
    <statechart>
     <initial target="../2">
-     <action>QActive_armX((QActive *)me, 0U,
-  MOTORSTARTUPDELAY,
-  MOTORSTARTUPDELAY);
+     <action>// Give the capacitor time to load
+QActive_armX((QActive *)me, 0U,
+  MOTORSTARTUPDELAY*5,
+  MOTORSTARTUPDELAY*5);
 
 servoLib.begin();
+me-&gt;initializeCounter = 0;
 
 Serial.println(F(&quot;MotorOut Initialized&quot;));</action>
      <initial_glyph conn="6,7,5,3,18">
@@ -1456,7 +1462,7 @@ if (pos &lt; 0) { pos = 0; }
 else if (pos &gt; 255) { pos = 255; }
 
 me-&gt;target[dm.ServoNum] = pos;</action>
-      <tran_glyph conn="25,26,3,1,20,-2,-3">
+      <tran_glyph conn="25,29,3,1,20,-2,-3">
        <action box="0,-2,14,2"/>
       </tran_glyph>
      </tran>
@@ -1472,7 +1478,7 @@ if (pos &lt; 0) { pos = 0; }
 else if (pos &gt; 255) { pos = 255; }
 
 me-&gt;target[dm.ServoNum] = pos;</action>
-      <tran_glyph conn="25,31,3,1,20,-2,-3">
+      <tran_glyph conn="25,34,3,1,20,-2,-3">
        <action box="0,-2,14,2"/>
       </tran_glyph>
      </tran>
@@ -1487,7 +1493,7 @@ if (dm.abspos() &gt;= 0 &amp;&amp; dm.abspos() &lt;= 255) {
 } else {
   me-&gt;target[dm.ServoNum] = me-&gt;servoPosition[dm.ServoNum];
 }</action>
-      <tran_glyph conn="25,35,3,1,20,-2,-3">
+      <tran_glyph conn="25,38,3,1,20,-2,-3">
        <action box="0,-2,14,2"/>
       </tran_glyph>
      </tran>
@@ -1528,38 +1534,49 @@ if (!isMoving) {
   me-&gt;_sendPositionCounter++;
 }
 #endif</action>
-      <tran_glyph conn="30,40,2,2,5,6,-5">
+      <tran_glyph conn="30,43,2,2,5,6,-5">
        <action box="0,-2,10,2"/>
       </tran_glyph>
      </tran>
-     <state_glyph node="25,18,17,22">
+     <state_glyph node="25,21,17,22">
       <entry box="1,2,6,2"/>
      </state_glyph>
     </state>
     <state name="Wait">
-     <tran trig="Q_TIMEOUT" target="../../1">
+     <tran trig="Q_TIMEOUT">
       <action>QActive_armX((QActive *)me, 0U,
+  MOTORSTARTUPDELAY,
+  MOTORSTARTUPDELAY);</action>
+      <choice target="../../../1">
+       <guard brief="is initialized">MotorsOut_isInitialized(me)</guard>
+       <action>QActive_armX((QActive *)me, 0U,
   MOTORSENDINTERVAL,
   MOTORSENDINTERVAL);
 
-// Set the servo to the initial position
-for (int n=0; n&lt;NUMSERVOS; n++) {
-  servoLib.write(n, 127);
-}
-
-for (int n=0; n &lt; NUMSERVOS; n++) {
-  me-&gt;servoPosition[n] = 127;
-  me-&gt;target[n] = 127;
-  me-&gt;stepSize[n] = 1;
-}
-//memset(me-&gt;servoPosition, 127, NUMSERVOS*sizeof(uint8_t));
-
 Serial.println(F(&quot;MotorsOut: Enter Active&quot;));</action>
-      <tran_glyph conn="32,10,2,0,8">
-       <action box="0,-2,10,2"/>
+       <choice_glyph conn="39,10,5,0,-5,11">
+        <action box="-14,0,10,2"/>
+       </choice_glyph>
+      </choice>
+      <choice target="../..">
+       <guard brief="else">!MotorsOut_isInitialized(me)</guard>
+       <action>// Debug: Serial.print(&quot;Initialize: &quot;); Serial.println(me-&gt;initializeCounter);
+
+servoLib.write(me-&gt;initializeCounter, 127);
+me-&gt;servoPosition[me-&gt;initializeCounter] = 127;
+me-&gt;target[me-&gt;initializeCounter] = 127;
+me-&gt;stepSize[me-&gt;initializeCounter] = 1;
+
+me-&gt;initializeCounter++;</action>
+       <choice_glyph conn="39,10,4,2,5">
+        <action box="0,1,10,2"/>
+       </choice_glyph>
+      </choice>
+      <tran_glyph conn="47,10,1,-1,-8">
+       <action box="-4,-3,10,2"/>
       </tran_glyph>
      </tran>
-     <state_glyph node="24,4,19,6"/>
+     <state_glyph node="24,4,23,11"/>
     </state>
     <state_diagram size="89,50"/>
    </statechart>
@@ -1735,8 +1752,8 @@ enum Constants {
   MOTORSENDINTERVAL = 2,            // A move of a motor takes 20 ms. the term step is used in the source code
   PRESETTIMERINTERVAL = 4,          // Discrete step size between the positions is 40 ms
   USERPROGRAMCOUNTERINTERVAL = 100, // Discrete step size between positions is 1000 ms
-  MOTORSTARTUPDELAY = 200,          // Wait until the motor driver board is powered up before moving the motors to the init position
-  PRESETTIMERINCR = 40              // Increment the presettimer by 40 ms on every PRESETTIMERINTERVAL
+  MOTORSTARTUPDELAY = 20,           // Wait 200 ms between the initialization of the motors (all at once draws too much current)
+  PRESETTIMERINCR = 40              // Increment the preset timer by 40 ms on every PRESETTIMERINTERVAL
 };
 
 typedef struct DKbInData_r1_t {
