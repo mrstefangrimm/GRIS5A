@@ -644,6 +644,7 @@ static QState DKbIn_Read(DKbIn * const me) {
                 }
                 else if ((serin & 0x3) == 2) {
                   // Command 2:
+                  // Test
                 }
               }
             }

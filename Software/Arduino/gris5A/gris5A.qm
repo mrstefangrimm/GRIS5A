@@ -314,6 +314,7 @@ if (Serial.available() &gt; 0) {
     }
     else if ((serin &amp; 0x3) == 2) {
       // Command 2:
+      // Test
     }
   }
 }
