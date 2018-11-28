@@ -298,7 +298,7 @@ enum Constants {
   MOTORSENDINTERVAL = 2,            // A move of a motor takes 20 ms. the term step is used in the source code
   PRESETTIMERINTERVAL = 4,          // Discrete step size between the positions is 40 ms
   USERPROGRAMCOUNTERINTERVAL = 100, // Discrete step size between positions is 1000 ms
-  MOTORSTARTUPDELAY = 20,           // Wait 200 ms between the initialization of the motors (all at once results in too high voltage drop)
+  MOTORSTARTUPDELAY = 20,           // Wait 200 ms between the initialization of the motors (all at once draws too much current)
   PRESETTIMERINCR = 40              // Increment the preset timer by 40 ms on every PRESETTIMERINTERVAL
 };
 
@@ -630,16 +630,21 @@ static QState DKbIn_Read(DKbIn * const me) {
             delayMicroseconds(20);
             digitalWrite(LATCHPIN_IN,0);
             me->dataBuffer = DKbIn_shiftIn32(me);
-
             // Debug: Serial.println(me->dataBuffer, HEX);
             #endif
 
             #ifdef SERIALIN
             if (Serial.available() > 0) {
-              int bitToSet = Serial.read();
-              if (bitToSet >= 48 && bitToSet < 80) {
-                bitToSet -= 48;
-                bitSet(me->dataBuffer, bitToSet);
+              int serin = Serial.read();
+              if (serin > -1) {
+                if ((serin & 0x3) == 1) {
+                  // Command 1: SoftDKb. The same bit is set as from the shift registers of the hardware DKb.
+                  int bitToSet = (serin & ~0x3) >> 2;
+                  bitSet(me->dataBuffer, bitToSet);
+                }
+                else if ((serin & 0x3) == 2) {
+                  // Command 2:
+                }
               }
             }
             #endif

@@ -300,16 +300,21 @@ digitalWrite(LATCHPIN_IN, 1);
 delayMicroseconds(20);
 digitalWrite(LATCHPIN_IN,0);
 me-&gt;dataBuffer = DKbIn_shiftIn32(me);
-
 // Debug: Serial.println(me-&gt;dataBuffer, HEX);
 #endif
 
 #ifdef SERIALIN
 if (Serial.available() &gt; 0) {
-  int bitToSet = Serial.read();
-  if (bitToSet &gt;= 48 &amp;&amp; bitToSet &lt; 80) {
-    bitToSet -= 48;
-    bitSet(me-&gt;dataBuffer, bitToSet);
+  int serin = Serial.read();
+  if (serin &gt; -1) {
+    if ((serin &amp; 0x3) == 1) {
+      // Command 1: SoftDKb. The same bit is set as from the shift registers of the hardware DKb.
+      int bitToSet = (serin &amp; ~0x3) &gt;&gt; 2;
+      bitSet(me-&gt;dataBuffer, bitToSet);
+    }
+    else if ((serin &amp; 0x3) == 2) {
+      // Command 2:
+    }
   }
 }
 #endif
