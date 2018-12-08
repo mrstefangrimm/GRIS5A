@@ -168,38 +168,39 @@ void mousePressed() {
     println("No device attached");
     return;
   }
-  if      (mousePressedGAL() == true) { comPort.write(( 0<<2) | 0x1); sendBuffer = "0000 0000 0000 0000 0000 0000 0000 0001"; }
-  else if (mousePressedGAT() == true) { comPort.write(( 1<<2) | 0x1); sendBuffer = "0000 0000 0000 0000 0000 0000 0000 0010"; } 
-  else if (mousePressedGAB() == true) { comPort.write(( 2<<2) | 0x1); sendBuffer = "0000 0000 0000 0000 0000 0000 0000 0100"; }
-  else if (mousePressedGAR() == true) { comPort.write(( 3<<2) | 0x1); sendBuffer = "0000 0000 0000 0000 0000 0000 0000 1000"; }
-  else if (mousePressedFP7() == true) { comPort.write(( 4<<2) | 0x1); sendBuffer = "0000 0000 0000 0000 0000 0000 0001 0000"; } 
-  else if (mousePressedFP6() == true) { comPort.write(( 5<<2) | 0x1); sendBuffer = "0000 0000 0000 0000 0000 0000 0010 0000"; }
-  else if (mousePressedFP5() == true) { comPort.write(( 6<<2) | 0x1); sendBuffer = "0000 0000 0000 0000 0000 0000 0100 0000"; }
-  else if (mousePressedFP8() == true) { comPort.write(( 7<<2) | 0x1); sendBuffer = "0000 0000 0000 0000 0000 0000 1000 0000"; }  
-  else if (mousePressedRLB() == true) { comPort.write(( 8<<2) | 0x1); sendBuffer = "0000 0000 0000 0000 0000 0001 0000 0000"; }
-  else if (mousePressedRLR() == true) { comPort.write(( 9<<2) | 0x1); sendBuffer = "0000 0000 0000 0000 0000 0010 0000 0000"; } 
-  else if (mousePressedRLL() == true) { comPort.write((10<<2) | 0x1); sendBuffer = "0000 0000 0000 0000 0000 0100 0000 0000"; }
-  else if (mousePressedRLT() == true) { comPort.write((11<<2) | 0x1); sendBuffer = "0000 0000 0000 0000 0000 1000 0000 0000"; }    
-  else if (mousePressedRUR() == true) { comPort.write((12<<2) | 0x1); sendBuffer = "0000 0000 0000 0000 0001 0000 0000 0000"; } 
-  else if (mousePressedRUL() == true) { comPort.write((13<<2) | 0x1); sendBuffer = "0000 0000 0000 0000 0010 0000 0000 0000"; }
-  else if (mousePressedRUT() == true) { comPort.write((14<<2) | 0x1); sendBuffer = "0000 0000 0000 0000 0100 0000 0000 0000"; }
-  else if (mousePressedRUB() == true) { comPort.write((15<<2) | 0x1); sendBuffer = "0000 0000 0000 0000 1000 0000 0000 0000"; }  
-  else if (mousePressedFP4() == true) { comPort.write((16<<2) | 0x1); sendBuffer = "0000 0000 0000 0001 0000 0000 0000 0000"; }
-  else if (mousePressedFP3() == true) { comPort.write((17<<2) | 0x1); sendBuffer = "0000 0000 0000 0010 0000 0000 0000 0000"; } 
-  else if (mousePressedFP2() == true) { comPort.write((18<<2) | 0x1); sendBuffer = "0000 0000 0000 0100 0000 0000 0000 0000"; } 
-  else if (mousePressedFP1() == true) { comPort.write((19<<2) | 0x1); sendBuffer = "0000 0000 0000 1000 0000 0000 0000 0000"; }       
-  else if (mousePressedFPG() == true) { comPort.write((20<<2) | 0x1); sendBuffer = "0000 0000 0001 0000 0000 0000 0000 0000"; } 
-  else if (mousePressedFPS() == true) { comPort.write((21<<2) | 0x1); sendBuffer = "0000 0000 0010 0000 0000 0000 0000 0000"; }   
-  else if (mousePressedFMM() == true) { comPort.write((22<<2) | 0x1); sendBuffer = "0000 0000 0100 0000 0000 0000 0000 0000"; } 
-  else if (mousePressedFPP() == true) { comPort.write((23<<2) | 0x1); sendBuffer = "0000 0000 1000 0000 0000 0000 0000 0000"; }  
-  else if (mousePressedLLB() == true) { comPort.write((24<<2) | 0x1); sendBuffer = "0000 0001 0000 0000 0000 0000 0000 0000"; }
-  else if (mousePressedLLR() == true) { comPort.write((25<<2) | 0x1); sendBuffer = "0000 0010 0000 0000 0000 0000 0000 0000"; } 
-  else if (mousePressedLLL() == true) { comPort.write((26<<2) | 0x1); sendBuffer = "0000 0100 0000 0000 0000 0000 0000 0000"; }
-  else if (mousePressedLLT() == true) { comPort.write((27<<2) | 0x1); sendBuffer = "0000 1000 0000 0000 0000 0000 0000 0000"; } 
-  else if (mousePressedLUR() == true) { comPort.write((28<<2) | 0x1); sendBuffer = "0001 0000 0000 0000 0000 0000 0000 0000"; } 
-  else if (mousePressedLUL() == true) { comPort.write((29<<2) | 0x1); sendBuffer = "0010 0000 0000 0000 0000 0000 0000 0000"; }
-  else if (mousePressedLUT() == true) { comPort.write((30<<2) | 0x1); sendBuffer = "0100 0000 0000 0000 0000 0000 0000 0000"; } 
-  else if (mousePressedLUB() == true) { comPort.write((31<<2) | 0x1); sendBuffer = "1000 0000 0000 0000 0000 0000 0000 0000"; }
+  // Example: (31<<3) | 0x1 = 11111 << 3 | 001 = 11111001
+  if      (mousePressedGAL() == true) { comPort.write(( 0<<3) | 0x1); sendBuffer = "0000 0000 0000 0000 0000 0000 0000 0001"; }
+  else if (mousePressedGAT() == true) { comPort.write(( 1<<3) | 0x1); sendBuffer = "0000 0000 0000 0000 0000 0000 0000 0010"; } 
+  else if (mousePressedGAB() == true) { comPort.write(( 2<<3) | 0x1); sendBuffer = "0000 0000 0000 0000 0000 0000 0000 0100"; }
+  else if (mousePressedGAR() == true) { comPort.write(( 3<<3) | 0x1); sendBuffer = "0000 0000 0000 0000 0000 0000 0000 1000"; }
+  else if (mousePressedFP7() == true) { comPort.write(( 4<<3) | 0x1); sendBuffer = "0000 0000 0000 0000 0000 0000 0001 0000"; } 
+  else if (mousePressedFP6() == true) { comPort.write(( 5<<3) | 0x1); sendBuffer = "0000 0000 0000 0000 0000 0000 0010 0000"; }
+  else if (mousePressedFP5() == true) { comPort.write(( 6<<3) | 0x1); sendBuffer = "0000 0000 0000 0000 0000 0000 0100 0000"; }
+  else if (mousePressedFP8() == true) { comPort.write(( 7<<3) | 0x1); sendBuffer = "0000 0000 0000 0000 0000 0000 1000 0000"; }  
+  else if (mousePressedRLB() == true) { comPort.write(( 8<<3) | 0x1); sendBuffer = "0000 0000 0000 0000 0000 0001 0000 0000"; }
+  else if (mousePressedRLR() == true) { comPort.write(( 9<<3) | 0x1); sendBuffer = "0000 0000 0000 0000 0000 0010 0000 0000"; } 
+  else if (mousePressedRLL() == true) { comPort.write((10<<3) | 0x1); sendBuffer = "0000 0000 0000 0000 0000 0100 0000 0000"; }
+  else if (mousePressedRLT() == true) { comPort.write((11<<3) | 0x1); sendBuffer = "0000 0000 0000 0000 0000 1000 0000 0000"; }    
+  else if (mousePressedRUR() == true) { comPort.write((12<<3) | 0x1); sendBuffer = "0000 0000 0000 0000 0001 0000 0000 0000"; } 
+  else if (mousePressedRUL() == true) { comPort.write((13<<3) | 0x1); sendBuffer = "0000 0000 0000 0000 0010 0000 0000 0000"; }
+  else if (mousePressedRUT() == true) { comPort.write((14<<3) | 0x1); sendBuffer = "0000 0000 0000 0000 0100 0000 0000 0000"; }
+  else if (mousePressedRUB() == true) { comPort.write((15<<3) | 0x1); sendBuffer = "0000 0000 0000 0000 1000 0000 0000 0000"; }  
+  else if (mousePressedFP4() == true) { comPort.write((16<<3) | 0x1); sendBuffer = "0000 0000 0000 0001 0000 0000 0000 0000"; }
+  else if (mousePressedFP3() == true) { comPort.write((17<<3) | 0x1); sendBuffer = "0000 0000 0000 0010 0000 0000 0000 0000"; } 
+  else if (mousePressedFP2() == true) { comPort.write((18<<3) | 0x1); sendBuffer = "0000 0000 0000 0100 0000 0000 0000 0000"; } 
+  else if (mousePressedFP1() == true) { comPort.write((19<<3) | 0x1); sendBuffer = "0000 0000 0000 1000 0000 0000 0000 0000"; }       
+  else if (mousePressedFPG() == true) { comPort.write((20<<3) | 0x1); sendBuffer = "0000 0000 0001 0000 0000 0000 0000 0000"; } 
+  else if (mousePressedFPS() == true) { comPort.write((21<<3) | 0x1); sendBuffer = "0000 0000 0010 0000 0000 0000 0000 0000"; }   
+  else if (mousePressedFMM() == true) { comPort.write((22<<3) | 0x1); sendBuffer = "0000 0000 0100 0000 0000 0000 0000 0000"; } 
+  else if (mousePressedFPP() == true) { comPort.write((23<<3) | 0x1); sendBuffer = "0000 0000 1000 0000 0000 0000 0000 0000"; }  
+  else if (mousePressedLLB() == true) { comPort.write((24<<3) | 0x1); sendBuffer = "0000 0001 0000 0000 0000 0000 0000 0000"; }
+  else if (mousePressedLLR() == true) { comPort.write((25<<3) | 0x1); sendBuffer = "0000 0010 0000 0000 0000 0000 0000 0000"; } 
+  else if (mousePressedLLL() == true) { comPort.write((26<<3) | 0x1); sendBuffer = "0000 0100 0000 0000 0000 0000 0000 0000"; }
+  else if (mousePressedLLT() == true) { comPort.write((27<<3) | 0x1); sendBuffer = "0000 1000 0000 0000 0000 0000 0000 0000"; } 
+  else if (mousePressedLUR() == true) { comPort.write((28<<3) | 0x1); sendBuffer = "0001 0000 0000 0000 0000 0000 0000 0000"; } 
+  else if (mousePressedLUL() == true) { comPort.write((29<<3) | 0x1); sendBuffer = "0010 0000 0000 0000 0000 0000 0000 0000"; }
+  else if (mousePressedLUT() == true) { comPort.write((30<<3) | 0x1); sendBuffer = "0100 0000 0000 0000 0000 0000 0000 0000"; } 
+  else if (mousePressedLUB() == true) { comPort.write((31<<3) | 0x1); sendBuffer = "1000 0000 0000 0000 0000 0000 0000 0000"; }
 }
 
 boolean mousePressedFMM() { return ((mouseX >= 50) && (mouseX <= 90) && (mouseY >= 500) && (mouseY <= 540)); }

@@ -306,15 +306,34 @@ me-&gt;dataBuffer = DKbIn_shiftIn32(me);
 #ifdef SERIALIN
 if (Serial.available() &gt; 0) {
   int serin = Serial.read();
+  //Debug: Serial.println(serin, HEX);
   if (serin &gt; -1) {
-    if ((serin &amp; 0x3) == 1) {
+    if ((serin &amp; 0x7) == 1) {
       // Command 1: SoftDKb. The same bit is set as from the shift registers of the hardware DKb.
-      int bitToSet = (serin &amp; ~0x3) &gt;&gt; 2;
+      int bitToSet = (serin &gt;&gt; 3);
       bitSet(me-&gt;dataBuffer, bitToSet);
     }
-    else if ((serin &amp; 0x3) == 2) {
-      // Command 2:
-      // Test
+    else if ((serin &amp; 0x7) == 2) {
+      // Command 2: Absolute motion for the motors. Each motor requires 16bit/2 bytes.
+      int numBytes = (serin &gt;&gt; 3);
+      Serial.print(F(&quot;Num bytes: &quot;));
+      Serial.println(numBytes);
+      if (numBytes%2 == 0) {
+        for (int n=0; n&lt;numBytes; n+=2) {
+          uint8_t tmpLow = Serial.read();
+          uint8_t tmpHigh = Serial.read();
+          uint16_t rawData = (tmpHigh &lt;&lt; 8) | tmpLow;
+          MotorData motorOut(rawData);
+          Serial.println(F(&quot;Serial motor in&quot;));
+          Serial.print(F(&quot;Servo Num: &quot;));
+          Serial.println(motorOut.ServoNum);
+          Serial.print(F(&quot;Step Size: &quot;));
+          Serial.println(motorOut.StepSize);
+          Serial.print(F(&quot;Servo Position: &quot;));
+          Serial.println(motorOut.Pos);
+          QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, motorOut.raw);
+        }
+      }
     }
   }
 }
@@ -322,7 +341,9 @@ if (Serial.available() &gt; 0) {
 
 // Debug: DKbIn_printDKbInData(me);
 
-QACTIVE_POST((QMActive *)&amp;AO_DKbIn, evRead_SIG, me-&gt;dataBuffer);</entry>
+if (me-&gt;dataBuffer != 0) {
+  QACTIVE_POST((QMActive *)&amp;AO_DKbIn, evRead_SIG, me-&gt;dataBuffer);
+}</entry>
      <tran trig="evRead" target="../../2">
       <tran_glyph conn="20,20,2,0,8">
        <action box="0,-2,10,2"/>

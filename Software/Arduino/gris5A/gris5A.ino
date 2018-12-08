@@ -636,15 +636,34 @@ static QState DKbIn_Read(DKbIn * const me) {
             #ifdef SERIALIN
             if (Serial.available() > 0) {
               int serin = Serial.read();
+              //Debug: Serial.println(serin, HEX);
               if (serin > -1) {
-                if ((serin & 0x3) == 1) {
+                if ((serin & 0x7) == 1) {
                   // Command 1: SoftDKb. The same bit is set as from the shift registers of the hardware DKb.
-                  int bitToSet = (serin & ~0x3) >> 2;
+                  int bitToSet = (serin >> 3);
                   bitSet(me->dataBuffer, bitToSet);
                 }
-                else if ((serin & 0x3) == 2) {
-                  // Command 2:
-                  // Test
+                else if ((serin & 0x7) == 2) {
+                  // Command 2: Absolute motion for the motors. Each motor requires 16bit/2 bytes.
+                  int numBytes = (serin >> 3);
+                  Serial.print(F("Num bytes: "));
+                  Serial.println(numBytes);
+                  if (numBytes%2 == 0) {
+                    for (int n=0; n<numBytes; n+=2) {
+                      uint8_t tmpLow = Serial.read();
+                      uint8_t tmpHigh = Serial.read();
+                      uint16_t rawData = (tmpHigh << 8) | tmpLow;
+                      MotorData motorOut(rawData);
+                      Serial.println(F("Serial motor in"));
+                      Serial.print(F("Servo Num: "));
+                      Serial.println(motorOut.ServoNum);
+                      Serial.print(F("Step Size: "));
+                      Serial.println(motorOut.StepSize);
+                      Serial.print(F("Servo Position: "));
+                      Serial.println(motorOut.Pos);
+                      QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, motorOut.raw);
+                    }
+                  }
                 }
               }
             }
@@ -652,7 +671,9 @@ static QState DKbIn_Read(DKbIn * const me) {
 
             // Debug: DKbIn_printDKbInData(me);
 
-            QACTIVE_POST((QMActive *)&AO_DKbIn, evRead_SIG, me->dataBuffer);
+            if (me->dataBuffer != 0) {
+              QACTIVE_POST((QMActive *)&AO_DKbIn, evRead_SIG, me->dataBuffer);
+            }
             status_ = Q_HANDLED();
             break;
         }
