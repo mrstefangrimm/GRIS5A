@@ -30,7 +30,7 @@ namespace WpfAppHelix1 {
   /// </summary>
   public partial class MainWindow : Window {
 
-    private Timer _timer;
+    private DispatcherTimer _timer;
     private PointCollection _points;
 
     public MainWindow() {
@@ -42,23 +42,23 @@ namespace WpfAppHelix1 {
       }
       GatingHistory.Points = _points;
 
-      TimerCallback timerDelegate =
-        new TimerCallback(delegate (object state) {
-          Dispatcher.BeginInvoke(DispatcherPriority.Send,
-            new Action(() => {
-              for (int n = 1; n < 100; n++) {
-                _points[n - 1] = new Point(_points[n - 1].X, _points[n].Y);
-              }
-              _points[99] = new Point(_points[99].X, Pointer.Y1);
-            }));
+      EventHandler timerDelegate =
+        new EventHandler(delegate (object sender, EventArgs e) {
+          for (int n = 1; n < 100; n++) {
+            _points[n - 1] = new Point(_points[n - 1].X, _points[n].Y);
+          }
+          _points[99] = new Point(_points[99].X, Pointer.Y1);
         });
-      _timer = new Timer(timerDelegate, null, 500, 200);
-    }
-    
+      _timer = new DispatcherTimer(DispatcherPriority.ApplicationIdle);
+      _timer.Interval = TimeSpan.FromMilliseconds(200);
+      _timer.Tick += timerDelegate;
+      _timer.Start();
+    } 
+
     protected override void OnClosing(CancelEventArgs e) {
       base.OnClosing(e);
       if (_timer != null) {
-        _timer.Dispose();
+        _timer.Stop();
         _timer = null;
       }
     }
