@@ -16,7 +16,7 @@
 *****************************************************************************/
 /*${.::gris5A.ino} .........................................................*/
 /* gris5A.qm - Arduino software for the GRIS5A (C) motion phantom
- * Copyright (C) 2018 by Stefan Grimm
+ * Copyright (C) 2018-2019 by Stefan Grimm
  */
 
 #include "qpn.h"     // QP-nano framework
@@ -102,6 +102,12 @@ prfServo<uint32_t, uint8_t, uint16_t, float> servoLib(&impl, 0x777DD);
 #define NUMSERVOS 10
 
 #endif
+
+int freeRam() {
+  extern int __heap_start, *__brkval;
+  int v;
+  return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
+}
 
 #define Q_PARAM_SIZE   4
 
@@ -464,6 +470,10 @@ void setup() {
   Serial.print(F("Start, QP-nano: "));
   Serial.println(F(QP_VERSION_STR));
 
+  // Send free memory
+  Serial.print(F("|E"));
+  Serial.print(freeRam());
+  Serial.print(F("|"));
 }
 
 //............................................................................
@@ -665,6 +675,14 @@ static QState DKbIn_Read(DKbIn * const me) {
                       QACTIVE_POST((QMActive *)&AO_MotorsOut, evMotorAbsMove_SIG, motorOut.raw);
                     }
                   }
+                }
+                else if ((serin & 0x7) == 3) {
+                  // Send free memory
+                  Serial.print(F("|E"));
+                  // Debug: int* p = new int[10];
+                  // if (p == 0) { Serial.print(999); )
+                  Serial.print(freeRam());
+                  Serial.print(F("|"));
                 }
               }
             }
