@@ -3,7 +3,7 @@ using System;
 using System.Globalization;
 using System.Windows.Data;
 
-namespace VirtualGris5A {
+namespace VirtualGris5A.UI {
   public class NegateDoubleConverter : IValueConverter {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
       return -(double)value;

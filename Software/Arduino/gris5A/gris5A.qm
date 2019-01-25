@@ -202,8 +202,8 @@ for (int i=31; i&gt;=0; i--)
 return myDataIn;
 </code>
    </operation>
-   <operation name="isMotorButtonPressed" type="bool" visibility="0x00" properties="0x00">
-    <code>DKbInData data(me-&gt;dataBuffer);
+   <operation name="isMotorButtonPressed" type="bool" visibility="0x00" properties="0x08">
+    <code>const DKbInData data(me-&gt;dataBuffer);
 
 return data.LUT  != 0 ||
        data.LUR  != 0 ||
@@ -226,8 +226,8 @@ return data.LUT  != 0 ||
        data.GAL  != 0 ||
        data.GAB  != 0;</code>
    </operation>
-   <operation name="isProgramButtonPressed" type="bool" visibility="0x00" properties="0x00">
-    <code>DKbInData data(me-&gt;dataBuffer);
+   <operation name="isProgramButtonPressed" type="bool" visibility="0x00" properties="0x08">
+    <code>const DKbInData data(me-&gt;dataBuffer);
 
 return data.FP1  != 0 ||
        data.FP2  != 0 ||
@@ -275,97 +275,12 @@ if (s.FP6) { Serial.println(F(&quot;DKbIn: Pressed Function Program 6&quot;)); }
 if (s.FP7) { Serial.println(F(&quot;DKbIn: Pressed Function Program 7&quot;)); }
 if (s.GAB) { Serial.println(F(&quot;DKbIn: Pressed Gating Bottom&quot;)); }</code>
    </operation>
-   <statechart>
-    <initial target="../1">
-     <action>QActive_armX((QActive *)me, 0U,
-  READOUTINVERVAL,
-  READOUTINVERVAL);
-
-pinMode(LATCHPIN_IN, OUTPUT);
-pinMode(CLOCKPIN_IN, OUTPUT); 
-pinMode(DATAPIN_IN,  INPUT);
-
-Serial.println(F(&quot;DKbIn Initialized&quot;));</action>
-     <initial_glyph conn="9,5,5,0,14,5">
-      <action box="0,-2,10,2"/>
-     </initial_glyph>
-    </initial>
-    <state name="Read">
-     <entry>me-&gt;dataBuffer = 0;
-
-// Timing 0.5 ms
-
-#ifdef DKBIN
-digitalWrite(LATCHPIN_IN, 1);
-delayMicroseconds(20);
-digitalWrite(LATCHPIN_IN,0);
-me-&gt;dataBuffer = DKbIn_shiftIn32(me);
-// Debug: Serial.println(me-&gt;dataBuffer, HEX);
-#endif
-
-#ifdef SERIALIN
-if (Serial.available() &gt; 0) {
-  int serin = Serial.read();
-  //Debug: Serial.println(serin, HEX);
-  if (serin &gt; -1) {
-    if ((serin &amp; 0x7) == 1) {
-      // Command 1: SoftDKb. The same bit is set as from the shift registers of the hardware DKb.
-      int bitToSet = (serin &gt;&gt; 3);
-      bitSet(me-&gt;dataBuffer, bitToSet);
-    }
-    else if ((serin &amp; 0x7) == 2) {
-      // Command 2: Absolute motion for the motors. Each motor requires 16bit/2 bytes.
-      int numBytes = (serin &gt;&gt; 3);
-      // Debug: Serial.print(F(&quot;Num bytes: &quot;)); Serial.println(numBytes);
-      if (numBytes%2 == 0) {
-        for (int n=0; n&lt;numBytes; n+=2) {
-          uint8_t tmpLow = Serial.read();
-          uint8_t tmpHigh = Serial.read();
-          // Debug: Serial.println(tmpLow, HEX); Serial.println(tmpHigh, HEX);
-          uint16_t rawData = (tmpHigh &lt;&lt; 8) | tmpLow;
-          MotorData motorOut(rawData);
-          // Debug:
-          // Serial.println(F(&quot;Serial motor in&quot;));
-          // Serial.print(F(&quot;Servo Num: &quot;));
-          // Serial.println(motorOut.ServoNum);
-          // Serial.print(F(&quot;Step Size: &quot;));
-          // Serial.println(motorOut.StepSize);
-          // Serial.print(F(&quot;Servo Position: &quot;));
-          // Serial.println(motorOut.Pos);
-          QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, motorOut.raw);
-        }
-      }
-    }
-    else if ((serin &amp; 0x7) == 3) {
-      // Send free memory
-      Serial.print(F(&quot;|E&quot;));
-      // Debug: int* p = new int[10];
-      // if (p == 0) { Serial.print(999); )
-      Serial.print(freeRam());
-      Serial.print(F(&quot;|&quot;));
-    }
-  }
-}
-#endif
-
-// Debug: DKbIn_printDKbInData(me);
-
-QACTIVE_POST((QMActive *)&amp;AO_DKbIn, evRead_SIG, me-&gt;dataBuffer);</entry>
-     <tran trig="evRead" target="../../2">
-      <tran_glyph conn="20,20,2,0,8">
-       <action box="0,-2,10,2"/>
-      </tran_glyph>
-     </tran>
-     <state_glyph node="14,10,26,10">
-      <entry box="1,2,6,2"/>
-     </state_glyph>
-    </state>
-    <state name="Dispatch">
-     <entry>//Debug: DKbIn_printDKbInData(me);
+   <operation name="dispatchDKbIn" type="void" visibility="0x00" properties="0x08">
+    <code>//Debug: DKbIn_printDKbInData(me);
 
 // Timing less than 0.05 ms
 
-DKbInData data(me-&gt;dataBuffer);
+const DKbInData data(me-&gt;dataBuffer);
 
 // Do some valitity checks here
 
@@ -448,13 +363,58 @@ if (data.FMM) {
   #ifdef DKBOUT
   QACTIVE_POST((QMActive *)&amp;AO_DKbOut, evUserProgramPlayPressed_SIG, me-&gt;dataBuffer);
   #endif
-}</entry>
+}</code>
+   </operation>
+   <statechart>
+    <initial target="../1">
+     <action>QActive_armX((QActive *)me, 0U,
+  DKBREADINVERVAL,
+  DKBREADINVERVAL);
+
+pinMode(LATCHPIN_IN, OUTPUT);
+pinMode(CLOCKPIN_IN, OUTPUT); 
+pinMode(DATAPIN_IN,  INPUT);
+
+Serial.println(F(&quot;DKbIn Initialized&quot;));</action>
+     <initial_glyph conn="9,5,5,0,14,5">
+      <action box="0,-2,10,2"/>
+     </initial_glyph>
+    </initial>
+    <state name="Read">
+     <entry>//me-&gt;dataBuffer = 0;
+
+// Timing 0.5 ms
+
+digitalWrite(LATCHPIN_IN, 1);
+delayMicroseconds(20);
+digitalWrite(LATCHPIN_IN,0);
+uint32_t dkbin = DKbIn_shiftIn32(me);
+// Debug: Serial.println(dkbin, HEX);
+
+QACTIVE_POST((QMActive *)&amp;AO_DKbIn, evDKbInDispatch_SIG, dkbin);</entry>
+     <tran trig="evDKbInDispatch" target="../../2">
+      <tran_glyph conn="25,20,2,0,6">
+       <action box="0,-2,14,2"/>
+      </tran_glyph>
+     </tran>
+     <state_glyph node="14,10,26,10">
+      <entry box="1,2,6,2"/>
+     </state_glyph>
+    </state>
+    <state name="Dispatch">
+     <entry>me-&gt;dataBuffer = Q_PAR(me);
+DKbIn_dispatchDKbIn(me);</entry>
      <tran trig="Q_TIMEOUT" target="../../1">
-      <tran_glyph conn="38,37,1,1,11,-23,-9">
+      <tran_glyph conn="40,31,1,1,14,-17,-14">
        <action box="0,-2,10,2"/>
       </tran_glyph>
      </tran>
-     <state_glyph node="14,28,24,11">
+     <tran trig="evDKbInDispatch" target="..">
+      <tran_glyph conn="20,38,2,2,5,13,-5">
+       <action box="0,0,15,2"/>
+      </tran_glyph>
+     </tran>
+     <state_glyph node="14,26,26,12">
       <entry box="1,2,6,2"/>
      </state_glyph>
     </state>
@@ -509,7 +469,7 @@ if (me-&gt;preSetTimer == 0) {
   QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, gartn.raw);
 }
 else if (me-&gt;preSetTimer &gt;= 3000) {
-  static const uint8_t PROGMEM STEPSZ = 1;
+  static const uint8_t PROGMEM STEPSZ = 10;
   float targetDeltaSmall = 10 * sin((me-&gt;preSetTimer - 3000) / 3000.0 * PI);
   float targetDeltaLarge = 40 * sin((me-&gt;preSetTimer - 3000) / 3000.0 * PI);
 
@@ -584,7 +544,7 @@ else if (me-&gt;preSetTimer == 3000) {
   QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rlrtn.raw);
 }
 
-if (me-&gt;preSetTimer &lt; 3000) {
+if (me-&gt;preSetTimer &lt;= 3000) {
   me-&gt;preSetTimer += PRESETTIMERINCR;
 }
 </code>
@@ -635,7 +595,7 @@ else if (me-&gt;preSetTimer == 3000) {
   QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rlrtn.raw);
 }
 
-if (me-&gt;preSetTimer &lt; 3000) {
+if (me-&gt;preSetTimer &lt;= 3000) {
   me-&gt;preSetTimer += PRESETTIMERINCR;
 }
 </code>
@@ -661,7 +621,6 @@ if (me-&gt;preSetTimer == 0) {
   QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
   MotorData rlrtn(RLRTN, 127, STEPSZ);
   QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rlrtn.raw);
-
   MotorData galng(GALNG, 127, STEPSZ);
   QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
   MotorData gartn(GARTN, 127, STEPSZ);
@@ -679,7 +638,6 @@ else if (me-&gt;preSetTimer &gt;= 3000) {
   QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lllng.raw);
   MotorData rllng(RLLNG, target, STEPSZ);
   QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, rllng.raw);
-
   MotorData galng(GALNG, target, STEPSZ);
   QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, galng.raw);
 }
@@ -748,7 +706,6 @@ else if (me-&gt;preSetTimer == 28000) {
 else if (me-&gt;preSetTimer &gt; 28000 &amp;&amp; me-&gt;preSetTimer &lt; 38000) {
   static const uint8_t PROGMEM STEPSZ = 10;
   float target = 200 + 50 * cos((me-&gt;preSetTimer - 28000) / 40000.0 * PI);
-  Serial.println(target);
   MotorData lulng(LULNG, target, STEPSZ);
   QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, lulng.raw);
   MotorData rulng(RULNG, target, STEPSZ);
@@ -1615,6 +1572,90 @@ me-&gt;initializeCounter++;</action>
     <state_diagram size="89,50"/>
    </statechart>
   </class>
+  <class name="SerialIn" superclass="qpn::QActive">
+   <attribute name="remainingBytes" type="uint8_t" visibility="0x00" properties="0x00"/>
+   <operation name="processRemainingBytes" type="void" visibility="0x00" properties="0x00">
+    <code>while (me-&gt;remainingBytes &gt; 1 &amp;&amp; Serial.available() &gt; 1) {
+  uint8_t tmpLow = Serial.read();
+  uint8_t tmpHigh = Serial.read();
+  // Debug: Serial.println(tmpLow, HEX); Serial.println(tmpHigh, HEX);
+  uint16_t rawData = (tmpHigh &lt;&lt; 8) | tmpLow;
+  MotorData motorOut(rawData);
+  // Debug:
+  // Serial.println(F(&quot;Serial motor in&quot;));
+  // Serial.print(F(&quot;Servo Num: &quot;));
+  // Serial.println(motorOut.ServoNum);
+  // Serial.print(F(&quot;Step Size: &quot;));
+  // Serial.println(motorOut.StepSize);
+  // Serial.print(F(&quot;Servo Position: &quot;));
+  // Serial.println(motorOut.Pos);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, evMotorAbsMove_SIG, motorOut.raw);
+  me-&gt;remainingBytes -= 2;
+}</code>
+   </operation>
+   <statechart>
+    <initial target="../1">
+     <action>QActive_armX((QActive *)me, 0U,
+  SERIALRECVINVERVAL,
+  SERIALRECVINVERVAL);
+
+me-&gt;remainingBytes = 0;
+
+Serial.println(F(&quot;SerialIn Initialized&quot;));</action>
+     <initial_glyph conn="26,12,5,0,13,6">
+      <action box="0,-2,10,2"/>
+     </initial_glyph>
+    </initial>
+    <state name="Receive">
+     <entry>
+// process unfinished command
+if (me-&gt;remainingBytes != 0) {
+  // Debug: Serial.print(&quot;Process unfinished cmd: &quot;); Serial.println(me-&gt;remainingBytes);
+  SerialIn_processRemainingBytes(me);
+}
+else if (Serial.available() &gt; 0) {
+  int serin = Serial.read();
+  //Debug: Serial.println(serin, HEX);
+  if (serin &gt; -1) {
+    if ((serin &amp; 0x7) == 1) {
+      // Command 1: SoftDKb. The same bit is set as from the shift registers of the hardware DKb.
+      #ifdef DKBIN
+      int bitToSet = (serin &gt;&gt; 3);
+      uint32_t dkbIn = 0;
+      bitSet(dkbIn, bitToSet);
+      QACTIVE_POST((QMActive *)&amp;AO_DKbIn, evDKbInDispatch_SIG, dkbIn);
+      #endif
+    }
+    else if ((serin &amp; 0x7) == 2) {
+      // Command 2: Absolute motion for the motors. Each motor requires 16bit/2 bytes.
+      me-&gt;remainingBytes = (serin &gt;&gt; 3);
+      // Debug: Serial.print(F(&quot;Num bytes: &quot;)); Serial.println(me-&gt;remainingBytes);
+      // It is possible that not all bytes are in the serial-in buffer.
+      SerialIn_processRemainingBytes(me);
+    }
+    else if ((serin &amp; 0x7) == 3) {
+      // Send free memory
+      Serial.print(F(&quot;|E&quot;));
+      // Debug: int* p = new int[10];
+      // if (p == 0) { Serial.print(999); )
+      Serial.print(freeMemory());
+      Serial.print(F(&quot;|&quot;));
+    }
+  }
+}
+</entry>
+     <tran trig="Q_TIMEOUT" target="..">
+      <tran_glyph conn="46,27,1,1,11,-5,-11">
+       <action box="0,-2,10,2"/>
+      </tran_glyph>
+     </tran>
+     <state_glyph node="30,18,16,12">
+      <entry box="1,2,6,2"/>
+     </state_glyph>
+    </state>
+    <state_diagram size="80,50"/>
+   </statechart>
+  </class>
  </package>
  <directory name=".">
   <file name="gris5A.ino">
@@ -1624,7 +1665,6 @@ me-&gt;initializeCounter++;</action>
 
 #include &quot;qpn.h&quot;     // QP-nano framework
 #include &quot;Arduino.h&quot; // Arduino API
-
 #define DKBIN
 #define SERIALIN
 #define MANUALMOTION
@@ -1632,6 +1672,8 @@ me-&gt;initializeCounter++;</action>
 #define USERPROGRAM
 #define DKBOUT
 #define MOTOROUT
+
+#include &quot;FreeMemory.h&quot;
 
 #ifdef MOTOROUT
 #include &quot;_Adafruit_PWMServoDriver.h&quot;
@@ -1706,17 +1748,17 @@ prfServo&lt;uint32_t, uint8_t, uint16_t, float&gt; servoLib(&amp;impl, 0x777DD);
 
 #endif
 
-int freeRam() {
-  extern int __heap_start, *__brkval;
-  int v;
-  return (int) &amp;v - (__brkval == 0 ? (int) &amp;__heap_start : (int) __brkval);
-}
 
 #define Q_PARAM_SIZE   4
 
 //============================================================================
 // declare all AO classes...
+#ifdef DKBIN
 $declare(AOs::DKbIn)
+#endif
+#ifdef SERIALIN
+$declare(AOs::SerialIn)
+#endif
 #ifdef MANUALMOTION
 $declare(AOs::ManualMotion)
 #endif
@@ -1734,8 +1776,14 @@ $declare(AOs::MotorsOut)
 #endif
 
 // AO instances and event queue buffers for them...
+#ifdef DKBIN
 DKbIn AO_DKbIn;
-static QEvt l_DKbInQSto[5];
+static QEvt l_DKbInQSto[2];
+#endif
+#ifdef SERIALIN
+SerialIn AO_SerialIn;
+static QEvt l_SerialInQSto[1];
+#endif
 #ifdef MANUALMOTION
 ManualMotion AO_ManualMotion;
 static QEvt l_ManualMotionQSto[5];
@@ -1750,7 +1798,7 @@ static QEvt l_UserProgramQSto[5];
 #endif
 #ifdef DKBOUT
 DKbOut AO_DKbOut;
-static QEvt l_DKbOutQSto[2];
+static QEvt l_DKbOutQSto[1];
 #endif
 #ifdef MOTOROUT
 MotorsOut AO_MotorsOut;
@@ -1761,8 +1809,7 @@ static QEvt l_MotorsOutQSto[NUMSERVOS*2];
 //============================================================================
 // events used in this application...
 enum Signals {
-  evRead_SIG = Q_USER_SIG, // PEDestrians-waiting button press event
-  evManualMotionPressed_SIG,
+  evManualMotionPressed_SIG = Q_USER_SIG, // PEDestrians-waiting button press event
   evPreSetPressed_SIG,
   evUserProgramPressed_SIG,
   evUserProgramPlayPressed_SIG,
@@ -1770,7 +1817,8 @@ enum Signals {
   evProgramButtonPressed_SIG,
   evMotorForward_SIG,
   evMotorBackward_SIG,
-  evMotorAbsMove_SIG
+  evMotorAbsMove_SIG,
+  evDKbInDispatch_SIG
 };
 
 enum Pins {
@@ -1788,7 +1836,8 @@ enum Pins {
 // Possible are 1 for 10 ms or 100 Hz, 2 for 20 ms or 50 Hz, 3 for 30 ms or 33.3 Hz
 enum Constants {
   BSP_TICKS_PER_SEC = 100,          // Number of system clock ticks in one second, e.g. an interrupt every 10 ms
-  READOUTINVERVAL = 10,             // Read control panel every 100 ms
+  DKBREADINVERVAL = 10,             // Read control panel every 100 ms
+  SERIALRECVINVERVAL = 4,           // Read serial in buffer every 40 ms
   MOTORSENDINTERVAL = 2,            // A move of a motor takes 20 ms. the term step is used in the source code
   PRESETTIMERINTERVAL = 4,          // Discrete step size between the positions is 40 ms
   USERPROGRAMCOUNTERINTERVAL = 100, // Discrete step size between positions is 1000 ms
@@ -1911,7 +1960,12 @@ typedef struct MotorData_t {
 // QF_active[] array defines all active object control blocks ----------------
 QActiveCB const Q_ROM QF_active[] = {
   { (QActive *)0, (QEvt *)0, 0U}, // SGR: required...
+  #ifdef DKBIN
   { (QActive *)&amp;AO_DKbIn, l_DKbInQSto, Q_DIM(l_DKbInQSto) },
+  #endif
+  #ifdef SERIALIN
+  { (QActive *)&amp;AO_SerialIn, l_SerialInQSto, Q_DIM(l_SerialInQSto) },
+  #endif
   #ifdef MANUALMOTION
   { (QActive *)&amp;AO_ManualMotion, l_ManualMotionQSto, Q_DIM(l_ManualMotionQSto) },
   #endif
@@ -1936,7 +1990,12 @@ void setup() {
   QF_init(Q_DIM(QF_active));
 
   // initialize all AOs...
+  #ifdef DKBIN
   QActive_ctor(&amp;AO_DKbIn.super, Q_STATE_CAST(&amp;DKbIn_initial));
+  #endif
+  #ifdef SERIALIN
+  QActive_ctor(&amp;AO_SerialIn.super, Q_STATE_CAST(&amp;SerialIn_initial));
+  #endif
   #ifdef MANUALMOTION
   QActive_ctor(&amp;AO_ManualMotion.super, Q_STATE_CAST(&amp;ManualMotion_initial));
   #endif
@@ -1954,13 +2013,13 @@ void setup() {
   #endif
 
   // initialize the hardware used in this sketch...
-  Serial.begin(9600);   // set the highest stanard baud rate of 115200 bps
+  Serial.begin(9600);   // Stanard baud rates: 9600, 38400, 115200 bps
   Serial.print(F(&quot;Start, QP-nano: &quot;));
   Serial.println(F(QP_VERSION_STR));
 
   // Send free memory
   Serial.print(F(&quot;|E&quot;));
-  Serial.print(freeRam());
+  Serial.print(freeMemory());
   Serial.print(F(&quot;|&quot;));
 }
 
@@ -2005,7 +2064,12 @@ void Q_onAssert(char const Q_ROM * const file, int line) {
 
 //============================================================================
 // define all AO classes (state machine)...
+#ifdef DKBIN
 $define(AOs::DKbIn)
+#endif
+#ifdef SERIALIN
+$define(AOs::SerialIn)
+#endif
 #ifdef MANUALMOTION
 $define(AOs::ManualMotion)
 #endif
@@ -2022,6 +2086,50 @@ $define(AOs::DKbOut)
 $define(AOs::MotorsOut)
 #endif
 </text>
+  </file>
+  <file name="FreeMemory.h">
+   <text>/*****************************************************************************
+* Model: gris5A.qm
+* File:  ./FreeMemory.h
+*
+* This code has been generated by QM tool (see state-machine.com/qm).
+* DO NOT EDIT THIS FILE MANUALLY. All your changes will be lost.
+*
+* This program is open source software: you can redistribute it and/or
+* modify it under the terms of the GNU General Public License as published
+* by the Free Software Foundation.
+*
+* This program is distributed in the hope that it will be useful, but
+* WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+* or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+* for more details.
+*****************************************************************************/
+/*${.::FreeMemory.h} .......................................................*/
+#ifndef __FREEMEMORY_H
+#define __FREEMEMORY_H
+
+// Copied from:
+// https://learn.adafruit.com/memories-of-an-arduino/measuring-free-memory
+
+#ifdef __arm__
+// should use uinstd.h to define sbrk but Due causes a conflict
+extern &quot;C&quot; char* sbrk(int incr);
+#else  // __ARM__
+extern char *__brkval;
+#endif  // __arm__
+
+int freeMemory() {
+  char top;
+#ifdef __arm__
+  return &amp;top - reinterpret_cast&lt;char*&gt;(sbrk(0));
+#elif defined(CORE_TEENSY) || (ARDUINO &gt; 103 &amp;&amp; ARDUINO != 151)
+  return 1 + (&amp;top - __brkval);
+#else  // __arm__
+  return 1 + (__brkval ? &amp;top - __brkval : &amp;top - __malloc_heap_start);
+#endif  // __arm__
+}
+
+#endif</text>
   </file>
  </directory>
 </model>
