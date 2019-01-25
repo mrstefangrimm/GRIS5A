@@ -16,18 +16,15 @@
  *<http://www.gnu.org/licenses/> .
  -->
 
-<Window x:Class="WpfAppHelix1.MainWindow"
+<Window x:Class="VirtualGris5A.UI.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:VirtualGris5A"
+        xmlns:local="clr-namespace:VirtualGris5A.UI"
         xmlns:h="clr-namespace:HelixToolkit.Wpf;assembly=HelixToolkit.Wpf"
         mc:Ignorable="d"
         Title="Virtual GRIS5A" Width="800" Height="600">
-  <Window.DataContext>
-    <local:ViewModel/>
-  </Window.DataContext>
   <Window.Resources>
     <local:NegateDoubleConverter x:Key="negConverter"/>
   </Window.Resources>
@@ -71,12 +68,12 @@
             <Slider Minimum="0" Maximum="255" Value="{Binding RL.RTNInt}" />
           </StackPanel>
         </GroupBox>
-        <GroupBox Header="Gating" Foreground="White" FontWeight="Bold">
+        <GroupBox Header="Motion Platform" Foreground="White" FontWeight="Bold">
           <StackPanel>
-            <TextBox Text="{Binding GA.LNGInt, UpdateSourceTrigger=PropertyChanged}" Background="DarkGray" Foreground="White" />
-            <Slider Minimum="0" Maximum="255" Value="{Binding GA.LNGInt}"/>
-            <TextBox Text="{Binding GA.RTNInt, UpdateSourceTrigger=PropertyChanged}" Background="DarkGray" Foreground="White" />
-            <Slider Minimum="0" Maximum="255" Value="{Binding GA.RTNInt}" />
+            <TextBox Text="{Binding MP.LNGInt, UpdateSourceTrigger=PropertyChanged}" Background="DarkGray" Foreground="White" />
+            <Slider Minimum="0" Maximum="255" Value="{Binding MP.LNGInt}"/>
+            <TextBox Text="{Binding MP.RTNInt, UpdateSourceTrigger=PropertyChanged}" Background="DarkGray" Foreground="White" />
+            <Slider Minimum="0" Maximum="255" Value="{Binding MP.RTNInt}" />
           </StackPanel>
         </GroupBox>
         <Button Content="Manual" Command="{Binding GoManual}" Background="LightGray" Foreground="White" FontWeight="Bold" />
@@ -91,12 +88,14 @@
       </StackPanel>
     </ScrollViewer>
 
-
     <Grid Grid.Column="0">
 
       <Grid.RowDefinitions>
         <RowDefinition Height="3*"></RowDefinition>
         <RowDefinition Height="*"></RowDefinition>
+        <RowDefinition Height="25"></RowDefinition>
+        <RowDefinition Height="200"></RowDefinition>
+
       </Grid.RowDefinitions>
 
       <Grid>
@@ -139,11 +138,11 @@
           <h:BindableTranslateManipulator Direction="0 0 -1" Value="{Binding RL.LNGExt, Mode=OneWay}" TargetTransform="{Binding ElementName=cylinderRL, Path=Transform}"/>
           <h:BindableRotateManipulator Position="25 -25 0" Axis="0 0 -1"  Value="{Binding RL.RTNExt, Mode=OneWay}" TargetTransform="{Binding ElementName=markerRL, Path=Transform}"/>
 
-          <h:BoxVisual3D x:Name="gatingPlatform" Transform="{h:Translate 60, 140, 194}" Height="75" Width="3" Length="85"  Fill="LightGray"/>
+          <h:BoxVisual3D x:Name="MotionPlatformPlatform" Transform="{h:Translate 60, 140, 194}" Height="75" Width="3" Length="85"  Fill="LightGray"/>
           <h:TruncatedConeVisual3D  x:Name="rodGA"  Origin="60 60 194" Normal="0 1 0" BaseRadius="3" TopRadius="3" Height="80" Fill="BurlyWood"/>
-          <h:BindableTranslateManipulator Direction="0 1 0" Value="{Binding GA.LNGExt, Mode=OneWay}" TargetTransform="{Binding ElementName=rodGA, Path=Transform}"/>
-          <h:BindableTranslateManipulator Direction="0 1 0" Value="{Binding GA.LNGExt, Mode=OneWay}" TargetTransform="{Binding ElementName=gatingPlatform, Path=Transform}"/>
-          <h:BindableRotateManipulator Position="0 0 0" Axis="0 1 0"  Value="{Binding GA.RTNExt, Mode=OneWay}" TargetTransform="{Binding ElementName=gatingPlatform, Path=Transform}"/>
+          <h:BindableTranslateManipulator Direction="0 1 0" Value="{Binding MP.LNGExt, Mode=OneWay}" TargetTransform="{Binding ElementName=rodGA, Path=Transform}"/>
+          <h:BindableTranslateManipulator Direction="0 1 0" Value="{Binding MP.LNGExt, Mode=OneWay}" TargetTransform="{Binding ElementName=MotionPlatformPlatform, Path=Transform}"/>
+          <h:BindableRotateManipulator Position="0 0 0" Axis="0 1 0"  Value="{Binding MP.RTNExt, Mode=OneWay}" TargetTransform="{Binding ElementName=MotionPlatformPlatform, Path=Transform}"/>
 
           <!-- static parts -->
           <h:TruncatedConeVisual3D  x:Name="rodLU"  Origin="-25, 25, 100" Normal="0 0 -1" BaseRadius="3" TopRadius="3" Height="100" Fill="BurlyWood"/>
@@ -168,8 +167,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
           </Grid.RowDefinitions>
-
-          <h:HelixViewport3D Grid.Row="0"  Background="{h:LinearGradientBrush Black, Black}" ShowCoordinateSystem="True" ShowViewCube="False" Margin="0,6,-0.5,208.5" Grid.RowSpan="2">
+          <h:HelixViewport3D Grid.Row="0"  Background="{h:LinearGradientBrush Black, Black}" ShowCoordinateSystem="True" ShowViewCube="False">
 
             <h:HelixViewport3D.Camera>
               <OrthographicCamera Position="0 500 0" LookDirection="0 -500 0" Width="250" UpDirection="0 0 -1"/>
@@ -241,18 +239,34 @@
 
       </Grid>
 
-      <Grid Grid.Row="1" Name="GatingPanel" Background="Black">
+      <Grid Grid.Row="1" Name="MotionPlatformPanel" Background="Black">
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="9*"/>
           <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <Polyline Name="GatingHistory" Grid.Column="0"  SizeChanged="_OnSizeChanged" Stroke="White" />
+        <Polyline Name="MotionPlatformHistory" Grid.Column="0"  SizeChanged="_OnSizeChanged" Stroke="White" />
         <Canvas Grid.Column="1">
-          <Line  Name="Pointer" X1="0" Y1="{Binding GA.LNGExt, Converter={StaticResource negConverter}}" X2="20" Y2="{Binding GA.LNGExt, Converter={StaticResource negConverter}}" Stroke="White" StrokeThickness="5" />
-          <Line  X1="5" Y1="0" X2="5" Y2="{Binding ElementName=GatingPanel, Path=ActualHeight}" Stroke="White" StrokeThickness="5"/>
+          <Line  Name="Pointer" X1="0" Y1="{Binding MP.LNGExt, Converter={StaticResource negConverter}}" X2="20" Y2="{Binding MP.LNGExt, Converter={StaticResource negConverter}}" Stroke="White" StrokeThickness="5" />
+          <Line  X1="5" Y1="0" X2="5" Y2="{Binding ElementName=MotionPlatformPanel, Path=ActualHeight}" Stroke="White" StrokeThickness="5"/>
         </Canvas>
       </Grid>
+
+      <StackPanel Grid.Row="2" Name="SerialPort" Orientation="Horizontal">
+        <Label Content="Port:"></Label>
+        <ComboBox Name ="CmbSerialPorts" Width="100" 
+                  ItemsSource="{Binding Path=SerialPorts, Mode=OneWay}"    
+                  SelectedItem="{Binding Path=SSerialPorts, Mode=TwoWay}" />
+        <Button Content="Refresh" Command="{Binding DoRefreshSerialPorts}" />
+        <CheckBox Content="Connect" Command="{Binding DoConnectSerialPort}" CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}" />
+      </StackPanel>
+
+      <ScrollViewer Grid.Row="3" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+
+        <TextBlock Text="{Binding Path=Logging, Mode=OneWay}">
+
+        </TextBlock>
+      </ScrollViewer>
 
     </Grid>
 

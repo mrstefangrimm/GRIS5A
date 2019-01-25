@@ -38,6 +38,50 @@ enum MotorID {
   GARTN
 };
 
+typedef struct DKbInData_r1_t {
+  DKbInData_r1_t () : raw(0) {}
+  DKbInData_r1_t (const struct DKbInData_r1_t& t) : raw(t.raw) {}
+  DKbInData_r1_t (uint32_t rawValue) : raw(rawValue) {}
+  union {
+    struct {
+      uint32_t GAL : 1;
+      uint32_t GAT : 1;
+      uint32_t GAB : 1;
+      uint32_t GAR : 1;
+      uint32_t FP7 : 1;
+      uint32_t FP6 : 1;
+      uint32_t FP5 : 1;
+      uint32_t FP8 : 1;
+      uint32_t RLB : 1;
+      uint32_t RLR : 1;
+      uint32_t RLL : 1;
+      uint32_t RLT : 1;
+      uint32_t RUR : 1;
+      uint32_t RUL : 1;
+      uint32_t RUT : 1;
+      uint32_t RUB : 1;
+      uint32_t FP4 : 1;
+      uint32_t FP3 : 1;
+      uint32_t FP2 : 1;
+      uint32_t FP1 : 1;
+      uint32_t FPG : 1;
+      uint32_t FPS : 1;
+      uint32_t FMM : 1;
+      uint32_t FPP : 1;
+      uint32_t LLB : 1;
+      uint32_t LLR : 1;
+      uint32_t LLL : 1;
+      uint32_t LLT : 1;
+      uint32_t LUR : 1;
+      uint32_t LUL : 1;
+      uint32_t LUT : 1;
+      uint32_t LUB : 1;
+    };
+    uint32_t raw;
+  };
+} DKbInData;
+
+
 void setup() {
   Serial.begin(9600);
   delay(50);
@@ -51,6 +95,7 @@ void setup() {
   }
   delay(1000);
   for (int n=0; n<NUMSERVOS; n++) {
+    delay(100);
     pwm.setPWM(n, 0, _currentPosition[n]);
   }
 }
@@ -58,32 +103,37 @@ void setup() {
 
 void loop() {
 
-  int key = Serial.read();
+  int serin = Serial.read();
+  int key = serin;
+  if (serin > -1 && (serin & 0x7) == 1) {
+    // Debug: Serial.println(serin, HEX);
+    uint32_t databuf = 0;
+    int bitToSet = (serin >> 3);
+    bitSet(databuf, bitToSet);
+    DKbInData data(databuf);
+    
+    if      (data.LUR) { _currentPosition[LURTN] += 5; }
+    else if (data.LUL) { _currentPosition[LURTN] -= 5; }
+    else if (data.LUT) { _currentPosition[LULNG] -= 5; }
+    else if (data.LUB) { _currentPosition[LULNG] += 5; }
+    else if (data.LLR) { _currentPosition[LLRTN] += 5; }
+    else if (data.LLL) { _currentPosition[LLRTN] -= 5; }
+    else if (data.LLT) { _currentPosition[LLLNG] += 5; }
+    else if (data.LLB) { _currentPosition[LLLNG] -= 5; }
 
-  if (key >= '0' && key <= 'O') {
-    // Debug: Serial.println(key);
-    if      (key == 'L') { _currentPosition[LURTN] += 5; }
-    else if (key == 'M') { _currentPosition[LURTN] -= 5; }
-    else if (key == 'N') { _currentPosition[LULNG] -= 5; }
-    else if (key == 'O') { _currentPosition[LULNG] += 5; }
-    else if (key == 'J') { _currentPosition[LLRTN] -= 5; }
-    else if (key == 'I') { _currentPosition[LLRTN] += 5; }
-    else if (key == 'K') { _currentPosition[LLLNG] += 5; }
-    else if (key == 'H') { _currentPosition[LLLNG] -= 5; }
+    else if (data.RUR) { _currentPosition[RURTN] += 5; }
+    else if (data.RUL) { _currentPosition[RURTN] -= 5; }
+    else if (data.RUT) { _currentPosition[RULNG] += 5; }
+    else if (data.RUB) { _currentPosition[RULNG] -= 5; }
+    else if (data.RLR) { _currentPosition[RLRTN] += 5; }
+    else if (data.RLL) { _currentPosition[RLRTN] -= 5; }
+    else if (data.RLT) { _currentPosition[RLLNG] -= 5; }
+    else if (data.RLB) { _currentPosition[RLLNG] += 5; }
 
-    else if (key == '<') { _currentPosition[RURTN] += 5; }
-    else if (key == '=') { _currentPosition[RURTN] -= 5; }
-    else if (key == '>') { _currentPosition[RULNG] += 5; }
-    else if (key == '?') { _currentPosition[RULNG] -= 5; }
-    else if (key == ':') { _currentPosition[RLRTN] -= 5; }
-    else if (key == '9') { _currentPosition[RLRTN] += 5; }
-    else if (key == ';') { _currentPosition[RLLNG] -= 5; }
-    else if (key == '8') { _currentPosition[RLLNG] += 5; }
-
-    else if (key == '0') { _currentPosition[GARTN] += 5; }
-    else if (key == '3') { _currentPosition[GARTN] -= 5; }
-    else if (key == '1') { _currentPosition[GALNG] -= 5; }
-    else if (key == '2') { _currentPosition[GALNG] += 5; }
+    else if (data.GAR) { _currentPosition[GARTN] += 5; }
+    else if (data.GAL) { _currentPosition[GARTN] -= 5; }
+    else if (data.GAT) { _currentPosition[GALNG] -= 5; }
+    else if (data.GAB) { _currentPosition[GALNG] += 5; }
 
     for (int n=0; n<NUMSERVOS; n++) {
       pwm.setPWM(n, 0, _currentPosition[n]);

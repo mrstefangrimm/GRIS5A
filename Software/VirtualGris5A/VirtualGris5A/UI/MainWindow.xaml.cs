@@ -1,5 +1,5 @@
 ﻿/* MainWindow.xaml.cs - Virtual GRIS5A (C) motion phantom application.
- * Copyright (C) 2018 by Stefan Grimm
+ * Copyright (C) 2018-2019 by Stefan Grimm
  *
  * This is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -12,7 +12,7 @@
  * GNU Lesser General Public License for more details.
 
  * You should have received a copy of the GNU Lesser General Public License
- * along with the SoftDKb software.  If not, see
+ * along with the VirtualGris05 software.  If not, see
  * <http://www.gnu.org/licenses/>.
  */
 
@@ -23,7 +23,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
 
-namespace WpfAppHelix1 {
+namespace VirtualGris5A.UI {
 
   /// <summary>
   /// Interaction logic for MainWindow.xaml
@@ -40,7 +40,7 @@ namespace WpfAppHelix1 {
       for (int n = 0; n < 100; n++) {
         _points.Add(new Point());
       }
-      GatingHistory.Points = _points;
+      MotionPlatformHistory.Points = _points;
 
       EventHandler timerDelegate =
         new EventHandler(delegate (object sender, EventArgs e) {
@@ -67,7 +67,7 @@ namespace WpfAppHelix1 {
       var m = Pointer.RenderTransform.Value;
       m.OffsetY = e.NewSize.Height / 2.0;
       Pointer.RenderTransform = new MatrixTransform(m);
-      GatingHistory.RenderTransform = new MatrixTransform(m);
+      MotionPlatformHistory.RenderTransform = new MatrixTransform(m);
 
       double xStep = e.NewSize.Width / 100.0;
       for (int n = 0; n < 100; n++) {

@@ -6,7 +6,7 @@
 using System;
 using System.Windows.Input;
 
-namespace VirtualGris5A {
+namespace VirtualGris5A.UI {
 
   public class RelayCommand<T> : ICommand {
     #region Fields
