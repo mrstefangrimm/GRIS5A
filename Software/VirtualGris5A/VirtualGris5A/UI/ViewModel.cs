@@ -16,23 +16,23 @@
  * <http://www.gnu.org/licenses/>.
  */
 
+using MessagingLib;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Windows.Input;
+using System.Diagnostics;
 using System.IO.Ports;
-using System;
-using MessagingLib;
-using ZeroMQ;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using VirtualGris5A.MessagingUtil;
-using System.Diagnostics;
-using System.Collections.Generic;
-using VirtualGris5A.Model.Ev.UI;
+using VirtualGris5A.Model;
 using VirtualGris5A.Model.Ev;
-using VirtualGris5A.Model.Ev.MotionSystem;
 using VirtualGris5A.Model.Ev.PreSet;
+using VirtualGris5A.Model.Ev.UI;
+using ZeroMQ;
 
 namespace VirtualGris5A.UI {
 

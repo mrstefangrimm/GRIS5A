@@ -372,7 +372,7 @@ if (data.FMM) {
   DKBREADINVERVAL);
 
 pinMode(LATCHPIN_IN, OUTPUT);
-pinMode(CLOCKPIN_IN, OUTPUT); 
+pinMode(CLOCKPIN_IN, OUTPUT);
 pinMode(DATAPIN_IN,  INPUT);
 
 Serial.println(F(&quot;DKbIn Initialized&quot;));</action>
@@ -1641,6 +1641,10 @@ else if (Serial.available() &gt; 0) {
       Serial.print(freeMemory());
       Serial.print(F(&quot;|&quot;));
     }
+    else if ((serin &amp; 0x7) == 4) {
+      // Send free memory
+      Serial.print(F(&quot;Synced&quot;));
+    }
   }
 }
 </entry>
@@ -2014,6 +2018,7 @@ void setup() {
 
   // initialize the hardware used in this sketch...
   Serial.begin(9600);   // Stanard baud rates: 9600, 38400, 115200 bps
+  Serial.print(F(&quot;Synced&quot;));
   Serial.print(F(&quot;Start, QP-nano: &quot;));
   Serial.println(F(QP_VERSION_STR));
 

@@ -501,6 +501,7 @@ void setup() {
 
   // initialize the hardware used in this sketch...
   Serial.begin(9600);   // Stanard baud rates: 9600, 38400, 115200 bps
+  Serial.print(F("Synced"));
   Serial.print(F("Start, QP-nano: "));
   Serial.println(F(QP_VERSION_STR));
 
@@ -886,6 +887,10 @@ static QState SerialIn_Receive(SerialIn * const me) {
                   // if (p == 0) { Serial.print(999); )
                   Serial.print(freeMemory());
                   Serial.print(F("|"));
+                }
+                else if ((serin & 0x7) == 4) {
+                  // Send free memory
+                  Serial.print(F("Synced"));
                 }
               }
             }

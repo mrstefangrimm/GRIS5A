@@ -16,69 +16,126 @@
  * <http://www.gnu.org/licenses/>.
  */
 
+using MessagingLib;
 using System;
 using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Threading;
-using VirtualGris5A.Model.Ev;
-using VirtualGris5A.Model.Ev.MotionSystem;
+using VirtualGris5A.MessagingUtil;
 
 namespace VirtualGris5A.Model {
 
-  public delegate void MotionSustemLog(string logmsg);
+  #region Events
+  public delegate void MotionSustemLog(EvSerialOutText ev);
+  public delegate void MotionSustemPosition(EvSerialOutPosition ev);
+  public delegate void MotionSustemFreeMemory(EvSerialOutFreeMemory ev);
 
-  public interface ISerialOutData {
-    byte[] Data { get; }
-    void Add(ServoNumber m, UInt16 pos, UInt16 step);
-    void Add(ISerialOutData moreData);
+  [DataContract]
+  public class EvConnect : IMessage {
+    [DataMember] public string ComPort;
+
+    private static readonly ushort MSGID = WireMessage.CreateMsgID();
+    static EvConnect() {
+      MessageRegistry.Instance.Register(MSGID, typeof(EvConnect));
+    }
+    public ushort MsgId => MSGID;
   }
 
-  public enum ServoNumber {
-    LURTN = 0,
-    LULNG,
-    LLRTN,
-    LLLNG,
-    RLLNG,
-    RLRTN,
-    RULNG,
-    RURTN,
-    MPLNG,
-    MPRTN
+  [DataContract]
+  public class EvDisconnect : IMessage {
+    private static readonly ushort MSGID = WireMessage.CreateMsgID();
+    static EvDisconnect() {
+      MessageRegistry.Instance.Register(MSGID, typeof(EvDisconnect));
+    }
+    public ushort MsgId => MSGID;
   }
 
-  internal class MotorOutCommand : ISerialOutData {
-    const byte CMD = 2;
-    private Dictionary<ServoNumber, byte[]> _servoData = new Dictionary<ServoNumber, byte[]>();
+  [DataContract]
+  public class MotionSystemPosition {
+    [DataMember] public byte Channel;
+    [DataMember] public ushort Value;
+    [DataMember] public ushort StepSize;
+  }
 
-    public void Add(ServoNumber m, UInt16 pos, UInt16 step) {
+  [DataContract]
+  public class EvMotionSystemPositions : IMessage {
+    [DataMember] public MotionSystemPosition[] Positions;
+
+    private static ushort MSGID = WireMessage.CreateMsgID();
+    static EvMotionSystemPositions() {
+      MessageRegistry.Instance.Register(MSGID, typeof(EvMotionSystemPositions));
+    }
+    public ushort MsgId => MSGID;
+  }
+
+  [DataContract]
+  public class EvSerialOutText : IMessage {
+    [DataMember] public string Text;
+
+    private static readonly ushort MSGID = WireMessage.CreateMsgID();
+    static EvSerialOutText() {
+      MessageRegistry.Instance.Register(MSGID, typeof(EvSerialOutText));
+    }
+    public ushort MsgId => MSGID;
+  }
+
+  [DataContract]
+  public class EvSerialOutPosition : IMessage {
+    [DataMember] public byte Channel;
+    [DataMember] public ushort Value;
+
+    private static readonly ushort MSGID = WireMessage.CreateMsgID();
+    static EvSerialOutPosition() {
+      MessageRegistry.Instance.Register(MSGID, typeof(EvSerialOutPosition));
+    }
+    public ushort MsgId => MSGID;
+  }
+
+  [DataContract]
+  public class EvSerialOutFreeMemory : IMessage {
+    [DataMember] public string Text;
+
+    private static readonly ushort MSGID = WireMessage.CreateMsgID();
+    static EvSerialOutFreeMemory() {
+      MessageRegistry.Instance.Register(MSGID, typeof(EvSerialOutFreeMemory));
+    }
+    public ushort MsgId => MSGID;
+  }
+
+  #endregion Events
+
+  internal class SerialOutMessage {
+    private const byte CMD = 2;
+    private Dictionary<byte, byte[]> _servoData = new Dictionary<byte, byte[]>();
+
+    public void Add(byte servo, UInt16 pos, UInt16 step) {
       var motorData = new byte[2];
-      motorData[0] = (byte)((step << 4) | (byte)m);
+      motorData[0] = (byte)((step << 4) | servo);
       motorData[1] = (byte)(pos);
       lock (_servoData) {
-        if (_servoData.ContainsKey(m)) {
-          _servoData[m] = motorData;
+        if (_servoData.ContainsKey(servo)) {
+          _servoData[servo] = motorData;
         }
         else {
-          _servoData.Add(m, motorData);
+          _servoData.Add(servo, motorData);
         }
       }
       //_servoData.Add(m, (byte)((step << 4) | (byte)m));
       //_servoData.Add((byte)(pos));
     }
-    public void Add(ISerialOutData moreData) {
-      var motorData = moreData as MotorOutCommand;
-      if (moreData != null) {
-        lock (_servoData) {
-          motorData._servoData.Keys.ToList().ForEach(k => {
-            if (_servoData.ContainsKey(k)) {
-              _servoData[k] = motorData._servoData[k];
-            }
-            else {
-              _servoData.Add(k, motorData._servoData[k]);
-            }
-          });
-        }
+
+    public void Add(SerialOutMessage moreData) {
+      lock (_servoData) {
+        moreData._servoData.Keys.ToList().ForEach(k => {
+          if (_servoData.ContainsKey(k)) {
+            _servoData[k] = moreData._servoData[k];
+          }
+          else {
+            _servoData.Add(k, moreData._servoData[k]);
+          }
+        });
       }
     }
 
@@ -103,16 +160,21 @@ namespace VirtualGris5A.Model {
     }
 
   }
-
+  
   public class MotionSystem : IDisposable {
 
+    public enum SyncState {  Desynced, Synced }
+
     private const int _portBaudRate = 9600; // 9600, 38400, 115200;
-    private MotorOutCommand _sendBuffer = new MotorOutCommand();
+    private SerialOutMessage _sendBuffer = new SerialOutMessage();
     public SerialPort _serialPort;
     private Timer _timer;
     private int _lastSentHashCode;
     private MotionSustemLog _logHandler;
-    
+    private SyncState _state = SyncState.Desynced;
+    private string _receivedText = string.Empty;
+    private bool _isReceivingText;
+
     public MotionSystem(MotionSustemLog handler) {
       _logHandler = handler;
 
@@ -144,18 +206,23 @@ namespace VirtualGris5A.Model {
 
     public void Connect(EvConnect ev) {
       SerialConnect(ev.ComPort);
+
+      SendSync();
     }
 
     public void Disconnect(EvDisconnect ev) {
       SerialDisconnect();
     }
-
-    public void Shutdown(EvShutdown ev) {
-      _serialPort?.Close();
-      _timer.Change(Timeout.Infinite, Timeout.Infinite);
+    
+    public void MotionSystemPositions(EvMotionSystemPositions ev) {
+      SerialOutMessage cmd = new SerialOutMessage();
+      foreach (var pos in ev.Positions) {
+        cmd.Add(pos.Channel, pos.Value, pos.StepSize);
+      }
+      Send(cmd);
     }
 
-    public void Send(ISerialOutData data) {
+    private void Send(SerialOutMessage data) {
       if (_serialPort != null && _serialPort.IsOpen) {
         lock (_sendBuffer) {
           //var seroutbytes = data.Data;
@@ -166,11 +233,23 @@ namespace VirtualGris5A.Model {
         }
       }
       else {
-        _logHandler("Send failed since Serial Port is not open.");
+        EvSerialOutText cmd = new EvSerialOutText() { Text = "Send failed since Serial Port is not open." };
+        _logHandler(cmd);
       }
     }
 
-    private void ServoAbsolutePositions(EvServoAbsolutePositions ev) {
+    private void SendSync() {
+      if (_serialPort != null && _serialPort.IsOpen) {
+        lock (_sendBuffer) {
+          byte[] syncMsg = new byte[1];
+          syncMsg[0] = 4;
+          _serialPort.Write(syncMsg, 0, 1);
+        }
+      }
+      else {
+        EvSerialOutText cmd = new EvSerialOutText() { Text = "Send 'Sync' failed since Serial Port is not open." };
+        _logHandler(cmd);
+      }
     }
 
     private void SerialConnect(string comPort) {
@@ -180,13 +259,16 @@ namespace VirtualGris5A.Model {
       _serialPort.DataReceived += OnSerialPortDataReceived;
       try {
         _serialPort.Open();
+        _state = SyncState.Desynced;
       }
       catch (Exception e) {
         if (e.InnerException != null) {
-          _logHandler(e.InnerException.Message);
+          EvSerialOutText cmd = new EvSerialOutText() { Text = e.InnerException.Message };
+          _logHandler(cmd);
         }
         else {
-          _logHandler(e.Message);
+          EvSerialOutText cmd = new EvSerialOutText() { Text = e.Message };
+          _logHandler(cmd);
         }
         SerialDisconnect();
       }
@@ -199,26 +281,53 @@ namespace VirtualGris5A.Model {
         _serialPort.Dispose();
         _serialPort = null;
       }
+      _state = SyncState.Desynced;
     }
 
     private void OnSerialPortDataReceived(object sender, SerialDataReceivedEventArgs e) {
       char[] serin = new char[_serialPort.BytesToRead];
       _serialPort.Read(serin, 0, serin.Length);
 
-      _logHandler(new string(serin));
+      if (_state == SyncState.Desynced) {
+        _receivedText += new string(serin);
+        int index = _receivedText.IndexOf("Synced");
+        if (index != -1) {
+          string syncedData = _receivedText.Remove(0, index + 6);
+          _receivedText = string.Empty;
 
-      //int beforeHash = _receivedData.GetHashCode();
-      //serin.ToList().ForEach(ch => {
-      //  if (!_receiving && ch != '|') {
-      //    _receivedData += ch;
-      //  }
-      //  if (ch == '|') {
-      //    _receiving = !_receiving;
-      //  }
-      //});
-      //if (_receivedData.GetHashCode() != beforeHash) {
-      //  _OnPropertyChanged("Logging");
-      //}
+          _isReceivingText = true;
+          syncedData.ToList().ForEach(ch => {
+            if (_isReceivingText && ch != '|') {
+              _receivedText += ch;
+            }
+            if (ch == '|') {
+              _isReceivingText = !_isReceivingText;
+            }
+          });
+          _state = SyncState.Synced;
+        }       
+        EvSerialOutText cmd = new EvSerialOutText() { Text = _state + _receivedText };
+        _logHandler(cmd);
+      }
+      else if (_state == SyncState.Synced) {
+
+        serin.ToList().ForEach(ch => {
+          if (_isReceivingText && ch != '|') {
+            _receivedText += ch;
+          }
+          if (ch == '|') {
+            _isReceivingText = !_isReceivingText;
+          }
+        });
+
+        int index = _receivedText.IndexOf("\r\n");
+        if (index != -1) {
+          string msg = _receivedText.Substring(0, index);
+          EvSerialOutText cmd = new EvSerialOutText() { Text = msg };
+          _receivedText = _receivedText.Remove(0, index + 2);
+          _logHandler(cmd);
+        }
+      }
     }
 
   }

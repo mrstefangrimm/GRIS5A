@@ -33,6 +33,18 @@ namespace VirtualGris5A.Model {
       public ushort MsgId => MSGID;
     }
 
+    [DataContract]
+    public class EvLogMessage : IMessage {
+      [DataMember] public string Source;
+      [DataMember] public string Message;
+
+      private static readonly ushort MSGID = WireMessage.CreateMsgID();
+      static EvLogMessage() {
+        MessageRegistry.Instance.Register(MSGID, typeof(EvLogMessage));
+      }
+      public ushort MsgId => MSGID;
+    }
+
     public enum Cylinder { LeftUpper, LeftLower, RightUpper, RightLower, Platform }
 
     namespace UI {
@@ -73,52 +85,17 @@ namespace VirtualGris5A.Model {
 
     namespace MotionSystem {
 
-      [DataContract]
-      public class EvConnect : IMessage {
-        [DataMember] public string ComPort;
-
-        private static readonly ushort MSGID = WireMessage.CreateMsgID();
-        static EvConnect() {
-          MessageRegistry.Instance.Register(MSGID, typeof(EvConnect));
-        }
-        public ushort MsgId => MSGID;
-      }
-
-      [DataContract]
-      public class EvDisconnect : IMessage {
-        private static readonly ushort MSGID = WireMessage.CreateMsgID();
-        static EvDisconnect() {
-          MessageRegistry.Instance.Register(MSGID, typeof(EvDisconnect));
-        }
-        public ushort MsgId => MSGID;
-      }
-      
-      [DataContract]
-      public class ServoAbsolutePosition {
-        [DataMember] public ServoNumber Num;
-        [DataMember] public ushort AbsPos;
-      }
-
-      [DataContract]
-      public class EvServoAbsolutePositions : IMessage {
-        [DataMember] public ServoAbsolutePosition[] Positions;
-
-        private static ushort MSGID = WireMessage.CreateMsgID();
-        static EvServoAbsolutePositions() {
-          MessageRegistry.Instance.Register(MSGID, typeof(EvServoAbsolutePositions));
-        }
-        public ushort MsgId => MSGID;
-      }
-
-      [DataContract]
-      public class EvLogMessage : IMessage {
-        [DataMember] public string Message;
-
-        private static readonly ushort MSGID = WireMessage.CreateMsgID();
-        static EvLogMessage() {
-          MessageRegistry.Instance.Register(MSGID, typeof(EvLogMessage));
-        }
-        public ushort MsgId => MSGID;
+      public enum ServoNumber : byte {
+        LURTN = 0,
+        LULNG,
+        LLRTN,
+        LLLNG,
+        RLLNG,
+        RLRTN,
+        RULNG,
+        RURTN,
+        MPLNG,
+        MPRTN
       }
 
     }

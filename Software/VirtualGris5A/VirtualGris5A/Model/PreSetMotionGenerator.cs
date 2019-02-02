@@ -352,7 +352,6 @@ namespace VirtualGris5A.Model {
         const ushort STEPSZ = 10;
         double target = 127 + 80 * Math.Sin((_preSetTimer - 2960) / 2480.0 * Math.PI);
 
-        const ushort STEPSZMP = 3;
         ushort rtnMP = 127;
         if (_preSetTimer >= 25000 && _preSetTimer < 35000) { rtnMP = 255; }
 
