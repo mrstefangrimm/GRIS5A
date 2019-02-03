@@ -134,7 +134,6 @@ static void DKbIn_dispatchDKbIn(DKbIn const * const me);
 /* protected: */
 static QState DKbIn_initial(DKbIn * const me);
 static QState DKbIn_Read(DKbIn * const me);
-static QState DKbIn_Dispatch(DKbIn * const me);
 
 #endif
 #ifdef SERIALIN
@@ -723,8 +722,15 @@ static QState DKbIn_initial(DKbIn * const me) {
 static QState DKbIn_Read(DKbIn * const me) {
     QState status_;
     switch (Q_SIG(me)) {
-        /* ${AOs::DKbIn::SM::Read} */
-        case Q_ENTRY_SIG: {
+        /* ${AOs::DKbIn::SM::Read::DKBIN_DISPATCH} */
+        case DKBIN_DISPATCH_SIG: {
+            me->dataBuffer = Q_PAR(me);
+            DKbIn_dispatchDKbIn(me);
+            status_ = Q_TRAN(&DKbIn_Read);
+            break;
+        }
+        /* ${AOs::DKbIn::SM::Read::Q_TIMEOUT} */
+        case Q_TIMEOUT_SIG: {
             //me->dataBuffer = 0;
 
             // Timing 0.5 ms
@@ -736,40 +742,7 @@ static QState DKbIn_Read(DKbIn * const me) {
             // Debug: Serial.println(dkbin, HEX);
 
             QACTIVE_POST((QMActive *)&AO_DKbIn, DKBIN_DISPATCH_SIG, dkbin);
-            status_ = Q_HANDLED();
-            break;
-        }
-        /* ${AOs::DKbIn::SM::Read::DKBIN_DISPATCH} */
-        case DKBIN_DISPATCH_SIG: {
-            status_ = Q_TRAN(&DKbIn_Dispatch);
-            break;
-        }
-        default: {
-            status_ = Q_SUPER(&QHsm_top);
-            break;
-        }
-    }
-    return status_;
-}
-/*${AOs::DKbIn::SM::Dispatch} ..............................................*/
-static QState DKbIn_Dispatch(DKbIn * const me) {
-    QState status_;
-    switch (Q_SIG(me)) {
-        /* ${AOs::DKbIn::SM::Dispatch} */
-        case Q_ENTRY_SIG: {
-            me->dataBuffer = Q_PAR(me);
-            DKbIn_dispatchDKbIn(me);
-            status_ = Q_HANDLED();
-            break;
-        }
-        /* ${AOs::DKbIn::SM::Dispatch::Q_TIMEOUT} */
-        case Q_TIMEOUT_SIG: {
             status_ = Q_TRAN(&DKbIn_Read);
-            break;
-        }
-        /* ${AOs::DKbIn::SM::Dispatch::DKBIN_DISPATCH} */
-        case DKBIN_DISPATCH_SIG: {
-            status_ = Q_TRAN(&DKbIn_Dispatch);
             break;
         }
         default: {

@@ -381,7 +381,15 @@ Serial.println(F(&quot;DKbIn Initialized&quot;));</action>
      </initial_glyph>
     </initial>
     <state name="Read">
-     <entry>//me-&gt;dataBuffer = 0;
+     <tran trig="DKBIN_DISPATCH" target="..">
+      <action brief="dispatch button presses">me-&gt;dataBuffer = Q_PAR(me);
+DKbIn_dispatchDKbIn(me);</action>
+      <tran_glyph conn="25,23,2,2,4,8,-4">
+       <action box="0,-2,34,2"/>
+      </tran_glyph>
+     </tran>
+     <tran trig="Q_TIMEOUT" target="..">
+      <action brief="shift in">//me-&gt;dataBuffer = 0;
 
 // Timing 0.5 ms
 
@@ -391,32 +399,12 @@ digitalWrite(LATCHPIN_IN,0);
 uint32_t dkbin = DKbIn_shiftIn32(me);
 // Debug: Serial.println(dkbin, HEX);
 
-QACTIVE_POST((QMActive *)&amp;AO_DKbIn, DKBIN_DISPATCH_SIG, dkbin);</entry>
-     <tran trig="DKBIN_DISPATCH" target="../../2">
-      <tran_glyph conn="25,20,2,0,6">
-       <action box="0,-2,14,2"/>
+QACTIVE_POST((QMActive *)&amp;AO_DKbIn, DKBIN_DISPATCH_SIG, dkbin);</action>
+      <tran_glyph conn="40,17,1,1,9,-3,-9">
+       <action box="0,0,19,2"/>
       </tran_glyph>
      </tran>
-     <state_glyph node="14,10,26,10">
-      <entry box="1,2,6,2"/>
-     </state_glyph>
-    </state>
-    <state name="Dispatch">
-     <entry>me-&gt;dataBuffer = Q_PAR(me);
-DKbIn_dispatchDKbIn(me);</entry>
-     <tran trig="Q_TIMEOUT" target="../../1">
-      <tran_glyph conn="40,31,1,1,14,-17,-14">
-       <action box="0,-2,10,2"/>
-      </tran_glyph>
-     </tran>
-     <tran trig="DKBIN_DISPATCH" target="..">
-      <tran_glyph conn="20,38,2,2,5,13,-5">
-       <action box="0,0,15,2"/>
-      </tran_glyph>
-     </tran>
-     <state_glyph node="14,26,26,12">
-      <entry box="1,2,6,2"/>
-     </state_glyph>
+     <state_glyph node="14,10,26,13"/>
     </state>
     <state_diagram size="66,50"/>
    </statechart>
