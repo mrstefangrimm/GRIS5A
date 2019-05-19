@@ -23,6 +23,7 @@ String sendBuffer = new String("0x0 0000 0000 0000 0000 0000 0000 0000 0000");
 int[] recvBuffer = new int[10];
 int readingPos = 0;
 boolean receiving;
+boolean synced = false;
 
 int[] positionBuffer = new int[10];
 boolean led1 = true;
@@ -45,6 +46,8 @@ void setup() {
   if (comPorts.length > 0) {
     String portName = Serial.list()[0];
     comPort = new Serial(this, portName, 9600);
+    comPort.write(0x4);
+    sendBuffer = "0x4";
   }
   else {
     println("No device found");
@@ -144,33 +147,53 @@ void serialEvent(Serial myPort) {
   
   int val = myPort.read();
   if (val == -1) return;
-  if (!receiving && val != '|') {
+  
+  if (synced == false) {
     print((char)val);
-  }
     
-  if (val == '|') {
-    receiving = !receiving;
-    if (receiving) {
-      readingPos = 0;
-    } 
-    else if (recvBuffer[0] == 'A') { led1 = true; led2 = false; led3 = false; led4 = false; }
-    else if (recvBuffer[0] == 'B') { led1 = false; led2 = true; led3 = false; led4 = false; }
-    else if (recvBuffer[0] == 'C') { led1 = false; led2 = false; led3 = true; led4 = false; }
-    else if (recvBuffer[0] == 'D') { led1 = false; led2 = false; led3 = false; led4 = true; }
-    else if (recvBuffer[0] == 'E') { freeMemory = getReceivedNumber(); }
-    else {
-      int motor = recvBuffer[0] - '0';    
-      if (motor >= 0 && motor < 10) {
-        positionBuffer[motor] = getReceivedNumber();
+    if (readingPos == 6) {
+      for (int n=0; n < 6; n++) {
+        recvBuffer[n] = recvBuffer[n+1];
+      }
+      recvBuffer[6] = val;
+      if (recvBuffer[0] == (int)'S' && recvBuffer[1] == (int)'y' && recvBuffer[2] == (int)'n' &&
+          recvBuffer[3] == (int)'c' && recvBuffer[4] == (int)'e' && recvBuffer[5] == (int)'d') {
+        println("synced");
+        synced = true;
       }
     }
-
+    else {
+      recvBuffer[readingPos] = val;
+      readingPos++;
+    }    
   }
-  else if (receiving) {
-    recvBuffer[readingPos] = val;
-    readingPos++;
-    if (readingPos > 9) readingPos = 0;
-  }  
+  else {    
+    if (!receiving && val != '|') {
+      print((char)val);
+    }      
+    if (val == '|') {
+      receiving = !receiving;
+      if (receiving) {
+        readingPos = 0;
+      } 
+      else if (recvBuffer[0] == 'A') { led1 = true; led2 = false; led3 = false; led4 = false; }
+      else if (recvBuffer[0] == 'B') { led1 = false; led2 = true; led3 = false; led4 = false; }
+      else if (recvBuffer[0] == 'C') { led1 = false; led2 = false; led3 = true; led4 = false; }
+      else if (recvBuffer[0] == 'D') { led1 = false; led2 = false; led3 = false; led4 = true; }
+      else if (recvBuffer[0] == 'E') { freeMemory = getReceivedNumber(); }
+      else {
+        int motor = recvBuffer[0] - '0';    
+        if (motor >= 0 && motor < 10) {
+          positionBuffer[motor] = getReceivedNumber();
+        }
+      }  
+    }
+    else if (receiving) {
+      recvBuffer[readingPos] = val;
+      readingPos++;
+      if (readingPos > 9) readingPos = 0;
+    }
+  }
 }
 
 void mousePressed() {
