@@ -69,6 +69,14 @@ struct DKbInEvArgs {
   };
 };
 
+bool isDKbEnabled() {
+  #ifdef DKBIN
+  return true;
+  #else
+  return false;
+  #endif
+}
+
 void printDKbInData(const DKbInEvArgs& s);
 
 #ifdef GRIS5A

@@ -52,10 +52,10 @@ enum ServoNumber {
 #elif NO2
 enum ServoNumber {
   LLLNG=0,
-  LLRTN,
   RLLNG,
-  RLRTN,
   GALNG,
+  LLRTN,
+  RLRTN,
   GARTN
 };
 #endif
@@ -121,7 +121,7 @@ struct ProgramChangeEvArgs {
 };
 
 #ifdef MOTOROUT
-typedef struct MotorEvArgs {
+struct MotorEvArgs {
   MotorEvArgs () : raw(0) {}
   MotorEvArgs (const MotorEvArgs& t) : raw(t.raw) {}
   MotorEvArgs (uint16_t rawValue) : raw(rawValue) {}

@@ -31,6 +31,14 @@
 #define SERIALIN
 #define MOTOROUT
 
+#ifdef GRIS5A
+#define NUMSERVOS 10
+#elif NO2
+#define NUMSERVOS 6
+#endif
+
+#define Q_PARAM_SIZE 4
+
 #include "FreeMemory.h"
 #include "dkb.h"
 #include "preset.h"
@@ -39,9 +47,9 @@
 
 #ifdef MOTOROUT
 #include "_Adafruit_PWMServoDriver.h"
-#include "prfServo.h"
+#include "prfServo2.h"
 
-class ServoShieldPCA9685Linear : public prfServoImplBase<uint16_t, float> {
+class ServoShieldPCA9685Linear : public prfServo2ImplBase<uint16_t, float> {
   public:
   ServoShieldPCA9685Linear(Adafruit_PWMServoDriver& pwm) : _pwm(pwm) {
     Calibration = false;
@@ -58,92 +66,190 @@ class ServoShieldPCA9685Linear : public prfServoImplBase<uint16_t, float> {
     _pwm.setPWMOff();
   }
 
-  void get(float** params) const {
+  void get(float** params, float** offsets) const {
+    #ifdef GRIS5A
     if (!Calibration) {
     // LURTN
     params[0][0] = 1.2942268654268088e+002;
     params[0][1] = 1.6668375402407262e+000;
+    offsets[0][0] = 0;
     // LULNG
     params[1][0] = 5.5452380952380930e+002;
     params[1][1] = -2.6484593837534930e+000;
     params[1][2] = 1.1929477673422232e-002;
     params[1][3] = -2.7138883234954693e-005;
+    offsets[1][0] = 0;
     // LLRTN
     params[2][0] = 1.5442914556378040e+002;
     params[2][1] = 1.5882527835305206e+000;
+    offsets[2][0] = 0;
     // LLLNG
     params[3][0] = 1.3666666666666668e+002;
     params[3][1] = 2.8253968253968250e+000;
     params[3][2] = -1.3016971494480146e-002;
     params[3][3] = 3.0757400999615536e-005;
+    offsets[3][0] = 0;
     // RLLNG
     params[4][0] = 5.7880952380952260e+002;
     params[4][1] = -2.3641456582632174e+000;
     params[4][2] = 9.3590377327392710e-003;
     params[4][3] = -2.1711106587961670e-005;
+    offsets[4][0] = 0;
     // RLRTN
     params[5][0] = 1.3774938998134064e+002;
     params[5][1] = 1.5490885603559636e+000;
+    offsets[5][0] = 0;
     // RULNG
     params[6][0] = 1.8559523809523685e+002;
     params[6][1] = 2.1031746031746907e+000;
     params[6][2] = -7.4147305981224840e-003;
     params[6][3] = 1.8092588823305492e-005;
+    offsets[6][0] = 0;
     // RURTN
     params[7][0] = 1.6024944124341286e+002;
     params[7][1] = 1.6079886813344540e+000;
+    offsets[7][0] = 0;
     // GALNG
     params[8][0] = 5.3464285714285590e+002;
     params[8][1] = -2.8109243697478114e+000;
     params[8][2] = 1.3346515076618000e-002;
     params[8][3] = -3.2566659881943620e-005;
+    offsets[8][0] = 0;
     // GARTN
     params[9][0] = 1.4526246180975622e+002;
     params[9][1] = 1.5686194098710244e+000;
+    offsets[9][0] = 0;
     }
     else {
-      Serial.println("Calibration");
     // LURTN
     params[0][0] = 100;
     params[0][1] = 2;
+    offsets[0][0] = 0;
     // LULNG
     params[1][0] = 100;
     params[1][1] = 2;
     params[1][2] = 0;
     params[1][3] = 0;
+    offsets[1][0] = 0;
     // LLRTN
     params[2][0] = 100;
     params[2][1] = 2;
+    offsets[2][0] = 0;
     // LLLNG
     params[3][0] = 100;
     params[3][1] = 2;
     params[3][2] = 0;
     params[3][3] = 0;
+    offsets[3][0] = 0;
     // RLLNG
     params[4][0] = 100;
     params[4][1] = 2;
     params[4][2] = 0;
     params[4][3] = 0;
+    offsets[4][0] = 0;
     // RLRTN
     params[5][0] = 100;
     params[5][1] = 2;
+    offsets[5][0] = 0;
     // RULNG
     params[6][0] = 100;
     params[6][1] = 2;
     params[6][2] = 0;
     params[6][3] = 0;
+    offsets[6][0] = 0;
     // RURTN
     params[7][0] = 100;
     params[7][1] = 2;
+    offsets[7][0] = 0;
     // GALNG
     params[8][0] = 100;
-    params[8][1] = 4;
+    params[8][1] = 2;
     params[8][2] = 0;
     params[8][3] = 0;
+    offsets[8][0] = 0;
     // GARTN
     params[9][0] = 100;
     params[9][1] = 2;
+    offsets[9][0] = 0;
     }
+    #elif NO2
+    if (!Calibration) {
+    // LLLNG
+    params[0][0] = 5.3400000000000000e+002;
+    params[0][1] = -1.5833333333333320e+000;
+    params[0][2] = 3.6621093749999844e-003;
+    params[0][3] = -6.3578287760416260e-006;
+    offsets[0][0] = -1.3322676295501878e-015;
+    offsets[0][1] = 7.8125000000000080e-002;
+    offsets[0][2] = -2.4414062500000030e-004;
+    // RLLNG
+    params[1][0] = 2.3420000000000002e+002;
+    params[1][1] = 1.5338541666666618e+000;
+    params[1][2] = -3.6621093749999460e-003;
+    params[1][3] = 6.9936116536456924e-006;
+    offsets[1][0] = -4.0000000000000000e+000;
+    offsets[1][1] = 1.5625000000000000e-002;
+    // GALNG
+    params[2][0] = 1.8751428571428568e+002;
+    params[2][1] = 2.1677827380952457e+000;
+    params[2][2] = -6.6266741071429420e-003;
+    params[2][3] = 1.0808308919271054e-005;
+    offsets[2][0] = 0;
+    // LLRTN
+    params[3][0] = 1.9000000000000000e+002;
+    params[3][1] = 1.3671874999999997e+000;
+    params[3][2] = 5.4931640625000050e-004;
+    offsets[3][0] = 0;
+    // RLRTN
+    params[4][0] = 1.2999999999999994e+002;
+    params[4][1] = 1.3750000000000033e+000;
+    params[4][2] = 6.1035156249998670e-004;
+    offsets[4][0] = -4;
+    // GARTN
+    params[5][0] = 1.5000000000000000e+002;
+    params[5][1] = 1.4843749999999997e+000;
+    params[5][2] = 7.3242187500000060e-004;
+    offsets[5][0] = 0;
+    }
+    else {
+    // LLLNG
+    params[0][0] = 100;
+    params[0][1] = 2;
+    params[0][2] = 0;
+    params[0][3] = 0;
+    offsets[0][0] = 0;
+    offsets[0][1] = 0;
+    offsets[0][2] = 0;
+    // RLLNG
+    params[1][0] = 100;
+    params[1][1] = 2;
+    params[1][2] = 0;
+    params[1][3] = 0;
+    offsets[1][0] = 0;
+    offsets[1][1] = 0;
+    // GALNG
+    params[2][0] = 100;
+    params[2][1] = 2;
+    params[2][2] = 0;
+    params[2][3] = 0;
+    offsets[2][0] = 0;
+    // LLRTN
+    params[3][0] = 100;
+    params[3][1] = 2;
+    params[3][2] = 0;
+    offsets[3][0] = 0;
+    // RLRTN
+    params[4][0] = 100;
+    params[4][1] = 2;
+    params[4][2] = 0;
+    offsets[4][0] = 0;
+    // GARTN
+    params[5][0] = 100;
+    params[5][1] = 2;
+    params[5][2] = 0;
+    offsets[5][0] = 0;
+    }
+    #endif
   }
 
   void write(uint8_t num, uint16_t servoVal) {
@@ -156,14 +262,13 @@ class ServoShieldPCA9685Linear : public prfServoImplBase<uint16_t, float> {
 
 Adafruit_PWMServoDriver pwm;
 ServoShieldPCA9685Linear impl(pwm);
-prfServo<uint32_t, uint8_t, uint16_t, float> servoLib(&impl, 0x0777DD);
-
-#define NUMSERVOS 10
-
+#ifdef GRIS5A
+prfServo2<uint32_t, uint8_t, uint16_t, float> servoLib(&impl, 0x0777DD, 0x0);
+#elif NO2
+prfServo2<uint16_t, uint8_t, uint16_t, float> servoLib(&impl, 0b101010111111, 0b000000000110);
 #endif
 
-
-#define Q_PARAM_SIZE   4
+#endif
 
 //============================================================================
 // declare all AO classes...
@@ -191,6 +296,7 @@ static QState Application_PreSet(Application * const me);
 static QState Application_Wait(Application * const me);
 static QState Application_Run(Application * const me);
 static QState Application_Remote(Application * const me);
+static QState Application_Init(Application * const me);
 /*$enddecl${AOs::Application} ##############################################*/
 #ifdef DKBIN
 /*$declare${AOs::DKbIn} ####################################################*/
@@ -226,72 +332,6 @@ static void SerialIn_processRemainingBytes(SerialIn * const me);
 static QState SerialIn_initial(SerialIn * const me);
 static QState SerialIn_Receive(SerialIn * const me);
 /*$enddecl${AOs::SerialIn} #################################################*/
-#endif
-#ifdef MANUALMOTION
-/*$declare${AOs::ManualMotion} #############################################*/
-/*${AOs::ManualMotion} .....................................................*/
-typedef struct ManualMotion {
-/* protected: */
-    QActive super;
-
-/* public: */
-    uint8_t speed;
-} ManualMotion;
-
-/* protected: */
-static QState ManualMotion_initial(ManualMotion * const me);
-static QState ManualMotion_ManualMotion(ManualMotion * const me);
-static QState ManualMotion_Idle(ManualMotion * const me);
-/*$enddecl${AOs::ManualMotion} #############################################*/
-#endif
-#ifdef PRESET
-/*$declare${AOs::PreSet} ###################################################*/
-/*${AOs::PreSet} ...........................................................*/
-typedef struct PreSet {
-/* protected: */
-    QActive super;
-
-/* public: */
-    uint8_t currentPreSet;
-    uint16_t preSetTimer;
-} PreSet;
-
-/* public: */
-static bool PreSet_isCurrentPreSet(PreSet * const me);
-static void PreSet_prog3(PreSet * const me);
-static void PreSet_prog1(PreSet * const me);
-static void PreSet_prog2(PreSet * const me);
-static void PreSet_prog4(PreSet * const me);
-static void PreSet_prog5(PreSet * const me);
-static void PreSet_prog6(PreSet * const me);
-static void PreSet_prog7(PreSet * const me);
-static void PreSet_prog8(PreSet * const me);
-
-/* protected: */
-static QState PreSet_initial(PreSet * const me);
-static QState PreSet_Idle(PreSet * const me);
-static QState PreSet_WaitForProgram(PreSet * const me);
-static QState PreSet_RunProgram(PreSet * const me);
-/*$enddecl${AOs::PreSet} ###################################################*/
-#endif
-#ifdef USERPROGRAM
-/*$declare${AOs::UserProgram} ##############################################*/
-/*${AOs::UserProgram} ......................................................*/
-typedef struct UserProgram {
-/* protected: */
-    QActive super;
-
-/* public: */
-    uint8_t userProgramCounter;
-    uint8_t userProgram[NUMSERVOS][8];
-} UserProgram;
-
-/* protected: */
-static QState UserProgram_initial(UserProgram * const me);
-static QState UserProgram_Idle(UserProgram * const me);
-static QState UserProgram_Record(UserProgram * const me);
-static QState UserProgram_Play(UserProgram * const me);
-/*$enddecl${AOs::UserProgram} ##############################################*/
 #endif
 #ifdef DKBOUT
 /*$declare${AOs::DKbOut} ###################################################*/
@@ -354,18 +394,6 @@ static QEvt l_DKbInQSto[1];
 SerialIn AO_SerialIn;
 static QEvt l_SerialInQSto[1];
 #endif
-#ifdef MANUALMOTION
-ManualMotion AO_ManualMotion;
-static QEvt l_ManualMotionQSto[5];
-#endif
-#ifdef PRESET
-PreSet AO_PreSet;
-static QEvt l_PreSetQSto[5];
-#endif
-#ifdef USERPROGRAM
-UserProgram AO_UserProgram;
-static QEvt l_UserProgramQSto[5];
-#endif
 #ifdef DKBOUT
 DKbOut AO_DKbOut;
 static QEvt l_DKbOutQSto[1];
@@ -384,28 +412,19 @@ static QEvt l_MotorsOutQSto[NUMSERVOS*2];
 //============================================================================
 // QF_active[] array defines all active object control blocks ----------------
 QActiveCB const Q_ROM QF_active[] = {
-  { (QActive *)0, (QEvt *)0, 0U}, // SGR: required...
-  { (QActive *)&AO_Application, l_ApplicationQSto, Q_DIM(l_ApplicationQSto) },
+  { (QActive*)0, (QEvt *)0, 0U}, // SGR: required...
+  { (QActive*)&AO_Application, l_ApplicationQSto, Q_DIM(l_ApplicationQSto) },
   #ifdef DKBIN
-  { (QActive *)&AO_DKbIn, l_DKbInQSto, Q_DIM(l_DKbInQSto) },
+  { (QActive*)&AO_DKbIn, l_DKbInQSto, Q_DIM(l_DKbInQSto) },
   #endif
   #ifdef SERIALIN
-  { (QActive *)&AO_SerialIn, l_SerialInQSto, Q_DIM(l_SerialInQSto) },
-  #endif
-  #ifdef MANUALMOTION
-  { (QActive *)&AO_ManualMotion, l_ManualMotionQSto, Q_DIM(l_ManualMotionQSto) },
-  #endif
-  #ifdef PRESET
-  { (QActive *)&AO_PreSet, l_PreSetQSto, Q_DIM(l_PreSetQSto) },
-  #endif
-  #ifdef USERPROGRAM
-  { (QActive *)&AO_UserProgram, l_UserProgramQSto, Q_DIM(l_UserProgramQSto) },
+  { (QActive*)&AO_SerialIn, l_SerialInQSto, Q_DIM(l_SerialInQSto) },
   #endif
   #ifdef DKBOUT
-  { (QActive *)&AO_DKbOut, l_DKbOutQSto, Q_DIM(l_DKbOutQSto) },
+  { (QActive*)&AO_DKbOut, l_DKbOutQSto, Q_DIM(l_DKbOutQSto) },
   #endif
   #ifdef MOTOROUT
-  { (QActive *)&AO_MotorsOut, l_MotorsOutQSto, Q_DIM(l_MotorsOutQSto) }
+  { (QActive*)&AO_MotorsOut, l_MotorsOutQSto, Q_DIM(l_MotorsOutQSto) }
   #endif
 };
 
@@ -422,15 +441,6 @@ void setup() {
   #endif
   #ifdef SERIALIN
   QActive_ctor(&AO_SerialIn.super, Q_STATE_CAST(&SerialIn_initial));
-  #endif
-  #ifdef MANUALMOTION
-  QActive_ctor(&AO_ManualMotion.super, Q_STATE_CAST(&ManualMotion_initial));
-  #endif
-  #ifdef PRESET
-  QActive_ctor(&AO_PreSet.super, Q_STATE_CAST(&PreSet_initial));
-  #endif
-  #ifdef USERPROGRAM
-  QActive_ctor(&AO_UserProgram.super, Q_STATE_CAST(&UserProgram_initial));
   #endif
   #ifdef DKBOUT
   QActive_ctor(&AO_DKbOut.super, Q_STATE_CAST(&DKbOut_initial));
@@ -484,7 +494,7 @@ void QV_onIdle(void) {   // called with interrupts DISABLED
   QV_CPU_SLEEP();  // atomically go to sleep and enable interrupts
 }
 //............................................................................
-void Q_onAssert(char const Q_ROM * const file, int line) {
+void Q_onAssert(char const Q_ROM* const file, int line) {
   // implement the error-handling policy for your application!!!
   QF_INT_DISABLE(); // disable all interrupts
   QF_RESET();  // reset the CPU
@@ -531,16 +541,14 @@ static QState Application_Calibration(Application * const me) {
             #endif
 
             #ifdef MOTOROUT
-            QACTIVE_POST((QMActive*)&AO_MotorsOut, CALIBRATION_MODE_SIG, 0L);
 
             servoLib.end();
             impl.Calibration = true;
             servoLib.begin();
+            delay(20);
 
-            for (int n=0; n< NUMSERVOS; n++) {
-              MotorEvArgs motorOut(n, 127, 1);
-              QACTIVE_POST((QMActive*)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, motorOut.raw);
-            }
+            QACTIVE_POST((QMActive*)&AO_MotorsOut, CALIBRATION_MODE_SIG, 0L);
+
             #endif
             status_ = Q_HANDLED();
             break;
@@ -580,10 +588,8 @@ static QState Application_Simulation(Application * const me) {
         }
         /*${AOs::Application::SM::Simulation::initial} */
         case Q_INIT_SIG: {
-            Serial.println(F("StateChange ManualMotion |A|"));
-
             me->speed = 4;
-            status_ = Q_TRAN(&Application_ManualMotion);
+            status_ = Q_TRAN(&Application_Init);
             break;
         }
         default: {
@@ -672,11 +678,13 @@ static QState Application_PreSet(Application * const me) {
         }
         /*${AOs::Application::SM::Simulation::PreSet::REMOTE_MODE} */
         case REMOTE_MODE_SIG: {
+            Serial.println(F("StateChange Remote |C|"));
             status_ = Q_TRAN(&Application_Remote);
             break;
         }
         /*${AOs::Application::SM::Simulation::PreSet::MANUAL_MOTION_MODE} */
         case MANUAL_MOTION_MODE_SIG: {
+            Serial.println(F("StateChange ManualMotion |A|"));
             status_ = Q_TRAN(&Application_ManualMotion);
             break;
         }
@@ -705,6 +713,7 @@ static QState Application_Wait(Application * const me) {
 
             ProgramChangeEvArgs args(Q_PAR(me));
             me->currentPreSet = args.ProgNo;
+            me->preSetTimer = 0;
             status_ = Q_TRAN(&Application_Run);
             break;
         }
@@ -742,6 +751,7 @@ static QState Application_Run(Application * const me) {
             #ifdef MOTOROUT
 
             if (me->currentPreSet == 1) {
+              Serial.println(me->preSetTimer);
               prog1((QMActive*)&AO_MotorsOut, me->preSetTimer);
             }
             else if (me->currentPreSet == 2) {
@@ -810,6 +820,7 @@ static QState Application_Remote(Application * const me) {
         }
         /*${AOs::Application::SM::Simulation::Remote::PRESET_MODE} */
         case PRESET_MODE_SIG: {
+            Serial.println(F("StateChange PreSet |B|"));
             status_ = Q_TRAN(&Application_PreSet);
             break;
         }
@@ -817,6 +828,31 @@ static QState Application_Remote(Application * const me) {
         case MANUAL_MOTION_MODE_SIG: {
             Serial.println(F("StateChange ManualMotion |A|"));
             status_ = Q_TRAN(&Application_ManualMotion);
+            break;
+        }
+        default: {
+            status_ = Q_SUPER(&Application_Simulation);
+            break;
+        }
+    }
+    return status_;
+}
+/*${AOs::Application::SM::Simulation::Init} ................................*/
+static QState Application_Init(Application * const me) {
+    QState status_;
+    switch (Q_SIG(me)) {
+        /*${AOs::Application::SM::Simulation::Init::Q_TIMEOUT} */
+        case Q_TIMEOUT_SIG: {
+            /*${AOs::Application::SM::Simulation::Init::Q_TIMEOUT::[DKbconnected]} */
+            if (isDKbEnabled()) {
+                Serial.println(F("StateChange ManualMotion |A|"));
+                status_ = Q_TRAN(&Application_ManualMotion);
+            }
+            /*${AOs::Application::SM::Simulation::Init::Q_TIMEOUT::[else]} */
+            else {
+                Serial.println(F("StateChange Remote |C|"));
+                status_ = Q_TRAN(&Application_Remote);
+            }
             break;
         }
         default: {
@@ -988,1151 +1024,6 @@ static QState SerialIn_Receive(SerialIn * const me) {
 }
 /*$enddef${AOs::SerialIn} ##################################################*/
 #endif
-#ifdef MANUALMOTION
-/*$define${AOs::ManualMotion} ##############################################*/
-/*${AOs::ManualMotion} .....................................................*/
-/*${AOs::ManualMotion::SM} .................................................*/
-static QState ManualMotion_initial(ManualMotion * const me) {
-    /*${AOs::ManualMotion::SM::initial} */
-    me->speed = 4;
-
-    Serial.println(F("ManualMotion Initialized"));
-    return Q_TRAN(&ManualMotion_ManualMotion);
-}
-/*${AOs::ManualMotion::SM::ManualMotion} ...................................*/
-static QState ManualMotion_ManualMotion(ManualMotion * const me) {
-    QState status_;
-    switch (Q_SIG(me)) {
-        /*${AOs::ManualMotion::SM::ManualMotion} */
-        case Q_ENTRY_SIG: {
-            // Debug: Serial.println(F("ManualMotion: Enter Active"));
-            status_ = Q_HANDLED();
-            break;
-        }
-        /*${AOs::ManualMotion::SM::ManualMotion::USERPROGRAM_PRESSED} */
-        case USERPROGRAM_PRESSED_SIG: {
-            status_ = Q_TRAN(&ManualMotion_Idle);
-            break;
-        }
-        /*${AOs::ManualMotion::SM::ManualMotion::PRESET_PRESSED} */
-        case PRESET_PRESSED_SIG: {
-            status_ = Q_TRAN(&ManualMotion_Idle);
-            break;
-        }
-        /*${AOs::ManualMotion::SM::ManualMotion::MOTORBUTTON_PRESSED} */
-        case MOTORBUTTON_PRESSED_SIG: {
-            #ifdef MOTOROUT
-            uint32_t par = Q_PAR(me);
-            DKbInEvArgs data(par);
-            // Debug: Serial.println(par, HEX);
-
-            uint8_t step = (me->speed / 3) + 1;
-
-            if (data.LUT) {
-              // Debug: Serial.println(F("Move left upper lng"));
-              MotorEvArgs dm(LULNG, me->speed, step);
-              QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_STEP_FORWARD_SIG, dm.raw);
-            }
-            else if (data.LUB) {
-              // Debug: Serial.println(F("Move left upper lng"));
-              MotorEvArgs dm(LULNG, me->speed, step);
-              QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_STEP_BACKWARD_SIG, dm.raw);
-            }
-            if (data.LUR) {
-              // Debug: Serial.println(F("Move left upper Rtn"));
-              MotorEvArgs dm(LURTN, me->speed, step);
-              QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_STEP_FORWARD_SIG, dm.raw);
-            }
-            else if (data.LUL) {
-              // Debug: Serial.println(F("Move left upper Rtn"));
-              MotorEvArgs dm(LURTN, me->speed, step);
-              QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_STEP_BACKWARD_SIG, dm.raw);
-            }
-
-            if (data.RUT) {
-              // Debug: Serial.println(F("Move right upper lng"));
-              MotorEvArgs dm(RULNG, me->speed, step);
-              QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_STEP_FORWARD_SIG, dm.raw);
-            }
-            else if (data.RUB) {
-              // Debug: Serial.println(F("Move right upper lng"));
-              MotorEvArgs dm(RULNG, me->speed, step);
-              QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_STEP_BACKWARD_SIG, dm.raw);
-            }
-            if (data.RUR) {
-              // Debug: Serial.println(F("Move right upper Rtn"));
-              MotorEvArgs dm(RURTN, me->speed, step);
-              QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_STEP_FORWARD_SIG, dm.raw);
-            }
-            else if (data.RUL) {
-              // Debug: Serial.println(F("Move right upper Rtn"));
-              MotorEvArgs dm(RURTN, me->speed, step);
-              QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_STEP_BACKWARD_SIG, dm.raw);
-            }
-
-            if (data.LLT) {
-              // Debug: Serial.println(F("Move left lower lng"));
-              MotorEvArgs dm(LLLNG, me->speed, step);
-              QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_STEP_FORWARD_SIG, dm.raw);
-            }
-            else if (data.LLB) {
-              // Debug: Serial.println(F("Move left lower lng"));
-              MotorEvArgs dm(LLLNG, me->speed, step);
-              QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_STEP_BACKWARD_SIG, dm.raw);
-            }
-            if (data.LLR) {
-              // Debug: Serial.println(F("Move left lower Rtn"));
-              MotorEvArgs dm(LLRTN, me->speed, step);
-              QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_STEP_FORWARD_SIG, dm.raw);
-            }
-            else if (data.LLL) {
-              // Debug: Serial.println(F("Move left lower Rtn"));
-              MotorEvArgs dm(LLRTN, me->speed, step);
-              QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_STEP_BACKWARD_SIG, dm.raw);
-            }
-
-            if (data.RLT) {
-              // Debug: Serial.println(F("Move right lower lng"));
-              MotorEvArgs dm(RLLNG, me->speed, step);
-              QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_STEP_FORWARD_SIG, dm.raw);
-            }
-            else if (data.RLB) {
-              // Debug: Serial.println(F("Move right lower lng"));
-              MotorEvArgs dm(RLLNG, me->speed, step);
-              QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_STEP_BACKWARD_SIG, dm.raw);
-            }
-            if (data.RLR) {
-              // Debug: Serial.println(F("Move right lower Rtn"));
-              MotorEvArgs dm(RLRTN, me->speed, step);
-              QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_STEP_FORWARD_SIG, dm.raw);
-            }
-            else if (data.RLL) {
-              // Debug: Serial.println(F("Move right lower Rtn"));
-              MotorEvArgs dm(RLRTN, me->speed, step);
-              QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_STEP_BACKWARD_SIG, dm.raw);
-            }
-
-            if (data.GAT) {
-              //Serial.println(F("Move Gating lng"));
-              MotorEvArgs dm(GALNG, me->speed, step);
-              QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_STEP_FORWARD_SIG, dm.raw);
-            }
-            else if (data.GAB) {
-              //Serial.println(F("Move Gating lng"));
-              MotorEvArgs dm(GALNG, me->speed, step);
-              QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_STEP_BACKWARD_SIG, dm.raw);
-            }
-            if (data.GAR) {
-              //Serial.println(F("Move Gating Rtn"));
-              MotorEvArgs dm(GARTN, me->speed, step);
-              QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_STEP_FORWARD_SIG, dm.raw);
-            }
-            else if (data.GAL) {
-              //Serial.println(F("Move Gating Rtn"));
-              MotorEvArgs dm(GARTN, me->speed, step);
-              QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_STEP_BACKWARD_SIG, dm.raw);
-            }
-
-            #endif
-            status_ = Q_TRAN(&ManualMotion_ManualMotion);
-            break;
-        }
-        /*${AOs::ManualMotion::SM::ManualMotion::PROGRAMBUTTON_PRESSED} */
-        case PROGRAMBUTTON_PRESSED_SIG: {
-            #ifdef MOTOROUT
-            Serial.println(F("Change speed"));
-
-            uint32_t par = Q_PAR(me);
-            DKbInEvArgs data(par);
-            // Debug: Serial.println(par, HEX);
-
-            if      (data.FP1) { me->speed = 1; }
-            else if (data.FP2) { me->speed = 2; }
-            else if (data.FP3) { me->speed = 3; }
-            else if (data.FP4) { me->speed = 4; }
-            else if (data.FP5) { me->speed = 5; }
-            else if (data.FP6) { me->speed = 6; }
-            else if (data.FP7) { me->speed = 7; }
-            else if (data.FP8) { me->speed = 8; }
-
-            #endif
-            status_ = Q_TRAN(&ManualMotion_ManualMotion);
-            break;
-        }
-        default: {
-            status_ = Q_SUPER(&QHsm_top);
-            break;
-        }
-    }
-    return status_;
-}
-/*${AOs::ManualMotion::SM::Idle} ...........................................*/
-static QState ManualMotion_Idle(ManualMotion * const me) {
-    QState status_;
-    switch (Q_SIG(me)) {
-        /*${AOs::ManualMotion::SM::Idle} */
-        case Q_ENTRY_SIG: {
-            Serial.println("ManualMotion: Enter Idle");
-            status_ = Q_HANDLED();
-            break;
-        }
-        /*${AOs::ManualMotion::SM::Idle::MANUAL_MOTION_PRESSED} */
-        case MANUAL_MOTION_PRESSED_SIG: {
-            status_ = Q_TRAN(&ManualMotion_ManualMotion);
-            break;
-        }
-        default: {
-            status_ = Q_SUPER(&QHsm_top);
-            break;
-        }
-    }
-    return status_;
-}
-/*$enddef${AOs::ManualMotion} ##############################################*/
-#endif
-#ifdef PRESET
-/*$define${AOs::PreSet} ####################################################*/
-/*${AOs::PreSet} ...........................................................*/
-/*${AOs::PreSet::isCurrentPreSet} ..........................................*/
-static bool PreSet_isCurrentPreSet(PreSet * const me) {
-    uint32_t par = Q_PAR(me);
-    DKbInEvArgs data(par);
-
-    if      (data.FP1 && me->currentPreSet == 1) return true;
-    else if (data.FP2 && me->currentPreSet == 2) return true;
-    else if (data.FP3 && me->currentPreSet == 3) return true;
-    else if (data.FP4 && me->currentPreSet == 4) return true;
-    else if (data.FP5 && me->currentPreSet == 5) return true;
-    else if (data.FP6 && me->currentPreSet == 6) return true;
-    else if (data.FP7 && me->currentPreSet == 7) return true;
-    else if (data.FP8 && me->currentPreSet == 8) return true;
-    else return false;
-
-}
-
-/*${AOs::PreSet::prog3} ....................................................*/
-static void PreSet_prog3(PreSet * const me) {
-    // Marker Position 1 <-> 2
-
-    if (me->preSetTimer == 0) {
-      static const uint8_t PROGMEM STEPSZ = 2;
-      MotorEvArgs lulng(LULNG, 147, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lulng.raw);
-      MotorEvArgs lurtn(LURTN, 147, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lurtn.raw);
-      MotorEvArgs rulng(RULNG, 122, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rulng.raw);
-      MotorEvArgs rurtn(RURTN, 122, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rurtn.raw);
-      MotorEvArgs lllng(LLLNG, 107, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lllng.raw);
-      MotorEvArgs llrtn(LLRTN, 132, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, llrtn.raw);
-      MotorEvArgs rllng(RLLNG, 132, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rllng.raw);
-      MotorEvArgs rlrtn(RLRTN, 107, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rlrtn.raw);
-
-      MotorEvArgs galng(GALNG, 0, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, galng.raw);
-      MotorEvArgs gartn(GARTN, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, gartn.raw);
-    }
-    else if (me->preSetTimer >= 3000) {
-      static const uint8_t PROGMEM STEPSZ = 8;
-      float targetDeltaSmall = 10 * sin((me->preSetTimer - 3000) / 3000.0 * PI);
-      float targetDeltaLarge = 40 * sin((me->preSetTimer - 3000) / 3000.0 * PI);
-
-      MotorEvArgs lulng(LULNG, 147 + targetDeltaLarge, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lulng.raw);
-      MotorEvArgs lurtn(LURTN, 147 + targetDeltaLarge, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lurtn.raw);
-      MotorEvArgs rulng(RULNG, 122 - targetDeltaSmall, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rulng.raw);
-      MotorEvArgs rurtn(RURTN, 122 - targetDeltaSmall, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rurtn.raw);
-      MotorEvArgs lllng(LLLNG, 107 - targetDeltaLarge, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lllng.raw);
-      MotorEvArgs llrtn(LLRTN, 132 + targetDeltaSmall, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, llrtn.raw);
-      MotorEvArgs rllng(RLLNG, 132 + targetDeltaSmall, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rllng.raw);
-      MotorEvArgs rlrtn(RLRTN, 107 - targetDeltaLarge, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rlrtn.raw);
-    }
-
-    if (me->preSetTimer == 8960) {
-      me->preSetTimer = 3000;
-    }
-    else {
-      me->preSetTimer += PRESETTIMERINCR;
-    }
-}
-
-/*${AOs::PreSet::prog1} ....................................................*/
-static void PreSet_prog1(PreSet * const me) {
-    // Marker Position 1
-
-    static const uint8_t PROGMEM STEPSZ = 2;
-    if (me->preSetTimer == 0) {
-      MotorEvArgs lulng(LULNG, 100, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lulng.raw);
-      MotorEvArgs lurtn(LURTN, 100, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lurtn.raw);
-      MotorEvArgs rulng(RULNG, 100, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rulng.raw);
-      MotorEvArgs rurtn(RURTN, 100, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rurtn.raw);
-      MotorEvArgs lllng(LLLNG, 100, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lllng.raw);
-      MotorEvArgs llrtn(LLRTN, 100, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, llrtn.raw);
-      MotorEvArgs rllng(RLLNG, 100, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rllng.raw);
-      MotorEvArgs rlrtn(RLRTN, 100, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rlrtn.raw);
-
-      MotorEvArgs galng(GALNG, 0, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, galng.raw);
-      MotorEvArgs gartn(GARTN, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, gartn.raw);
-    }
-    else if (me->preSetTimer == 3000) {
-      MotorEvArgs lulng(LULNG, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lulng.raw);
-      MotorEvArgs lurtn(LURTN, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lurtn.raw);
-      MotorEvArgs rulng(RULNG, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rulng.raw);
-      MotorEvArgs rurtn(RURTN, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rurtn.raw);
-      MotorEvArgs lllng(LLLNG, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lllng.raw);
-      MotorEvArgs llrtn(LLRTN, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, llrtn.raw);
-      MotorEvArgs rllng(RLLNG, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rllng.raw);
-      MotorEvArgs rlrtn(RLRTN, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rlrtn.raw);
-    }
-
-    if (me->preSetTimer <= 3000) {
-      me->preSetTimer += PRESETTIMERINCR;
-    }
-
-}
-
-/*${AOs::PreSet::prog2} ....................................................*/
-static void PreSet_prog2(PreSet * const me) {
-    // Marker Position 2
-
-    static const uint8_t PROGMEM STEPSZ = 2;
-    if (me->preSetTimer == 0) {
-      MotorEvArgs lulng(LULNG, 100, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lulng.raw);
-      MotorEvArgs lurtn(LURTN, 100, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lurtn.raw);
-      MotorEvArgs rulng(RULNG, 100, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rulng.raw);
-      MotorEvArgs rurtn(RURTN, 100, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rurtn.raw);
-      MotorEvArgs lllng(LLLNG, 100, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lllng.raw);
-      MotorEvArgs llrtn(LLRTN, 100, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, llrtn.raw);
-      MotorEvArgs rllng(RLLNG, 70, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rllng.raw);
-      MotorEvArgs rlrtn(RLRTN, 70, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rlrtn.raw);
-
-      MotorEvArgs galng(GALNG, 0, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, galng.raw);
-      MotorEvArgs gartn(GARTN, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, gartn.raw);
-    }
-    else if (me->preSetTimer == 3000) {
-      MotorEvArgs lulng(LULNG, 167, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lulng.raw);
-      MotorEvArgs lurtn(LURTN, 167, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lurtn.raw);
-      MotorEvArgs rulng(RULNG, 117, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rulng.raw);
-      MotorEvArgs rurtn(RURTN, 117, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rurtn.raw);
-      MotorEvArgs lllng(LLLNG, 87, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lllng.raw);
-      MotorEvArgs llrtn(LLRTN, 137, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, llrtn.raw);
-      MotorEvArgs rllng(RLLNG, 137, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rllng.raw);
-      MotorEvArgs rlrtn(RLRTN, 87, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rlrtn.raw);
-    }
-
-    if (me->preSetTimer <= 3000) {
-      me->preSetTimer += PRESETTIMERINCR;
-    }
-
-}
-
-/*${AOs::PreSet::prog4} ....................................................*/
-static void PreSet_prog4(PreSet * const me) {
-    // Free-breath Gating
-
-    if (me->preSetTimer == 0) {
-      static const uint8_t PROGMEM STEPSZ = 2;
-      MotorEvArgs lulng(LULNG, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lulng.raw);
-      MotorEvArgs lurtn(LURTN, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lurtn.raw);
-      MotorEvArgs rulng(RULNG, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rulng.raw);
-      MotorEvArgs rurtn(RURTN, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rurtn.raw);
-      MotorEvArgs lllng(LLLNG, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lllng.raw);
-      MotorEvArgs llrtn(LLRTN, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, llrtn.raw);
-      MotorEvArgs rllng(RLLNG, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rllng.raw);
-      MotorEvArgs rlrtn(RLRTN, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rlrtn.raw);
-      MotorEvArgs galng(GALNG, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, galng.raw);
-      MotorEvArgs gartn(GARTN, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, gartn.raw);
-    }
-    else if (me->preSetTimer >= 3000) {
-      static const uint8_t PROGMEM STEPSZ = 8;
-      float target = 127 + 80 * sin((me->preSetTimer - 3000) / 2500.0 * PI);
-
-      MotorEvArgs lulng(LULNG, target, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lulng.raw);
-      MotorEvArgs rulng(RULNG, target, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rulng.raw);
-      MotorEvArgs lllng(LLLNG, target, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lllng.raw);
-      MotorEvArgs rllng(RLLNG, target, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rllng.raw);
-      MotorEvArgs galng(GALNG, target, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, galng.raw);
-    }
-
-    if (me->preSetTimer == 7960) {
-      me->preSetTimer = 3000;
-    }
-    else {
-      me->preSetTimer += PRESETTIMERINCR;
-    }
-}
-
-/*${AOs::PreSet::prog5} ....................................................*/
-static void PreSet_prog5(PreSet * const me) {
-    // Breath-hold Gating
-
-    if (me->preSetTimer == 0) {
-      static const uint8_t PROGMEM STEPSZ = 2;
-      MotorEvArgs lulng(LULNG, 60, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lulng.raw);
-      MotorEvArgs lurtn(LURTN, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lurtn.raw);
-      MotorEvArgs rulng(RULNG, 60, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rulng.raw);
-      MotorEvArgs rurtn(RURTN, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rurtn.raw);
-      MotorEvArgs lllng(LLLNG, 60, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lllng.raw);
-      MotorEvArgs llrtn(LLRTN, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, llrtn.raw);
-      MotorEvArgs rllng(RLLNG, 60, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rllng.raw);
-      MotorEvArgs rlrtn(RLRTN, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rlrtn.raw);
-      MotorEvArgs galng(GALNG, 60, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, galng.raw);
-      MotorEvArgs gartn(GARTN, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, gartn.raw);
-    }
-    else if (me->preSetTimer >= 3000 && me->preSetTimer < 28000) {
-      static const uint8_t PROGMEM STEPSZ = 8;
-      float target = 60 + 50 * sin((me->preSetTimer - 3000) / 2500.0 * PI);
-
-      MotorEvArgs lulng(LULNG, target, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lulng.raw);
-      MotorEvArgs rulng(RULNG, target, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rulng.raw);
-      MotorEvArgs lllng(LLLNG, target, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lllng.raw);
-      MotorEvArgs rllng(RLLNG, target, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rllng.raw);
-      MotorEvArgs galng(GALNG, target, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, galng.raw);
-    }
-    else if (me->preSetTimer == 28000) {
-      static const uint8_t PROGMEM STEPSZ = 4;
-      MotorEvArgs lulng(LULNG, 250, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lulng.raw);
-      MotorEvArgs rulng(RULNG, 250, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rulng.raw);
-      MotorEvArgs lllng(LLLNG, 250, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lllng.raw);
-      MotorEvArgs rllng(RLLNG, 250, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rllng.raw);
-      MotorEvArgs galng(GALNG, 250, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, galng.raw);
-    }
-    else if (me->preSetTimer > 28000 && me->preSetTimer < 38000) {
-      static const uint8_t PROGMEM STEPSZ = 8;
-      float target = 200 + 50 * cos((me->preSetTimer - 28000) / 40000.0 * PI);
-      MotorEvArgs lulng(LULNG, target, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lulng.raw);
-      MotorEvArgs rulng(RULNG, target, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rulng.raw);
-      MotorEvArgs lllng(LLLNG, target, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lllng.raw);
-      MotorEvArgs rllng(RLLNG, target, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rllng.raw);
-      MotorEvArgs galng(GALNG, target, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, galng.raw);
-    }
-    else if (me->preSetTimer == 38000) {
-      static const uint8_t PROGMEM STEPSZ = 4;
-      MotorEvArgs lulng(LULNG, 10, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lulng.raw);
-      MotorEvArgs rulng(RULNG, 10, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rulng.raw);
-      MotorEvArgs lllng(LLLNG, 10, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lllng.raw);
-      MotorEvArgs rllng(RLLNG, 10, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rllng.raw);
-      MotorEvArgs galng(GALNG, 10, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, galng.raw);
-    }
-
-    if (me->preSetTimer == 40000) {
-      me->preSetTimer = 6720;
-    }
-    else {
-      me->preSetTimer += PRESETTIMERINCR;
-    }
-}
-
-/*${AOs::PreSet::prog6} ....................................................*/
-static void PreSet_prog6(PreSet * const me) {
-    // Free-breath Gating, Marker Position 1 <-> 2
-
-    if (me->preSetTimer == 0) {
-      static const uint8_t PROGMEM STEPSZ = 2;
-      MotorEvArgs lulng(LULNG, 147, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lulng.raw);
-      MotorEvArgs lurtn(LURTN, 147, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lurtn.raw);
-      MotorEvArgs rulng(RULNG, 122, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rulng.raw);
-      MotorEvArgs rurtn(RURTN, 122, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rurtn.raw);
-      MotorEvArgs lllng(LLLNG, 107, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lllng.raw);
-      MotorEvArgs llrtn(LLRTN, 132, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, llrtn.raw);
-      MotorEvArgs rllng(RLLNG, 132, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rllng.raw);
-      MotorEvArgs rlrtn(RLRTN, 107, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rlrtn.raw);
-
-      MotorEvArgs galng(GALNG, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, galng.raw);
-      MotorEvArgs gartn(GARTN, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, gartn.raw);
-    }
-    else if (me->preSetTimer >= 3000) {
-
-      static const uint8_t PROGMEM STEPSZ = 8;
-      float targetDeltaSmall = 10 * sin((me->preSetTimer - 3000) / 3000.0 * PI);
-      float targetDeltaLarge = 40 * sin((me->preSetTimer - 3000) / 3000.0 * PI);
-      float targetGating = 127 + 80 * sin((me->preSetTimer - 3000) / 3000.0 * PI);
-
-      MotorEvArgs lulng(LULNG, 147 + targetDeltaLarge, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lulng.raw);
-      MotorEvArgs lurtn(LURTN, 147 + targetDeltaLarge, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lurtn.raw);
-      MotorEvArgs rulng(RULNG, 122 - targetDeltaSmall, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rulng.raw);
-      MotorEvArgs rurtn(RURTN, 122 - targetDeltaSmall, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rurtn.raw);
-      MotorEvArgs lllng(LLLNG, 107 - targetDeltaLarge, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lllng.raw);
-      MotorEvArgs llrtn(LLRTN, 132 + targetDeltaSmall, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, llrtn.raw);
-      MotorEvArgs rllng(RLLNG, 132 + targetDeltaSmall, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rllng.raw);
-      MotorEvArgs rlrtn(RLRTN, 107 - targetDeltaLarge, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rlrtn.raw);
-
-      MotorEvArgs galng(GALNG, targetGating, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, galng.raw);
-    }
-
-    if (me->preSetTimer == 8960) {
-      me->preSetTimer = 3000;
-    }
-    else {
-      me->preSetTimer += PRESETTIMERINCR;
-    }
-}
-
-/*${AOs::PreSet::prog7} ....................................................*/
-static void PreSet_prog7(PreSet * const me) {
-    // Free-breath Gating loosing signal
-
-    if (me->preSetTimer == 0) {
-      static const uint8_t PROGMEM STEPSZ = 2;
-      MotorEvArgs lulng(LULNG, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lulng.raw);
-      MotorEvArgs lurtn(LURTN, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lurtn.raw);
-      MotorEvArgs rulng(RULNG, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rulng.raw);
-      MotorEvArgs rurtn(RURTN, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rurtn.raw);
-      MotorEvArgs lllng(LLLNG, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lllng.raw);
-      MotorEvArgs llrtn(LLRTN, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, llrtn.raw);
-      MotorEvArgs rllng(RLLNG, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rllng.raw);
-      MotorEvArgs rlrtn(RLRTN, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rlrtn.raw);
-      MotorEvArgs galng(GALNG, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, galng.raw);
-      MotorEvArgs gartn(GARTN, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, gartn.raw);
-    }
-    else if (me->preSetTimer >= 3000) {
-      static const uint8_t PROGMEM STEPSZ = 8;
-      float target = 127 + 80 * sin((me->preSetTimer - 3000) / 2500.0 * PI);
-
-      MotorEvArgs lulng(LULNG, target, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lulng.raw);
-      MotorEvArgs rulng(RULNG, target, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rulng.raw);
-      MotorEvArgs lllng(LLLNG, target, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lllng.raw);
-      MotorEvArgs rllng(RLLNG, target, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rllng.raw);
-      MotorEvArgs galng(GALNG, target, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, galng.raw);
-    }
-
-    if (me->preSetTimer == 25000) {
-      static const uint8_t PROGMEM STEPSZ = 3;
-
-      MotorEvArgs gartn(GARTN, 255, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, gartn.raw);
-    }
-    else if (me->preSetTimer == 35000) {
-      static const uint8_t PROGMEM STEPSZ = 3;
-
-      MotorEvArgs gartn(GARTN, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, gartn.raw);
-    }
-
-    if (me->preSetTimer == 37960) {
-      me->preSetTimer = 3000;
-    }
-    else {
-      me->preSetTimer += PRESETTIMERINCR;
-    }
-}
-
-/*${AOs::PreSet::prog8} ....................................................*/
-static void PreSet_prog8(PreSet * const me) {
-    // Free-breath Gating base line shift
-
-    if (me->preSetTimer == 0) {
-      static const uint8_t PROGMEM STEPSZ = 2;
-      MotorEvArgs lulng(LULNG, 130, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lulng.raw);
-      MotorEvArgs lurtn(LURTN, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lurtn.raw);
-      MotorEvArgs rulng(RULNG, 130, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rulng.raw);
-      MotorEvArgs rurtn(RURTN, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rurtn.raw);
-      MotorEvArgs lllng(LLLNG, 130, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lllng.raw);
-      MotorEvArgs llrtn(LLRTN, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, llrtn.raw);
-      MotorEvArgs rllng(RLLNG, 130, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rllng.raw);
-      MotorEvArgs rlrtn(RLRTN, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rlrtn.raw);
-      MotorEvArgs galng(GALNG, 130, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, galng.raw);
-      MotorEvArgs gartn(GARTN, 127, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, gartn.raw);
-    }
-    else if (me->preSetTimer >= 3000) {
-      static const uint8_t PROGMEM STEPSZ = 8;
-      float baseline = 130 + 30 * sin((me->preSetTimer - 3000) / 30000.0 * PI);
-      float target = baseline + 50 * sin((me->preSetTimer - 3000) / 3000.0 * PI);
-
-      MotorEvArgs lulng(LULNG, target, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lulng.raw);
-      MotorEvArgs rulng(RULNG, target, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rulng.raw);
-      MotorEvArgs lllng(LLLNG, target, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lllng.raw);
-      MotorEvArgs rllng(RLLNG, target, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, rllng.raw);
-      MotorEvArgs galng(GALNG, target, STEPSZ);
-      QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, galng.raw);
-    }
-
-    if (me->preSetTimer == 62960) {
-      me->preSetTimer = 3000;
-    }
-    else {
-      me->preSetTimer += PRESETTIMERINCR;
-    }
-}
-
-/*${AOs::PreSet::SM} .......................................................*/
-static QState PreSet_initial(PreSet * const me) {
-    /*${AOs::PreSet::SM::initial} */
-    QActive_armX((QActive *)me, 0U,
-      PRESETTIMERINTERVAL,
-      PRESETTIMERINTERVAL);
-
-    Serial.println(F("PreSet Initialized"));
-    return Q_TRAN(&PreSet_Idle);
-}
-/*${AOs::PreSet::SM::Idle} .................................................*/
-static QState PreSet_Idle(PreSet * const me) {
-    QState status_;
-    switch (Q_SIG(me)) {
-        /*${AOs::PreSet::SM::Idle} */
-        case Q_ENTRY_SIG: {
-            Serial.println("PreSet: Enter Idle");
-            status_ = Q_HANDLED();
-            break;
-        }
-        /*${AOs::PreSet::SM::Idle::PRESET_PRESSED} */
-        case PRESET_PRESSED_SIG: {
-            status_ = Q_TRAN(&PreSet_WaitForProgram);
-            break;
-        }
-        default: {
-            status_ = Q_SUPER(&QHsm_top);
-            break;
-        }
-    }
-    return status_;
-}
-/*${AOs::PreSet::SM::WaitForProgram} .......................................*/
-static QState PreSet_WaitForProgram(PreSet * const me) {
-    QState status_;
-    switch (Q_SIG(me)) {
-        /*${AOs::PreSet::SM::WaitForProgram} */
-        case Q_ENTRY_SIG: {
-            Serial.println(F("PreSet: Enter WaitForProgram"));
-
-            me->preSetTimer = 0;
-            status_ = Q_HANDLED();
-            break;
-        }
-        /*${AOs::PreSet::SM::WaitForProgram::MANUAL_MOTION_PRESSED} */
-        case MANUAL_MOTION_PRESSED_SIG: {
-            status_ = Q_TRAN(&PreSet_Idle);
-            break;
-        }
-        /*${AOs::PreSet::SM::WaitForProgram::USERPROGRAM_PRESSED} */
-        case USERPROGRAM_PRESSED_SIG: {
-            status_ = Q_TRAN(&PreSet_Idle);
-            break;
-        }
-        /*${AOs::PreSet::SM::WaitForProgram::PROGRAMBUTTON_PRESSED} */
-        case PROGRAMBUTTON_PRESSED_SIG: {
-            uint32_t par = Q_PAR(me);
-            DKbInEvArgs data(par);
-
-            if      (data.FP1) { me->currentPreSet = 1; }
-            else if (data.FP2) { me->currentPreSet = 2; }
-            else if (data.FP3) { me->currentPreSet = 3; }
-            else if (data.FP4) { me->currentPreSet = 4; }
-            else if (data.FP5) { me->currentPreSet = 5; }
-            else if (data.FP6) { me->currentPreSet = 6; }
-            else if (data.FP7) { me->currentPreSet = 7; }
-            else if (data.FP8) { me->currentPreSet = 8; }
-
-            me->preSetTimer = 0;
-            status_ = Q_TRAN(&PreSet_RunProgram);
-            break;
-        }
-        default: {
-            status_ = Q_SUPER(&QHsm_top);
-            break;
-        }
-    }
-    return status_;
-}
-/*${AOs::PreSet::SM::RunProgram} ...........................................*/
-static QState PreSet_RunProgram(PreSet * const me) {
-    QState status_;
-    switch (Q_SIG(me)) {
-        /*${AOs::PreSet::SM::RunProgram} */
-        case Q_ENTRY_SIG: {
-            // Debug: Serial.println(F("PreSet: Enter RunProgram"));
-
-            // Debug:
-            //Serial.print(me->currentPreSet);
-            //Serial.print(" ");
-            //Serial.println(me->preSetCounter);
-
-            #ifdef MOTOROUT
-            if (me->currentPreSet == 1) {
-              PreSet_prog1(me);
-            }
-            else if (me->currentPreSet == 2) {
-              PreSet_prog2(me);
-            }
-            else if (me->currentPreSet == 3) {
-              PreSet_prog3(me);
-            }
-            else if (me->currentPreSet == 4) {
-              PreSet_prog4(me);
-            }
-            else if (me->currentPreSet == 5) {
-              PreSet_prog5(me);
-            }
-            else if (me->currentPreSet == 6) {
-              PreSet_prog6(me);
-            }
-            else if (me->currentPreSet == 7) {
-              PreSet_prog7(me);
-            }
-            else if (me->currentPreSet == 8) {
-              PreSet_prog8(me);
-            }
-            #endif
-            status_ = Q_HANDLED();
-            break;
-        }
-        /*${AOs::PreSet::SM::RunProgram::USERPROGRAM_PRESSED} */
-        case USERPROGRAM_PRESSED_SIG: {
-            status_ = Q_TRAN(&PreSet_Idle);
-            break;
-        }
-        /*${AOs::PreSet::SM::RunProgram::PROGRAMBUTTON_PRESSED} */
-        case PROGRAMBUTTON_PRESSED_SIG: {
-            /*${AOs::PreSet::SM::RunProgram::PROGRAMBUTTON_PR~::[currentPreSet]} */
-            if (PreSet_isCurrentPreSet(me)) {
-                status_ = Q_TRAN(&PreSet_RunProgram);
-            }
-            /*${AOs::PreSet::SM::RunProgram::PROGRAMBUTTON_PR~::[else]} */
-            else {
-                status_ = Q_TRAN(&PreSet_WaitForProgram);
-            }
-            break;
-        }
-        /*${AOs::PreSet::SM::RunProgram::Q_TIMEOUT} */
-        case Q_TIMEOUT_SIG: {
-            status_ = Q_TRAN(&PreSet_RunProgram);
-            break;
-        }
-        /*${AOs::PreSet::SM::RunProgram::PRESET_PRESSED} */
-        case PRESET_PRESSED_SIG: {
-            status_ = Q_TRAN(&PreSet_WaitForProgram);
-            break;
-        }
-        /*${AOs::PreSet::SM::RunProgram::MANUAL_MOTION_PRESSED} */
-        case MANUAL_MOTION_PRESSED_SIG: {
-            status_ = Q_TRAN(&PreSet_Idle);
-            break;
-        }
-        default: {
-            status_ = Q_SUPER(&QHsm_top);
-            break;
-        }
-    }
-    return status_;
-}
-/*$enddef${AOs::PreSet} ####################################################*/
-#endif
-#ifdef USERPROGRAM
-/*$define${AOs::UserProgram} ###############################################*/
-/*${AOs::UserProgram} ......................................................*/
-/*${AOs::UserProgram::SM} ..................................................*/
-static QState UserProgram_initial(UserProgram * const me) {
-    /*${AOs::UserProgram::SM::initial} */
-    QActive_armX((QActive *)me, 0U,
-      USERPROGRAMCOUNTERINTERVAL,
-      USERPROGRAMCOUNTERINTERVAL);
-
-    Serial.println(F("UserProgram Initialized"));
-    return Q_TRAN(&UserProgram_Idle);
-}
-/*${AOs::UserProgram::SM::Idle} ............................................*/
-static QState UserProgram_Idle(UserProgram * const me) {
-    QState status_;
-    switch (Q_SIG(me)) {
-        /*${AOs::UserProgram::SM::Idle} */
-        case Q_ENTRY_SIG: {
-            Serial.println(F("UserProgram: Enter Idle"));
-            status_ = Q_HANDLED();
-            break;
-        }
-        /*${AOs::UserProgram::SM::Idle::USERPROGRAM_PRESSED} */
-        case USERPROGRAM_PRESSED_SIG: {
-            memset(me->userProgram, 0, sizeof(me->userProgram));
-            status_ = Q_TRAN(&UserProgram_Record);
-            break;
-        }
-        default: {
-            status_ = Q_SUPER(&QHsm_top);
-            break;
-        }
-    }
-    return status_;
-}
-/*${AOs::UserProgram::SM::Record} ..........................................*/
-static QState UserProgram_Record(UserProgram * const me) {
-    QState status_;
-    switch (Q_SIG(me)) {
-        /*${AOs::UserProgram::SM::Record} */
-        case Q_ENTRY_SIG: {
-            Serial.println(F("UserProgram: Enter Record"));
-            status_ = Q_HANDLED();
-            break;
-        }
-        /*${AOs::UserProgram::SM::Record::MANUAL_MOTION_PRESSED} */
-        case MANUAL_MOTION_PRESSED_SIG: {
-            status_ = Q_TRAN(&UserProgram_Idle);
-            break;
-        }
-        /*${AOs::UserProgram::SM::Record::USERPROGRAM_PLAY_PRESSED} */
-        case USERPROGRAM_PLAY_PRESSED_SIG: {
-            me->userProgramCounter = 0;
-            status_ = Q_TRAN(&UserProgram_Play);
-            break;
-        }
-        /*${AOs::UserProgram::SM::Record::MOTORBUTTON_PRESSED} */
-        case MOTORBUTTON_PRESSED_SIG: {
-            #ifdef MOTOROUT
-            uint32_t par = Q_PAR(me);
-            DKbInEvArgs data(par);
-            // Debug: Serial.println(par, HEX);
-
-            const uint8_t SPEED = 6;
-            const uint8_t STEP = 2;
-
-            if (data.LUT) {
-              Serial.println(F("Move left upper lng"));
-              MotorEvArgs dm(LULNG, SPEED, STEP);
-              QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_STEP_FORWARD_SIG, dm.raw);
-            }
-            else if (data.LUB) {
-              Serial.println(F("Move left upper lng"));
-              MotorEvArgs dm(LULNG, SPEED, STEP);
-              QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_STEP_BACKWARD_SIG, dm.raw);
-            }
-            else if (data.LUR) {
-              Serial.println(F("Move left upper Rtn"));
-              MotorEvArgs dm(LURTN, SPEED, STEP);
-              QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_STEP_FORWARD_SIG, dm.raw);
-            }
-            else if (data.LUL) {
-              Serial.println(F("Move left upper Rtn"));
-              MotorEvArgs dm(LURTN, SPEED, STEP);
-              QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_STEP_BACKWARD_SIG, dm.raw);
-            }
-
-            if (data.RUT) {
-              Serial.println(F("Move right upper lng"));
-              MotorEvArgs dm(RULNG, SPEED, STEP);
-              QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_STEP_FORWARD_SIG, dm.raw);
-            }
-            else if (data.RUB) {
-              Serial.println(F("Move right upper lng"));
-              MotorEvArgs dm(RULNG, SPEED, STEP);
-              QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_STEP_BACKWARD_SIG, dm.raw);
-            }
-            else if (data.RUR) {
-              Serial.println(F("Move right upper Rtn"));
-              MotorEvArgs dm(RURTN, SPEED, STEP);
-              QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_STEP_FORWARD_SIG, dm.raw);
-            }
-            else if (data.RUL) {
-              Serial.println(F("Move right upper Rtn"));
-              MotorEvArgs dm(RURTN, SPEED, STEP);
-              QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_STEP_BACKWARD_SIG, dm.raw);
-            }
-
-            if (data.LLT) {
-              Serial.println(F("Move left lower lng"));
-              MotorEvArgs dm(LLLNG, SPEED, STEP);
-              QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_STEP_FORWARD_SIG, dm.raw);
-            }
-            else if (data.LLB) {
-              Serial.println(F("Move left lower lng"));
-              MotorEvArgs dm(LLLNG, SPEED, STEP);
-              QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_STEP_BACKWARD_SIG, dm.raw);
-            }
-            else if (data.LLR) {
-              Serial.println(F("Move left lower Rtn"));
-              MotorEvArgs dm(LLRTN, SPEED, STEP);
-              QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_STEP_FORWARD_SIG, dm.raw);
-            }
-            else if (data.LLL) {
-              Serial.println(F("Move left lower Rtn"));
-              MotorEvArgs dm(LLRTN, SPEED, STEP);
-              QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_STEP_BACKWARD_SIG, dm.raw);
-            }
-
-            if (data.RLT) {
-              Serial.println(F("Move right lower lng"));
-              MotorEvArgs dm(RLLNG, SPEED, STEP);
-              QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_STEP_FORWARD_SIG, dm.raw);
-            }
-            else if (data.RLB) {
-              Serial.println(F("Move right lower lng"));
-              MotorEvArgs dm(RLLNG, SPEED, STEP);
-              QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_STEP_BACKWARD_SIG, dm.raw);
-            }
-            else if (data.RLR) {
-              Serial.println(F("Move right lower Rtn"));
-              MotorEvArgs dm(RLRTN, SPEED, STEP);
-              QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_STEP_FORWARD_SIG, dm.raw);
-            }
-            else if (data.RLL) {
-              Serial.println(F("Move right lower Rtn"));
-              MotorEvArgs dm(RLRTN, SPEED, STEP);
-              QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_STEP_BACKWARD_SIG, dm.raw);
-            }
-
-            if (data.GAT) {
-              Serial.println(F("Move Gating lng"));
-              MotorEvArgs dm(GALNG, SPEED, STEP);
-              QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_STEP_FORWARD_SIG, dm.raw);
-            }
-            else if (data.GAB) {
-              Serial.println(F("Move Gating lng"));
-              MotorEvArgs dm(GALNG, SPEED, STEP);
-              QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_STEP_BACKWARD_SIG, dm.raw);
-            }
-            else if (data.GAR) {
-              Serial.println(F("Move Gating Rtn"));
-              MotorEvArgs dm(GARTN, SPEED, STEP);
-              QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_STEP_FORWARD_SIG, dm.raw);
-            }
-            else if (data.GAL) {
-              Serial.println(F("Move Gating Rtn"));
-              MotorEvArgs dm(GARTN, SPEED, STEP);
-              QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_STEP_BACKWARD_SIG, dm.raw);
-            }
-
-            #endif
-            status_ = Q_TRAN(&UserProgram_Record);
-            break;
-        }
-        /*${AOs::UserProgram::SM::Record::PROGRAMBUTTON_PRESSED} */
-        case PROGRAMBUTTON_PRESSED_SIG: {
-            #ifdef MOTOROUT
-            uint32_t par = Q_PAR(me);
-            DKbInEvArgs data(par);
-
-            uint8_t selection = 0;
-            if (data.FP1) { selection = 0; }
-            else if (data.FP2) { selection = 1; }
-            else if (data.FP3) { selection = 2; }
-            else if (data.FP4) { selection = 3; }
-            else if (data.FP5) { selection = 4; }
-            else if (data.FP6) { selection = 5; }
-            else if (data.FP7) { selection = 6; }
-            else if (data.FP8) { selection = 7; }
-
-
-            Serial.print(F("Programmed positions at second: "));
-            Serial.println(selection);
-
-            me->userProgram[0][selection] = AO_MotorsOut.servoPosition[0];
-            me->userProgram[1][selection] = AO_MotorsOut.servoPosition[1];
-            me->userProgram[2][selection] = AO_MotorsOut.servoPosition[2];
-            me->userProgram[3][selection] = AO_MotorsOut.servoPosition[3];
-            me->userProgram[4][selection] = AO_MotorsOut.servoPosition[4];
-            me->userProgram[5][selection] = AO_MotorsOut.servoPosition[5];
-            me->userProgram[6][selection] = AO_MotorsOut.servoPosition[6];
-            me->userProgram[7][selection] = AO_MotorsOut.servoPosition[7];
-            me->userProgram[8][selection] = AO_MotorsOut.servoPosition[8];
-            me->userProgram[9][selection] = AO_MotorsOut.servoPosition[9];
-            #endif
-            status_ = Q_TRAN(&UserProgram_Record);
-            break;
-        }
-        /*${AOs::UserProgram::SM::Record::PRESET_PRESSED} */
-        case PRESET_PRESSED_SIG: {
-            status_ = Q_TRAN(&UserProgram_Idle);
-            break;
-        }
-        default: {
-            status_ = Q_SUPER(&QHsm_top);
-            break;
-        }
-    }
-    return status_;
-}
-/*${AOs::UserProgram::SM::Play} ............................................*/
-static QState UserProgram_Play(UserProgram * const me) {
-    QState status_;
-    switch (Q_SIG(me)) {
-        /*${AOs::UserProgram::SM::Play} */
-        case Q_ENTRY_SIG: {
-            Serial.println(F("UserProgram: Enter Play"));
-
-            #ifdef MOTOROUT
-
-            for (int motor=0; motor < NUMSERVOS; motor++) {
-              MotorEvArgs lulng(ServoNumber(motor), me->userProgram[motor][me->userProgramCounter], 2);
-              QACTIVE_POST((QMActive *)&AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, lulng.raw);
-            }
-
-            me->userProgramCounter++;
-            if (me->userProgramCounter >=8) { me->userProgramCounter = 0; }
-
-
-            #endif
-            status_ = Q_HANDLED();
-            break;
-        }
-        /*${AOs::UserProgram::SM::Play::USERPROGRAM_PRESSED} */
-        case USERPROGRAM_PRESSED_SIG: {
-            status_ = Q_TRAN(&UserProgram_Record);
-            break;
-        }
-        /*${AOs::UserProgram::SM::Play::MANUAL_MOTION_PRESSED} */
-        case MANUAL_MOTION_PRESSED_SIG: {
-            status_ = Q_TRAN(&UserProgram_Idle);
-            break;
-        }
-        /*${AOs::UserProgram::SM::Play::Q_TIMEOUT} */
-        case Q_TIMEOUT_SIG: {
-            status_ = Q_TRAN(&UserProgram_Play);
-            break;
-        }
-        /*${AOs::UserProgram::SM::Play::PRESET_PRESSED} */
-        case PRESET_PRESSED_SIG: {
-            status_ = Q_TRAN(&UserProgram_Idle);
-            break;
-        }
-        default: {
-            status_ = Q_SUPER(&QHsm_top);
-            break;
-        }
-    }
-    return status_;
-}
-/*$enddef${AOs::UserProgram} ###############################################*/
-#endif
 #ifdef DKBOUT
 /*$define${AOs::DKbOut} ####################################################*/
 /*${AOs::DKbOut} ...........................................................*/
@@ -2188,7 +1079,7 @@ static QState DKbOut_PreSetLED(DKbOut * const me) {
     switch (Q_SIG(me)) {
         /*${AOs::DKbOut::SM::LED::PreSetLED} */
         case Q_ENTRY_SIG: {
-            Serial.println(F("DKbOut: Enter PreSetLED |B|"));
+            // Debug: Serial.println(F("DKbOut: Enter PreSetLED"));
 
             byte whichPin = 0; // DKb r0: 4;
             byte bitsToSend = 0;
@@ -2213,7 +1104,7 @@ static QState DKbOut_ManualMotionLED(DKbOut * const me) {
     switch (Q_SIG(me)) {
         /*${AOs::DKbOut::SM::LED::ManualMotionLED} */
         case Q_ENTRY_SIG: {
-            Serial.println(F("DKbOut: Enter ManualMotionLED |A|"));
+            // Debug: Serial.println(F("DKbOut: Enter ManualMotionLED"));
 
             byte whichPin = 1; // DKb r0: 5;
             byte bitsToSend = 0;
@@ -2238,7 +1129,7 @@ static QState DKbOut_RemoteLED(DKbOut * const me) {
     switch (Q_SIG(me)) {
         /*${AOs::DKbOut::SM::LED::RemoteLED} */
         case Q_ENTRY_SIG: {
-            Serial.println(F("DKbOut: Enter RemoteLED |C|"));
+            // Debug: Serial.println(F("DKbOut: Enter RemoteLED"));
 
             byte whichPin = 3; // DKb r0: 2;
             byte bitsToSend = 0;
@@ -2263,7 +1154,7 @@ static QState DKbOut_CalibrationLED(DKbOut * const me) {
     switch (Q_SIG(me)) {
         /*${AOs::DKbOut::SM::LED::CalibrationLED} */
         case Q_ENTRY_SIG: {
-            Serial.println(F("DKbOut: Enter CalibrationLED |D|"));
+            // Debug: Serial.println(F("DKbOut: Enter CalibrationLED"));
 
             byte whichPin = 2; // DKb r0: 3;
             byte bitsToSend = 0;
@@ -2419,6 +1310,13 @@ static QState MotorsOut_Simulation(MotorsOut * const me) {
         /*${AOs::MotorsOut::SM::Active::Simulation::CALIBRATION_MODE} */
         case CALIBRATION_MODE_SIG: {
             Serial.println(F("MotorsOut: Enter Calibration"));
+
+            for (int n = 0; n < NUMSERVOS; n++) {
+              servoLib.write(n, 100);
+              me->servoPosition[n] = 100;
+              me->target[n] = 100;
+              me->stepSize[n] = 1;
+            }
             status_ = Q_TRAN(&MotorsOut_Calibration);
             break;
         }
@@ -2475,8 +1373,6 @@ static QState MotorsOut_Calibration(MotorsOut * const me) {
                 #ifdef SERIALIN
                 isMoving = true;
                 #endif
-
-                Serial.println(me->servoPosition[n]);
                 servoLib.write(n, me->servoPosition[n]);
               }
             }
