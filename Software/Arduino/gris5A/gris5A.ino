@@ -1299,7 +1299,7 @@ static QState MotorsOut_Simulation(MotorsOut * const me) {
                 Serial.print(servo);
                 Serial.print(me->servoPosition[servo]);
                 Serial.print("|");
-                if (me->_sendPositionCounter == (NUMSERVOS * 10)) me->_sendPositionCounter = 0;
+                if (me->_sendPositionCounter == (NUMSERVOS * NUMSERVOS)) me->_sendPositionCounter = 0;
               }
               me->_sendPositionCounter++;
             }

@@ -255,7 +255,7 @@ if (!isMoving) {
     Serial.print(servo);
     Serial.print(me-&gt;servoPosition[servo]);
     Serial.print(&quot;|&quot;);
-    if (me-&gt;_sendPositionCounter == (NUMSERVOS * 10)) me-&gt;_sendPositionCounter = 0;
+    if (me-&gt;_sendPositionCounter == (NUMSERVOS * NUMSERVOS)) me-&gt;_sendPositionCounter = 0;
   }
   me-&gt;_sendPositionCounter++;
 }
