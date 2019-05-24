@@ -1,4 +1,4 @@
-/* SoftDKb.pde - Dedicated Keyboard Processing 3.0 software for the GRIS5A (C) motion phantom 
+/* SoftDKb.pde - Dedicated Keyboard Processing 3.0 software for the GRIS5A (C) motion phantom //<>//
  * Copyright (C) 2018-2019 by Stefan Grimm
  *
  * This is free software: you can redistribute it and/or modify
@@ -18,6 +18,7 @@
 
 import processing.serial.*;
 
+int NUMSERVOS = 10;
 Serial comPort;
 String sendBuffer = new String("0x0 0000 0000 0000 0000 0000 0000 0000 0000");
 int[] recvBuffer = new int[10];
@@ -25,7 +26,7 @@ int readingPos = 0;
 boolean receiving;
 boolean synced = false;
 
-int[] positionBuffer = new int[10];
+int[] positionBuffer = new int[NUMSERVOS];
 boolean led1 = true;
 boolean led2 = false;
 boolean led3 = false;
@@ -40,17 +41,12 @@ void setup() {
   PFont font = createFont(PFont.list()[2], 34);
   textFont(font);
   
-  // List all the available serial ports:
+  // Get all the available serial ports:
   String[] comPorts = Serial.list();
-  printArray(comPorts); //<>//
-  if (comPorts.length > 0) {
+  if (comPorts != null && comPorts.length > 0) {
     String portName = Serial.list()[0];
+    println(portName);
     comPort = new Serial(this, portName, 9600);
-    comPort.write(0x4);
-    sendBuffer = "0x4";
-  }
-  else {
-    println("No device found");
   }
 }
 
@@ -123,6 +119,8 @@ void draw() {
   text("Last Received:", 10, 100);
   for (int n=0; n<10; n++) {
     text((char)recvBuffer[n], 200 + 50*n, 100);
+  }
+  for (int n=0; n<NUMSERVOS; n++) {
     text(n, 700, 300 + n*50);
     text(positionBuffer[n], 800, 300 + n*50);
   }
@@ -164,7 +162,11 @@ void serialEvent(Serial myPort) {
     }
     else {
       recvBuffer[readingPos] = val;
-      readingPos++;
+      readingPos++;      
+      if (readingPos == 1) {
+        comPort.write(0x4);
+        sendBuffer = "0x4";
+      }
     }    
   }
   else {    
@@ -183,7 +185,7 @@ void serialEvent(Serial myPort) {
       else if (recvBuffer[0] == 'E') { freeMemory = getReceivedNumber(); }
       else {
         int motor = recvBuffer[0] - '0';    
-        if (motor >= 0 && motor < 10) {
+        if (motor >= 0 && motor < NUMSERVOS) {  
           positionBuffer[motor] = getReceivedNumber();
         }
       }  
@@ -222,10 +224,10 @@ void mousePressed() {
   else if (mousePressedFP3() == true) { comPort.write((17<<3) | 0x1); sendBuffer = "0x1 0000 0000 0000 0010 0000 0000 0000 0000"; } 
   else if (mousePressedFP2() == true) { comPort.write((18<<3) | 0x1); sendBuffer = "0x1 0000 0000 0000 0100 0000 0000 0000 0000"; } 
   else if (mousePressedFP1() == true) { comPort.write((19<<3) | 0x1); sendBuffer = "0x1 0000 0000 0000 1000 0000 0000 0000 0000"; }       
-  else if (mousePressedFPG() == true) { comPort.write((20<<3) | 0x1); sendBuffer = "0x1 0000 0000 0001 0000 0000 0000 0000 0000"; } 
+  else if (mousePressedFRM() == true) { comPort.write((20<<3) | 0x1); sendBuffer = "0x1 0000 0000 0001 0000 0000 0000 0000 0000"; } 
   else if (mousePressedFPS() == true) { comPort.write((21<<3) | 0x1); sendBuffer = "0x1 0000 0000 0010 0000 0000 0000 0000 0000"; }   
   else if (mousePressedFMM() == true) { comPort.write((22<<3) | 0x1); sendBuffer = "0x1 0000 0000 0100 0000 0000 0000 0000 0000"; } 
-  else if (mousePressedFPP() == true) { comPort.write((23<<3) | 0x1); sendBuffer = "0x1 0000 0000 1000 0000 0000 0000 0000 0000"; }  
+  else if (mousePressedFCA() == true) { comPort.write((23<<3) | 0x1); sendBuffer = "0x1 0000 0000 1000 0000 0000 0000 0000 0000"; }  
   else if (mousePressedLLB() == true) { comPort.write((24<<3) | 0x1); sendBuffer = "0x1 0000 0001 0000 0000 0000 0000 0000 0000"; }
   else if (mousePressedLLR() == true) { comPort.write((25<<3) | 0x1); sendBuffer = "0x1 0000 0010 0000 0000 0000 0000 0000 0000"; } 
   else if (mousePressedLLL() == true) { comPort.write((26<<3) | 0x1); sendBuffer = "0x1 0000 0100 0000 0000 0000 0000 0000 0000"; }
@@ -239,8 +241,8 @@ void mousePressed() {
 
 boolean mousePressedFMM() { return ((mouseX >= 50) && (mouseX <= 90) && (mouseY >= 500) && (mouseY <= 540)); }
 boolean mousePressedFPS() { return ((mouseX >= 50) && (mouseX <= 90) && (mouseY >= 550) && (mouseY <= 590)); }
-boolean mousePressedFPG() { return ((mouseX >= 50) && (mouseX <= 90) && (mouseY >= 600) && (mouseY <= 640)); }
-boolean mousePressedFPP() { return ((mouseX >= 100) && (mouseX <= 140) && (mouseY >= 600) && (mouseY <= 640)); }
+boolean mousePressedFRM() { return ((mouseX >= 50) && (mouseX <= 90) && (mouseY >= 600) && (mouseY <= 640)); }
+boolean mousePressedFCA() { return ((mouseX >= 100) && (mouseX <= 140) && (mouseY >= 600) && (mouseY <= 640)); }
 
 boolean mousePressedFP1() { return ((mouseX >= 100) && (mouseX <= 140) && (mouseY >= 550) && (mouseY <= 590)); }
 boolean mousePressedFP2() { return ((mouseX >= 150) && (mouseX <= 190) && (mouseY >= 550) && (mouseY <= 590)); }

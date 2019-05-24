@@ -52,10 +52,10 @@ struct DKbInEvArgs {
       uint32_t FP3 : 1;
       uint32_t FP2 : 1;
       uint32_t FP1 : 1;
-      uint32_t FPG : 1;
+      uint32_t FRM : 1;
       uint32_t FPS : 1;
       uint32_t FMM : 1;
-      uint32_t FPP : 1;
+      uint32_t FCA : 1;
       uint32_t LLB : 1;
       uint32_t LLR : 1;
       uint32_t LLL : 1;
@@ -163,7 +163,7 @@ void processDKb(QMActive* recv, const DKbInEvArgs& dkb)
     ProgramChangeEvArgs args(1);
     QACTIVE_POST(recv, PROGRAM_CHANGE_SIG, args.raw);
   }
-  if (dkb.FPG) {
+  if (dkb.FRM) {
     QACTIVE_POST(recv, REMOTE_MODE_SIG, 0L);
   }
   if (dkb.FPS) {
@@ -172,7 +172,7 @@ void processDKb(QMActive* recv, const DKbInEvArgs& dkb)
   if (dkb.FMM) {
     QACTIVE_POST(recv, MANUAL_MOTION_MODE_SIG, 0L);
   }
-  if (dkb.FPP) {
+  if (dkb.FCA) {
     QACTIVE_POST(recv, CALIBRATION_MODE_SIG, 0L);
   }
   if (dkb.LLB) {
@@ -276,7 +276,7 @@ void processDKb(QMActive* recv, const DKbInEvArgs& dkb)
     ProgramChangeEvArgs args(1);
     QACTIVE_POST(recv, PROGRAM_CHANGE_SIG, args.raw);
   }
-  if (dkb.FPG) {
+  if (dkb.FRM) {
     QACTIVE_POST(recv, REMOTE_MODE_SIG, 0L);
   }
   if (dkb.FPS) {
@@ -285,7 +285,7 @@ void processDKb(QMActive* recv, const DKbInEvArgs& dkb)
   if (dkb.FMM) {
     QACTIVE_POST(recv, MANUAL_MOTION_MODE_SIG, 0L);
   }
-  if (dkb.FPP) {
+  if (dkb.FCA) {
     QACTIVE_POST(recv, CALIBRATION_MODE_SIG, 0L);
   }
   if (dkb.LLB) {
@@ -322,10 +322,10 @@ void processSoftDKb(QMActive* recv, const SerialInEvArgs& softdkb)
 void printDKbInData(const DKbInEvArgs& s) {
   if (s.FMM) { Serial.println(F("Pressed Function Manual Motion")); }
   if (s.FPS) { Serial.println(F("Pressed Function Pre-Set")); }
-  if (s.FPG) { Serial.println(F("Pressed Function Remote")); }
+  if (s.FRM) { Serial.println(F("Pressed Function Remote")); }
   if (s.FP2) { Serial.println(F("Pressed Function Program 2")); }
   if (s.FP1) { Serial.println(F("Pressed Function Program 1")); }
-  if (s.FPP) { Serial.println(F("Pressed Function Calibration")); }
+  if (s.FCA) { Serial.println(F("Pressed Function Calibration")); }
   if (s.FP3) { Serial.println(F("Pressed Function Program 3")); }
   if (s.FP4) { Serial.println(F("Pressed Function Program 4")); }
   if (s.LUT) { Serial.println(F("Pressed Left Upper Top")); }
