@@ -252,7 +252,7 @@ if (!isMoving) {
   if (me-&gt;_sendPositionCounter % NUMSERVOS == 0) {
     int servo = (me-&gt;_sendPositionCounter / NUMSERVOS) - 1;
     Serial.print(&quot;|&quot;);
-    Serial.print(servo);
+    Serial.print(servo, HEX);
     Serial.print(me-&gt;servoPosition[servo]);
     Serial.print(&quot;|&quot;);
     if (me-&gt;_sendPositionCounter == (NUMSERVOS * NUMSERVOS)) me-&gt;_sendPositionCounter = 0;
@@ -454,7 +454,7 @@ else if (Serial.available() &gt; 0) {
     }
     else if (input.getCmd() == FREEMEM) {
       // Send free memory
-      Serial.print(F(&quot;|E&quot;));
+      Serial.print(F(&quot;|K&quot;));
       // Debug: int* p = new int[10];
       // if (p == 0) { Serial.print(999); )
       Serial.print(freeMemory());
@@ -573,13 +573,13 @@ me-&gt;speed = args.ProgNo;</action>
        </tran_glyph>
       </tran>
       <tran trig="PRESET_MODE" target="../../2">
-       <action>Serial.println(F(&quot;StateChange PreSet |B|&quot;));</action>
+       <action>Serial.println(F(&quot;StateChange PreSet |H|&quot;));</action>
        <tran_glyph conn="64,22,1,3,17">
         <action box="0,-2,16,2"/>
        </tran_glyph>
       </tran>
       <tran trig="REMOTE_MODE" target="../../3">
-       <action>Serial.println(F(&quot;StateChange Remote |C|&quot;));</action>
+       <action>Serial.println(F(&quot;StateChange Remote |I|&quot;));</action>
        <tran_glyph conn="48,29,2,0,20">
         <action box="0,0,17,2"/>
        </tran_glyph>
@@ -600,13 +600,13 @@ QACTIVE_POST((QMActive *)&amp;AO_DKbOut, PRESET_MODE_SIG, 0L);
        </initial_glyph>
       </initial>
       <tran trig="REMOTE_MODE" target="../../3">
-       <action>Serial.println(F(&quot;StateChange Remote |C|&quot;));</action>
+       <action>Serial.println(F(&quot;StateChange Remote |I|&quot;));</action>
        <tran_glyph conn="88,58,2,1,3,-21">
         <action box="1,1,15,2"/>
        </tran_glyph>
       </tran>
       <tran trig="MANUAL_MOTION_MODE" target="../../1">
-       <action>Serial.println(F(&quot;StateChange ManualMotion |A|&quot;));</action>
+       <action>Serial.println(F(&quot;StateChange ManualMotion |G|&quot;));</action>
        <tran_glyph conn="81,28,3,1,-15,-3,-2">
         <action box="-14,0,19,2"/>
        </tran_glyph>
@@ -697,7 +697,7 @@ else if (me-&gt;currentPreSet == 8) {
 QACTIVE_POST((QMActive *)&amp;AO_DKbOut, REMOTE_MODE_SIG, 0L);
 #endif</entry>
       <tran trig="CALIBRATION_MODE" target="../../../1">
-       <action>Serial.println(F(&quot;StateChange Calibration |D|&quot;));</action>
+       <action>Serial.println(F(&quot;StateChange Calibration |J|&quot;));</action>
        <tran_glyph conn="44,56,3,0,-22,9">
         <action box="-16,-2,18,2"/>
        </tran_glyph>
@@ -714,13 +714,13 @@ QACTIVE_POST((QMActive *)&amp;AO_DKbOut, REMOTE_MODE_SIG, 0L);
        </tran_glyph>
       </tran>
       <tran trig="PRESET_MODE" target="../../2">
-       <action>Serial.println(F(&quot;StateChange PreSet |B|&quot;));</action>
+       <action>Serial.println(F(&quot;StateChange PreSet |H|&quot;));</action>
        <tran_glyph conn="62,49,0,3,-8,19">
         <action box="0,-2,14,2"/>
        </tran_glyph>
       </tran>
       <tran trig="MANUAL_MOTION_MODE" target="../../1">
-       <action>Serial.println(F(&quot;StateChange ManualMotion |A|&quot;));</action>
+       <action>Serial.println(F(&quot;StateChange ManualMotion |G|&quot;));</action>
        <tran_glyph conn="46,49,0,2,-20">
         <action box="-20,-2,23,2"/>
        </tran_glyph>
@@ -733,14 +733,14 @@ QACTIVE_POST((QMActive *)&amp;AO_DKbOut, REMOTE_MODE_SIG, 0L);
       <tran trig="Q_TIMEOUT">
        <choice target="../../../1">
         <guard brief="DKb connected">isDKbEnabled()</guard>
-        <action>Serial.println(F(&quot;StateChange ManualMotion |A|&quot;));</action>
+        <action>Serial.println(F(&quot;StateChange ManualMotion |G|&quot;));</action>
         <choice_glyph conn="48,9,5,0,13,7">
          <action box="1,0,12,2"/>
         </choice_glyph>
        </choice>
        <choice target="../../../3">
         <guard brief="else"/>
-        <action>Serial.println(F(&quot;StateChange Remote |C|&quot;));</action>
+        <action>Serial.println(F(&quot;StateChange Remote |I|&quot;));</action>
         <choice_glyph conn="48,9,4,3,5,-15,39,11">
          <action box="-4,1,10,2"/>
         </choice_glyph>
@@ -1105,7 +1105,7 @@ void setup() {
   Serial.println(F(QP_VERSION_STR));
 
   // Send free memory
-  Serial.print(F(&quot;|E&quot;));
+  Serial.print(F(&quot;|K&quot;));
   Serial.print(freeMemory());
   Serial.print(F(&quot;|&quot;));
 }

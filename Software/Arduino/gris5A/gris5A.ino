@@ -456,7 +456,7 @@ void setup() {
   Serial.println(F(QP_VERSION_STR));
 
   // Send free memory
-  Serial.print(F("|E"));
+  Serial.print(F("|K"));
   Serial.print(freeMemory());
   Serial.print(F("|"));
 }
@@ -640,13 +640,13 @@ static QState Application_ManualMotion(Application * const me) {
         }
         /*${AOs::Application::SM::Simulation::ManualMotion::PRESET_MODE} */
         case PRESET_MODE_SIG: {
-            Serial.println(F("StateChange PreSet |B|"));
+            Serial.println(F("StateChange PreSet |H|"));
             status_ = Q_TRAN(&Application_PreSet);
             break;
         }
         /*${AOs::Application::SM::Simulation::ManualMotion::REMOTE_MODE} */
         case REMOTE_MODE_SIG: {
-            Serial.println(F("StateChange Remote |C|"));
+            Serial.println(F("StateChange Remote |I|"));
             status_ = Q_TRAN(&Application_Remote);
             break;
         }
@@ -678,13 +678,13 @@ static QState Application_PreSet(Application * const me) {
         }
         /*${AOs::Application::SM::Simulation::PreSet::REMOTE_MODE} */
         case REMOTE_MODE_SIG: {
-            Serial.println(F("StateChange Remote |C|"));
+            Serial.println(F("StateChange Remote |I|"));
             status_ = Q_TRAN(&Application_Remote);
             break;
         }
         /*${AOs::Application::SM::Simulation::PreSet::MANUAL_MOTION_MODE} */
         case MANUAL_MOTION_MODE_SIG: {
-            Serial.println(F("StateChange ManualMotion |A|"));
+            Serial.println(F("StateChange ManualMotion |G|"));
             status_ = Q_TRAN(&Application_ManualMotion);
             break;
         }
@@ -803,7 +803,7 @@ static QState Application_Remote(Application * const me) {
         }
         /*${AOs::Application::SM::Simulation::Remote::CALIBRATION_MODE} */
         case CALIBRATION_MODE_SIG: {
-            Serial.println(F("StateChange Calibration |D|"));
+            Serial.println(F("StateChange Calibration |J|"));
             status_ = Q_TRAN(&Application_Calibration);
             break;
         }
@@ -820,13 +820,13 @@ static QState Application_Remote(Application * const me) {
         }
         /*${AOs::Application::SM::Simulation::Remote::PRESET_MODE} */
         case PRESET_MODE_SIG: {
-            Serial.println(F("StateChange PreSet |B|"));
+            Serial.println(F("StateChange PreSet |H|"));
             status_ = Q_TRAN(&Application_PreSet);
             break;
         }
         /*${AOs::Application::SM::Simulation::Remote::MANUAL_MOTION_MODE} */
         case MANUAL_MOTION_MODE_SIG: {
-            Serial.println(F("StateChange ManualMotion |A|"));
+            Serial.println(F("StateChange ManualMotion |G|"));
             status_ = Q_TRAN(&Application_ManualMotion);
             break;
         }
@@ -845,12 +845,12 @@ static QState Application_Init(Application * const me) {
         case Q_TIMEOUT_SIG: {
             /*${AOs::Application::SM::Simulation::Init::Q_TIMEOUT::[DKbconnected]} */
             if (isDKbEnabled()) {
-                Serial.println(F("StateChange ManualMotion |A|"));
+                Serial.println(F("StateChange ManualMotion |G|"));
                 status_ = Q_TRAN(&Application_ManualMotion);
             }
             /*${AOs::Application::SM::Simulation::Init::Q_TIMEOUT::[else]} */
             else {
-                Serial.println(F("StateChange Remote |C|"));
+                Serial.println(F("StateChange Remote |I|"));
                 status_ = Q_TRAN(&Application_Remote);
             }
             break;
@@ -1000,7 +1000,7 @@ static QState SerialIn_Receive(SerialIn * const me) {
                 }
                 else if (input.getCmd() == FREEMEM) {
                   // Send free memory
-                  Serial.print(F("|E"));
+                  Serial.print(F("|K"));
                   // Debug: int* p = new int[10];
                   // if (p == 0) { Serial.print(999); )
                   Serial.print(freeMemory());
@@ -1296,7 +1296,7 @@ static QState MotorsOut_Simulation(MotorsOut * const me) {
               if (me->_sendPositionCounter % NUMSERVOS == 0) {
                 int servo = (me->_sendPositionCounter / NUMSERVOS) - 1;
                 Serial.print("|");
-                Serial.print(servo);
+                Serial.print(servo, HEX);
                 Serial.print(me->servoPosition[servo]);
                 Serial.print("|");
                 if (me->_sendPositionCounter == (NUMSERVOS * NUMSERVOS)) me->_sendPositionCounter = 0;
