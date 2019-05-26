@@ -16,7 +16,7 @@
 * for more details.
 */
 /*$endhead${.::events.h} ###################################################*/
-/* events.h - Arduino software for the GRIS5A (C) motion phantom
+/* events.h - Arduino software for the GRIS5A (C) and No2 (C) motion phantom
  * Copyright (C) 2019 by Stefan Grimm
  */
 
@@ -51,12 +51,12 @@ enum ServoNumber {
 };
 #elif NO2
 enum ServoNumber {
-  LLLNG=0,
-  RLLNG,
-  GALNG,
-  LLRTN,
-  RLRTN,
-  GARTN
+  LLNG=0,
+  RLNG,
+  GLNG,
+  LRTN,
+  RRTN,
+  GRTN
 };
 #endif
 

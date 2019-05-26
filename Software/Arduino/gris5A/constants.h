@@ -16,7 +16,7 @@
 * for more details.
 */
 /*$endhead${.::constants.h} ################################################*/
-/* constants.h - Arduino software for the GRIS5A (C) motion phantom
+/* constants.h - Arduino software for the GRIS5A (C) and No2 (C) motion phantom
  * Copyright (C) 2019 by Stefan Grimm
  */
 

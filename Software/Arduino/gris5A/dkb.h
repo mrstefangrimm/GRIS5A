@@ -16,7 +16,7 @@
 * for more details.
 */
 /*$endhead${.::dkb.h} ######################################################*/
-/* dkb.h - Arduino software for the GRIS5A (C) motion phantom
+/* dkb.h - Arduino software for the GRIS5A (C) and No2 (C) motion phantom
  * Copyright (C) 2019 by Stefan Grimm
  */
 
@@ -213,19 +213,19 @@ void processDKb(QMActive* recv, const DKbInEvArgs& dkb)
 void processDKb(QMActive* recv, const DKbInEvArgs& dkb)
 {
   if (dkb.GAL) {
-    MotorMoveRelativeEvArgs args(GARTN, BACKWARDS);
+    MotorMoveRelativeEvArgs args(GRTN, BACKWARDS);
     QACTIVE_POST(recv, MOTOR_MOVE_RELATIVE_SIG, args.raw);
   }
   if (dkb.GAT) {
-    MotorMoveRelativeEvArgs args(GALNG, FORWARDS);
+    MotorMoveRelativeEvArgs args(GLNG, FORWARDS);
     QACTIVE_POST(recv, MOTOR_MOVE_RELATIVE_SIG, args.raw);
   }
   if (dkb.GAB) {
-    MotorMoveRelativeEvArgs args(GALNG, BACKWARDS);
+    MotorMoveRelativeEvArgs args(GLNG, BACKWARDS);
     QACTIVE_POST(recv, MOTOR_MOVE_RELATIVE_SIG, args.raw);
   }
   if (dkb.GAR) {
-    MotorMoveRelativeEvArgs args(GARTN, FORWARDS);
+    MotorMoveRelativeEvArgs args(GRTN, FORWARDS);
     QACTIVE_POST(recv, MOTOR_MOVE_RELATIVE_SIG, args.raw);
   }
   if (dkb.FP7) {
@@ -245,19 +245,19 @@ void processDKb(QMActive* recv, const DKbInEvArgs& dkb)
     QACTIVE_POST(recv, PROGRAM_CHANGE_SIG, args.raw);
   }
   if (dkb.RLB) {
-    MotorMoveRelativeEvArgs args(RLLNG, BACKWARDS);
+    MotorMoveRelativeEvArgs args(RLNG, BACKWARDS);
     QACTIVE_POST(recv, MOTOR_MOVE_RELATIVE_SIG, args.raw);
   }
   if (dkb.RLR) {
-    MotorMoveRelativeEvArgs args(RLRTN, FORWARDS);
+    MotorMoveRelativeEvArgs args(RRTN, FORWARDS);
     QACTIVE_POST(recv, MOTOR_MOVE_RELATIVE_SIG, args.raw);
   }
   if (dkb.RLL) {
-    MotorMoveRelativeEvArgs args(RLRTN, BACKWARDS);
+    MotorMoveRelativeEvArgs args(RRTN, BACKWARDS);
     QACTIVE_POST(recv, MOTOR_MOVE_RELATIVE_SIG, args.raw);
   }
   if (dkb.RLT) {
-    MotorMoveRelativeEvArgs args(RLLNG, FORWARDS);
+    MotorMoveRelativeEvArgs args(RLNG, FORWARDS);
     QACTIVE_POST(recv, MOTOR_MOVE_RELATIVE_SIG, args.raw);
   }
   if (dkb.FP4) {
@@ -289,19 +289,19 @@ void processDKb(QMActive* recv, const DKbInEvArgs& dkb)
     QACTIVE_POST(recv, CALIBRATION_MODE_SIG, 0L);
   }
   if (dkb.LLB) {
-    MotorMoveRelativeEvArgs args(LLLNG, BACKWARDS);
+    MotorMoveRelativeEvArgs args(LLNG, BACKWARDS);
     QACTIVE_POST(recv, MOTOR_MOVE_RELATIVE_SIG, args.raw);
   }
   if (dkb.LLR) {
-    MotorMoveRelativeEvArgs args(LLRTN, FORWARDS);
+    MotorMoveRelativeEvArgs args(LRTN, FORWARDS);
     QACTIVE_POST(recv, MOTOR_MOVE_RELATIVE_SIG, args.raw);
   }
   if (dkb.LLL) {
-    MotorMoveRelativeEvArgs args(LLRTN, BACKWARDS);
+    MotorMoveRelativeEvArgs args(LRTN, BACKWARDS);
     QACTIVE_POST(recv, MOTOR_MOVE_RELATIVE_SIG, args.raw);
   }
   if (dkb.LLT) {
-    MotorMoveRelativeEvArgs args(LLLNG, FORWARDS);
+    MotorMoveRelativeEvArgs args(LLNG, FORWARDS);
     QACTIVE_POST(recv, MOTOR_MOVE_RELATIVE_SIG, args.raw);
   }
   printDKbInData(dkb);

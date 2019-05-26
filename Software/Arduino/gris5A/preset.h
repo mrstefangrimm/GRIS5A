@@ -16,7 +16,7 @@
 * for more details.
 */
 /*$endhead${.::preset.h} ###################################################*/
-/* preset.h - Arduino software for the GRIS5A (C) motion phantom
+/* preset.h - Arduino software for the GRIS5A (C) and No2 (C) motion phantom
  * Copyright (C) 2019 by Stefan Grimm
  */
 
@@ -280,21 +280,8 @@ void prog5(QMActive* recv, uint16_t& preSetTimer) {
       MotorEvArgs galng(GALNG, target, STEPSZ);
       QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, galng.raw);
     }
-    else if (preSetTimer == 28000) {
-      static const uint8_t PROGMEM STEPSZ = 4;
-      MotorEvArgs lulng(LULNG, 250, STEPSZ);
-      QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, lulng.raw);
-      MotorEvArgs rulng(RULNG, 250, STEPSZ);
-      QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rulng.raw);
-      MotorEvArgs lllng(LLLNG, 250, STEPSZ);
-      QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, lllng.raw);
-      MotorEvArgs rllng(RLLNG, 250, STEPSZ);
-      QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rllng.raw);
-      MotorEvArgs galng(GALNG, 250, STEPSZ);
-      QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, galng.raw);
-    }
     else if (preSetTimer > 28000 && preSetTimer < 38000) {
-      static const uint8_t PROGMEM STEPSZ = 10;
+      static const uint8_t PROGMEM STEPSZ = 4;
       float target = 200 + 50 * cos((preSetTimer - 28000) / 40000.0 * PI);
       MotorEvArgs lulng(LULNG, target, STEPSZ);
       QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, lulng.raw);
@@ -486,15 +473,15 @@ void prog8(QMActive* recv, uint16_t& preSetTimer) {
       float baseline = 130 + 30 * sin((preSetTimer - 3000) / 30000.0 * PI);
       float target = baseline + 50 * sin((preSetTimer - 3000) / 3000.0 * PI);
 
-      MotorEvArgs lulng(LULNG, target, STEPSZ);
+      MotorEvArgs lulng(LLNG, target, STEPSZ);
       QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, lulng.raw);
-      MotorEvArgs rulng(RULNG, target, STEPSZ);
+      MotorEvArgs rulng(RLNG, target, STEPSZ);
       QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rulng.raw);
-      MotorEvArgs lllng(LLLNG, target, STEPSZ);
+      MotorEvArgs lllng(LLNG, target, STEPSZ);
       QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, lllng.raw);
-      MotorEvArgs rllng(RLLNG, target, STEPSZ);
+      MotorEvArgs rllng(RLNG, target, STEPSZ);
       QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rllng.raw);
-      MotorEvArgs galng(GALNG, target, STEPSZ);
+      MotorEvArgs galng(GLNG, target, STEPSZ);
       QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, galng.raw);
     }
 
@@ -509,63 +496,314 @@ void prog8(QMActive* recv, uint16_t& preSetTimer) {
 #elif NO2
 
 void prog1(QMActive* recv, uint16_t& preSetTimer) {
+  //  Position 1
+  static const uint8_t PROGMEM STEPSZ = 2;
+
+  MotorEvArgs llng(LLNG, 128, STEPSZ);
+  QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, llng.raw);
+  MotorEvArgs rlng(RLNG, 128, STEPSZ);
+  QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rlng.raw);
+  MotorEvArgs glng(GLNG, 128, STEPSZ);
+  QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, glng.raw);
+  MotorEvArgs lrtn(LRTN, 127, STEPSZ);
+  QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, lrtn.raw);
+  MotorEvArgs rrtn(RRTN, 127, STEPSZ);
+  QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rrtn.raw);
+  MotorEvArgs grtn(GRTN, 127, STEPSZ);
+  QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, grtn.raw);
 }
 
 void prog2(QMActive* recv, uint16_t& preSetTimer) {
+  //  Position 2
+  static const uint8_t PROGMEM STEPSZ = 2;
+
+  MotorEvArgs llng(LLNG, 0, STEPSZ);
+  QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, llng.raw);
+  MotorEvArgs rlng(RLNG, 40, STEPSZ);
+  QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rlng.raw);
+  MotorEvArgs glng(GLNG, 0, STEPSZ);
+  QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, glng.raw);
+  MotorEvArgs lrtn(LRTN, 255, STEPSZ);
+  QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, lrtn.raw);
+  MotorEvArgs rrtn(RRTN, 79, STEPSZ);
+  QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rrtn.raw);
+  MotorEvArgs grtn(GRTN, 135, STEPSZ);
+  QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, grtn.raw);
 }
 
 void prog3(QMActive* recv, uint16_t& preSetTimer) {
+  // Position 1 <-> 2
+
+  if (preSetTimer == 0) {
+    static const uint8_t PROGMEM STEPSZ = 2;
+    MotorEvArgs llng(LLNG, 64, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, llng.raw);
+    MotorEvArgs rlng(RLNG, 84, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rlng.raw);
+    MotorEvArgs glng(GLNG, 127, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, glng.raw);
+    MotorEvArgs lrtn(LRTN, 191, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, lrtn.raw);
+    MotorEvArgs rrtn(RRTN, 103, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rrtn.raw);
+    MotorEvArgs grtn(GRTN, 127, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, grtn.raw);
+  }
+  else if (preSetTimer >= 3000) {
+    static const uint8_t PROGMEM STEPSZ = 8;
+
+    float targetLlng = 64 - 64 * sin((preSetTimer - 3000) / 3000.0 * PI);
+    float targetRlng =  84 - 44 * sin((preSetTimer - 3000) / 3000.0 * PI);
+    float targetLrtn = 191 + 64 * sin((preSetTimer - 3000) / 3000.0 * PI);
+    float targetRrtn = 103 - 24 * sin((preSetTimer - 3000) / 3000.0 * PI);
+
+    MotorEvArgs llng(LLNG, targetLlng, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, llng.raw);
+    MotorEvArgs rlng(RLNG, targetRlng, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rlng.raw);
+    MotorEvArgs lrtn(LRTN, targetLrtn, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, lrtn.raw);
+    MotorEvArgs rrtn(RRTN, targetRrtn, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rrtn.raw);
+  }
+
+  if (preSetTimer == 8960) {
+    preSetTimer = 3000;
+  }
+  else {
+    preSetTimer += PRESETTIMERINCR;
+  }
 }
 
 void prog4(QMActive* recv, uint16_t& preSetTimer) {
-// Free-breath Gating
+  // Free-breath Gating
 
-    if (preSetTimer == 0) {
-      static const uint8_t PROGMEM STEPSZ = 2;
-      MotorEvArgs lllng(LLLNG, 127, STEPSZ);
-      QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, lllng.raw);
-      MotorEvArgs llrtn(LLRTN, 127, STEPSZ);
-      QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, llrtn.raw);
-      MotorEvArgs rllng(RLLNG, 127, STEPSZ);
-      QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rllng.raw);
-      MotorEvArgs rlrtn(RLRTN, 127, STEPSZ);
-      QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rlrtn.raw);
-      MotorEvArgs galng(GALNG, 127, STEPSZ);
-      QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, galng.raw);
-      MotorEvArgs gartn(GARTN, 127, STEPSZ);
-      QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, gartn.raw);
-    }
-    else if (preSetTimer >= 3000) {
-      static const uint8_t PROGMEM STEPSZ = 8;
-      float target = 127 + 80 * sin((preSetTimer - 3000) / 2500.0 * PI);
+  if (preSetTimer == 0) {
+    static const uint8_t PROGMEM STEPSZ = 2;
+    MotorEvArgs llng(LLNG, 127, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, llng.raw);
+    MotorEvArgs rlng(RLNG, 127, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rlng.raw);
+    MotorEvArgs glng(GLNG, 127, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, glng.raw);
+    MotorEvArgs lrtn(LRTN, 127, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, lrtn.raw);
+    MotorEvArgs rrtn(RRTN, 127, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rrtn.raw);
+    MotorEvArgs grtn(GRTN, 127, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, grtn.raw);
+  }
+  else if (preSetTimer >= 3000) {
+    static const uint8_t PROGMEM STEPSZ = 8;
 
-      MotorEvArgs lllng(LLLNG, target, STEPSZ);
-      QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, lllng.raw);
-      MotorEvArgs rllng(RLLNG, target, STEPSZ);
-      QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rllng.raw);
-      MotorEvArgs galng(GALNG, target, STEPSZ);
-      QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, galng.raw);
-    }
+    float target = 127 + 80 * sin((preSetTimer - 3000) / 2500.0 * PI);
 
-    if (preSetTimer == 7960) {
-      preSetTimer = 3000;
-    }
-    else {
-      preSetTimer += PRESETTIMERINCR;
-    }
+    MotorEvArgs lllng(LLNG, target, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, lllng.raw);
+    MotorEvArgs rllng(RLNG, target, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rllng.raw);
+    MotorEvArgs galng(GLNG, target, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, galng.raw);
+  }
 
+  if (preSetTimer == 7960) {
+    preSetTimer = 3000;
+  }
+  else {
+    preSetTimer += PRESETTIMERINCR;
+  }
 }
 
 void prog5(QMActive* recv, uint16_t& preSetTimer) {
+  // Breath-hold Gating
+
+  if (preSetTimer == 0) {
+    static const uint8_t PROGMEM STEPSZ = 2;
+    MotorEvArgs llng(LLNG, 60, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, llng.raw);
+    MotorEvArgs rlng(RLNG, 60, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rlng.raw);
+    MotorEvArgs glng(GLNG, 60, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, glng.raw);
+    MotorEvArgs lrtn(LRTN, 127, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, lrtn.raw);
+    MotorEvArgs rrtn(RRTN, 127, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rrtn.raw);
+    MotorEvArgs grtn(GRTN, 127, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, grtn.raw);
+  }
+  else if (preSetTimer >= 3000 && preSetTimer < 28000) {
+    static const uint8_t PROGMEM STEPSZ = 8;
+    float target = 60 + 50 * sin((preSetTimer - 3000) / 2500.0 * PI);
+    MotorEvArgs llng(LLNG, target, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, llng.raw);
+    MotorEvArgs rlng(RLNG, target, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rlng.raw);
+    MotorEvArgs glng(GLNG, target, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, glng.raw);
+  }
+  else if (preSetTimer > 28000 && preSetTimer < 38000) {
+    static const uint8_t PROGMEM STEPSZ = 4;
+    float target = 200 + 50 * cos((preSetTimer - 28000) / 40000.0 * PI);
+    MotorEvArgs llng(LLNG, target, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, llng.raw);
+    MotorEvArgs rlng(RLNG, target, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rlng.raw);
+    MotorEvArgs glng(GLNG, target, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, glng.raw);
+  }
+  else if (preSetTimer == 38000) {
+    static const uint8_t PROGMEM STEPSZ = 4;
+    MotorEvArgs llng(LLNG, 10, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, llng.raw);
+    MotorEvArgs rlng(RLNG, 10, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rlng.raw);
+    MotorEvArgs glng(GLNG, 10, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, glng.raw);
+  }
+
+  if (preSetTimer == 40000) {
+    preSetTimer = 6720;
+  }
+  else {
+    preSetTimer += PRESETTIMERINCR;
+  }
 }
 
 void prog6(QMActive* recv, uint16_t& preSetTimer) {
+  // Free-breath Gating, Position 1 <-> 2
+
+  if (preSetTimer == 0) {
+    static const uint8_t PROGMEM STEPSZ = 2;
+    MotorEvArgs llng(LLNG, 64, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, llng.raw);
+    MotorEvArgs rlng(RLNG, 84, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rlng.raw);
+    MotorEvArgs glng(GLNG, 64, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, glng.raw);
+    MotorEvArgs lrtn(LRTN, 191, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, lrtn.raw);
+    MotorEvArgs rrtn(RRTN, 103, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rrtn.raw);
+    MotorEvArgs grtn(GRTN, 131, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, grtn.raw);
+  }
+  else if (preSetTimer >= 3000) {
+    static const uint8_t PROGMEM STEPSZ = 8;
+
+    float targetLGlng = 64 - 64 * sin((preSetTimer - 3000) / 3000.0 * PI);
+    float targetRlng =  84 - 44 * sin((preSetTimer - 3000) / 3000.0 * PI);
+    float targetLrtn = 191 + 64 * sin((preSetTimer - 3000) / 3000.0 * PI);
+    float targetRrtn = 103 - 24 * sin((preSetTimer - 3000) / 3000.0 * PI);
+    float targetGrtn = 131 +  4 * sin((preSetTimer - 3000) / 3000.0 * PI);
+
+    MotorEvArgs llng(LLNG, targetLGlng, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, llng.raw);
+    MotorEvArgs rlng(RLNG, targetRlng, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rlng.raw);
+    MotorEvArgs glng(GLNG, targetLGlng, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, glng.raw);
+    MotorEvArgs lrtn(LRTN, targetLrtn, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, lrtn.raw);
+    MotorEvArgs rrtn(RRTN, targetRrtn, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rrtn.raw);
+    MotorEvArgs grtn(GRTN, targetGrtn, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, grtn.raw);
+  }
+
+  if (preSetTimer == 8960) {
+    preSetTimer = 3000;
+  }
+  else {
+    preSetTimer += PRESETTIMERINCR;
+  }
 }
 
 void prog7(QMActive* recv, uint16_t& preSetTimer) {
+  // Free-breath Gating loosing signal
+
+  if (preSetTimer == 0) {
+    static const uint8_t PROGMEM STEPSZ = 2;
+    MotorEvArgs llng(LLNG, 127, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, llng.raw);
+    MotorEvArgs lrtn(LRTN, 127, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, lrtn.raw);
+    MotorEvArgs rlng(RLNG, 127, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rlng.raw);
+    MotorEvArgs rrtn(RRTN, 127, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rrtn.raw);
+    MotorEvArgs glng(GLNG, 127, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, glng.raw);
+    MotorEvArgs grtn(GRTN, 127, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, grtn.raw);
+  }
+  else if (preSetTimer >= 3000) {
+    static const uint8_t PROGMEM STEPSZ = 8;
+    float target = 127 + 80 * sin((preSetTimer - 3000) / 2500.0 * PI);
+
+    MotorEvArgs llng(LLNG, target, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, llng.raw);
+    MotorEvArgs rlng(RLNG, target, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rlng.raw);
+    MotorEvArgs glng(GLNG, target, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, glng.raw);
+  }
+
+  if (preSetTimer == 25000) {
+    static const uint8_t PROGMEM STEPSZ = 3;
+    MotorEvArgs grtn(GRTN, 255, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, grtn.raw);
+  }
+  else if (preSetTimer == 35000) {
+    static const uint8_t PROGMEM STEPSZ = 3;
+    MotorEvArgs grtn(GRTN, 127, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, grtn.raw);
+  }
+
+  if (preSetTimer == 37960) {
+    preSetTimer = 3000;
+  }
+  else {
+    preSetTimer += PRESETTIMERINCR;
+  }
 }
 
 void prog8(QMActive* recv, uint16_t& preSetTimer) {
+  // Free-breath Gating base line shift
+
+  if (preSetTimer == 0) {
+    static const uint8_t PROGMEM STEPSZ = 2;
+    MotorEvArgs llng(LLNG, 130, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, llng.raw);
+    MotorEvArgs lrtn(LRTN, 127, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, lrtn.raw);
+    MotorEvArgs rlng(RLNG, 130, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rlng.raw);
+    MotorEvArgs rrtn(RRTN, 127, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rrtn.raw);
+    MotorEvArgs glng(GLNG, 130, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, glng.raw);
+    MotorEvArgs grtn(GRTN, 127, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, grtn.raw);
+  }
+  else if (preSetTimer >= 3000) {
+    static const uint8_t PROGMEM STEPSZ = 8;
+    float baseline = 130 + 30 * sin((preSetTimer - 3000) / 30000.0 * PI);
+    float target = baseline + 50 * sin((preSetTimer - 3000) / 3000.0 * PI);
+    MotorEvArgs llng(LLNG, target, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, llng.raw);
+    MotorEvArgs rlng(RLNG, target, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rlng.raw);
+    MotorEvArgs glng(GLNG, target, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, glng.raw);
+  }
+
+  if (preSetTimer == 62960) {
+    preSetTimer = 3000;
+  }
+  else {
+    preSetTimer += PRESETTIMERINCR;
+  }
 }
 
 #endif

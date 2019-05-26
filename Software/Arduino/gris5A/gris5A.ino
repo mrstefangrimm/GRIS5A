@@ -16,7 +16,7 @@
 * for more details.
 */
 /*$endhead${.::gris5A.ino} #################################################*/
-/* gris5A.qm - Arduino software for the GRIS5A (C) motion phantom
+/* gris5A.qm - Arduino software for the GRIS5A (C) and No2 (C) motion phantom
  * Copyright (C) 2018-2019 by Stefan Grimm
  */
 
@@ -37,7 +37,7 @@
 #define NUMSERVOS 6
 #endif
 
-#define Q_PARAM_SIZE 4
+#define Q_PARAM_SIZE 2
 
 #include "FreeMemory.h"
 #include "dkb.h"
@@ -751,7 +751,6 @@ static QState Application_Run(Application * const me) {
             #ifdef MOTOROUT
 
             if (me->currentPreSet == 1) {
-              Serial.println(me->preSetTimer);
               prog1((QMActive*)&AO_MotorsOut, me->preSetTimer);
             }
             else if (me->currentPreSet == 2) {
