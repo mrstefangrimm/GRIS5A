@@ -1,5 +1,5 @@
 # GRIS5A
-GRIS5A is an DIY open source motion phantom. It has 5 axes which can be individually moved in longitudinal direction and can be rotated.
+GRIS5A is a DIY open source motion phantom. It has 5 axes which can be individually moved in longitudinal direction and can be rotated.
 The name "Gris" "5A" comes from its color (gray) and the 5 axes. 
 
 GRIS5A is a working motion phantom. It has a respiratory motion platform and four cylindrical probe holders. The body and the cylinders are made out of wood.
@@ -34,13 +34,13 @@ Ultimaker Cura | GPL
 
 Tool | Licence
 ---- | -------
- Fritzing | GPL
+Fritzing | GPL
 
 ### Software
 
 Application | Licence
 ----------- | -------
-gris5A | GPL
+mophapp | GPL
 calibration | LGPL
 SoftDKb | LGPL
 VirtualGris5A  | LGPL
