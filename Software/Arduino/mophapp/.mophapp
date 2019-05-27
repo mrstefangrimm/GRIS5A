@@ -8,20 +8,13 @@
   <item name="grid">3</item>
   <item name="backups">0</item>
  </group>
- <group name="windows">
-  <item id=".::gris5A.ino">-399,0,777,624</item>
-  <item id="AOs::ManualMotion::SM">0,0,632,616,*</item>
-  <item id="AOs::DKbIn::SM">0,0,495,624</item>
-  <item id="AOs::SerialIn::SM">-262,0,640,480</item>
-  <item id=".::FreeMemory.h">0,0,596,300</item>
-  <item id="AOs::PreSet::SM">-299,136,640,480</item>
- </group>
+ <group name="windows"/>
  <group name="search">
   <item name="options">4129280</item>
   <item name="replace">0</item>
  </group>
  <group name="vars">
-  <item id="PROJECT">gris5A</item>
+  <item id="PROJECT">mophapp</item>
   <item id="ARDUINO_HOME">C:\Program Files (x86)\Arduino</item>
   <item id="ARDUINO_SKETCHBOOK">C:\Users\Stefan Grimm\Documents\Arduino</item>
   <item id="BOARD_MCU">atmega328p</item>
@@ -35,7 +28,7 @@
    <item name="icon">3</item>
    <item name="title">build</item>
    <item name="command">&quot;%ARDUINO_SKETCHBOOK%\tools\utils\tclsh.exe&quot;</item>
-   <item name="args">&quot;%ARDUINO_SKETCHBOOK%\tools\scripts\build_avr.tcl&quot; %PROJECT% &quot;qpn_avr gris5Alib prfServo&quot;</item>
+   <item name="args">&quot;%ARDUINO_SKETCHBOOK%\tools\scripts\build_avr.tcl&quot; %PROJECT% &quot;qpn_avr mophlib prfServo&quot;</item>
    <item name="dir">.</item>
    <item name="options">3</item>
   </group>

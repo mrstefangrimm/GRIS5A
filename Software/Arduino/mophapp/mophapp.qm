@@ -759,8 +759,8 @@ QACTIVE_POST((QMActive *)&amp;AO_DKbOut, REMOTE_MODE_SIG, 0L);
   </class>
  </package>
  <directory name=".">
-  <file name="gris5A.ino">
-   <text>/* gris5A.qm - Arduino software for the GRIS5A (C) and No2 (C) motion phantom
+  <file name="mophapp.ino">
+   <text>/* mophapp.qm - Arduino software for the GRIS5A (C) and No2 (C) motion phantom
  * Copyright (C) 2018-2019 by Stefan Grimm
  */
 
@@ -2149,15 +2149,15 @@ void prog8(QMActive* recv, uint16_t&amp; preSetTimer) {
       float baseline = 130 + 30 * sin((preSetTimer - 3000) / 30000.0 * PI);
       float target = baseline + 50 * sin((preSetTimer - 3000) / 3000.0 * PI);
 
-      MotorEvArgs lulng(LLNG, target, STEPSZ);
+      MotorEvArgs lulng(LULNG, target, STEPSZ);
       QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, lulng.raw);
-      MotorEvArgs rulng(RLNG, target, STEPSZ);
+      MotorEvArgs rulng(RULNG, target, STEPSZ);
       QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rulng.raw);
-      MotorEvArgs lllng(LLNG, target, STEPSZ);
+      MotorEvArgs lllng(LLLNG, target, STEPSZ);
       QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, lllng.raw);
-      MotorEvArgs rllng(RLNG, target, STEPSZ);
+      MotorEvArgs rllng(RLLNG, target, STEPSZ);
       QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rllng.raw);
-      MotorEvArgs galng(GLNG, target, STEPSZ);
+      MotorEvArgs galng(GALNG, target, STEPSZ);
       QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, galng.raw);
     }
 
