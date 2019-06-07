@@ -37,12 +37,12 @@ namespace VirtualGris5A.Model {
     private Dictionary<Type, Action<object>> _eventHandlers = new Dictionary<Type, Action<object>>();
 
     private MotionSystem _motionSystem;
-    private PreSetMotionGenerator _preSetMotionGenerator;
+    private RemoteMotionGenerator _preSetMotionGenerator;
     private bool _isMotionSystemConnected;
 
     public EventMediator() {
       _motionSystem = new MotionSystem(OnMotionSystemTextMessage);
-      _preSetMotionGenerator = new PreSetMotionGenerator(OnEvCylinderPositionsPreSet);
+      _preSetMotionGenerator = new RemoteMotionGenerator(OnEvCylinderPositionsPreSet);
       RegisterCommands();
     }
 
@@ -120,8 +120,8 @@ namespace VirtualGris5A.Model {
         cmd.Positions[1] = new MotionSystemPosition() { Channel = (byte)ServoNumber.RLRTN, Value = ev.Rtn, StepSize = 5 };
         break;
       case Cylinder.Platform:
-        cmd.Positions[0] = new MotionSystemPosition() { Channel = (byte)ServoNumber.MPLNG, Value = ev.Lng, StepSize = 5 };
-        cmd.Positions[1] = new MotionSystemPosition() { Channel = (byte)ServoNumber.MPRTN, Value = ev.Rtn, StepSize = 5 };
+        cmd.Positions[0] = new MotionSystemPosition() { Channel = (byte)ServoNumber.GALNG, Value = ev.Lng, StepSize = 5 };
+        cmd.Positions[1] = new MotionSystemPosition() { Channel = (byte)ServoNumber.GARTN, Value = ev.Rtn, StepSize = 5 };
         break;
       }
       return cmd;
@@ -151,8 +151,8 @@ namespace VirtualGris5A.Model {
           cmd.Positions[m + 1] = new MotionSystemPosition() { Channel = (byte)ServoNumber.RLRTN, Value = ev.Positions[n].Rtn, StepSize = ev.Positions[n].StepSize };
           break;
         case Cylinder.Platform:
-          cmd.Positions[m] = new MotionSystemPosition() { Channel = (byte)ServoNumber.MPLNG, Value = ev.Positions[n].Lng, StepSize = ev.Positions[n].StepSize };
-          cmd.Positions[m + 1] = new MotionSystemPosition() { Channel = (byte)ServoNumber.MPRTN, Value = ev.Positions[n].Rtn, StepSize = ev.Positions[n].StepSize };
+          cmd.Positions[m] = new MotionSystemPosition() { Channel = (byte)ServoNumber.GALNG, Value = ev.Positions[n].Lng, StepSize = ev.Positions[n].StepSize };
+          cmd.Positions[m + 1] = new MotionSystemPosition() { Channel = (byte)ServoNumber.GARTN, Value = ev.Positions[n].Rtn, StepSize = ev.Positions[n].StepSize };
           break;
         }
       }

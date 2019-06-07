@@ -1,4 +1,4 @@
-﻿/* PreSetMotionGenerator.cs - Virtual GRIS5A (C) motion phantom application.
+﻿/* RemoteMotionGenerator.cs - Virtual GRIS5A (C) motion phantom application.
  * Copyright (C) 2018-2019 by Stefan Grimm
  *
  * This is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ namespace VirtualGris5A.Model {
 
   public delegate void PreSetMotion(EvCylinderPositions pos);
 
-  public class PreSetMotionGenerator : IDisposable {
+  public class RemoteMotionGenerator : IDisposable {
 
     private const int PRESETTIMERINCR = 40;
 
@@ -34,7 +34,7 @@ namespace VirtualGris5A.Model {
     private int _preSetTimer;
     private int _currentPreset;
 
-    public PreSetMotionGenerator(PreSetMotion handler) {
+    public RemoteMotionGenerator(PreSetMotion handler) {
       TimerCallback timerDelegate =
       new TimerCallback(delegate (object state) {
         _timer.Change(Timeout.Infinite, Timeout.Infinite);

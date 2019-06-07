@@ -68,7 +68,7 @@
             <Slider Minimum="0" Maximum="255" Value="{Binding RL.RTNInt}" />
           </StackPanel>
         </GroupBox>
-        <GroupBox Header="Motion Platform" Foreground="White" FontWeight="Bold">
+        <GroupBox Header="Gating Platform" Foreground="White" FontWeight="Bold">
           <StackPanel>
             <TextBox Text="{Binding MP.LNGInt, UpdateSourceTrigger=PropertyChanged}" Background="DarkGray" Foreground="White" />
             <Slider Minimum="0" Maximum="255" Value="{Binding MP.LNGInt}"/>
@@ -138,11 +138,11 @@
           <h:BindableTranslateManipulator Direction="0 0 -1" Value="{Binding RL.LNGExt, Mode=OneWay}" TargetTransform="{Binding ElementName=cylinderRL, Path=Transform}"/>
           <h:BindableRotateManipulator Position="25 -25 0" Axis="0 0 -1"  Value="{Binding RL.RTNExt, Mode=OneWay}" TargetTransform="{Binding ElementName=markerRL, Path=Transform}"/>
 
-          <h:BoxVisual3D x:Name="MotionPlatformPlatform" Transform="{h:Translate 60, 140, 194}" Height="75" Width="3" Length="85"  Fill="LightGray"/>
+          <h:BoxVisual3D x:Name="GatingPlatformPlatform" Transform="{h:Translate 60, 140, 194}" Height="75" Width="3" Length="85"  Fill="LightGray"/>
           <h:TruncatedConeVisual3D  x:Name="rodGA"  Origin="60 60 194" Normal="0 1 0" BaseRadius="3" TopRadius="3" Height="80" Fill="BurlyWood"/>
           <h:BindableTranslateManipulator Direction="0 1 0" Value="{Binding MP.LNGExt, Mode=OneWay}" TargetTransform="{Binding ElementName=rodGA, Path=Transform}"/>
-          <h:BindableTranslateManipulator Direction="0 1 0" Value="{Binding MP.LNGExt, Mode=OneWay}" TargetTransform="{Binding ElementName=MotionPlatformPlatform, Path=Transform}"/>
-          <h:BindableRotateManipulator Position="0 0 0" Axis="0 1 0"  Value="{Binding MP.RTNExt, Mode=OneWay}" TargetTransform="{Binding ElementName=MotionPlatformPlatform, Path=Transform}"/>
+          <h:BindableTranslateManipulator Direction="0 1 0" Value="{Binding MP.LNGExt, Mode=OneWay}" TargetTransform="{Binding ElementName=GatingPlatformPlatform, Path=Transform}"/>
+          <h:BindableRotateManipulator Position="0 0 0" Axis="0 1 0"  Value="{Binding MP.RTNExt, Mode=OneWay}" TargetTransform="{Binding ElementName=GatingPlatformPlatform, Path=Transform}"/>
 
           <!-- static parts -->
           <h:TruncatedConeVisual3D  x:Name="rodLU"  Origin="-25, 25, 100" Normal="0 0 -1" BaseRadius="3" TopRadius="3" Height="100" Fill="BurlyWood"/>
@@ -239,16 +239,16 @@
 
       </Grid>
 
-      <Grid Grid.Row="1" Name="MotionPlatformPanel" Background="Black">
+      <Grid Grid.Row="1" Name="GatingPlatformPanel" Background="Black">
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="9*"/>
           <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <Polyline Name="MotionPlatformHistory" Grid.Column="0"  SizeChanged="_OnSizeChanged" Stroke="White" />
+        <Polyline Name="GatingPlatformHistory" Grid.Column="0"  SizeChanged="_OnSizeChanged" Stroke="White" />
         <Canvas Grid.Column="1">
           <Line  Name="Pointer" X1="0" Y1="{Binding MP.LNGExt, Converter={StaticResource negConverter}}" X2="20" Y2="{Binding MP.LNGExt, Converter={StaticResource negConverter}}" Stroke="White" StrokeThickness="5" />
-          <Line  X1="5" Y1="0" X2="5" Y2="{Binding ElementName=MotionPlatformPanel, Path=ActualHeight}" Stroke="White" StrokeThickness="5"/>
+          <Line  X1="5" Y1="0" X2="5" Y2="{Binding ElementName=GatingPlatformPanel, Path=ActualHeight}" Stroke="White" StrokeThickness="5"/>
         </Canvas>
       </Grid>
 

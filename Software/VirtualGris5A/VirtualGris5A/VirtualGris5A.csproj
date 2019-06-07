@@ -77,7 +77,7 @@
     <Compile Include="Model\EventMediator.cs" />
     <Compile Include="Model\SomeEvents.cs" />
     <Compile Include="UI\NegateDoubleConverter.cs" />
-    <Compile Include="Model\PreSetMotionGenerator.cs" />
+    <Compile Include="Model\RemoteMotionGenerator.cs" />
     <Compile Include="UI\RelayCommand.cs" />
     <Compile Include="Model\MotionSystem.cs" />
     <Compile Include="UI\ViewModel.cs" />

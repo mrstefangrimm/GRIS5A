@@ -18,7 +18,6 @@
 
 using System;
 using System.ComponentModel;
-using System.Threading;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -40,7 +39,7 @@ namespace VirtualGris5A.UI {
       for (int n = 0; n < 100; n++) {
         _points.Add(new Point());
       }
-      MotionPlatformHistory.Points = _points;
+      GatingPlatformHistory.Points = _points;
 
       EventHandler timerDelegate =
         new EventHandler(delegate (object sender, EventArgs e) {
@@ -67,7 +66,7 @@ namespace VirtualGris5A.UI {
       var m = Pointer.RenderTransform.Value;
       m.OffsetY = e.NewSize.Height / 2.0;
       Pointer.RenderTransform = new MatrixTransform(m);
-      MotionPlatformHistory.RenderTransform = new MatrixTransform(m);
+      GatingPlatformHistory.RenderTransform = new MatrixTransform(m);
 
       double xStep = e.NewSize.Width / 100.0;
       for (int n = 0; n < 100; n++) {

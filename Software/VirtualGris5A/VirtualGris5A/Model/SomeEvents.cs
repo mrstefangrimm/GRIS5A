@@ -94,8 +94,8 @@ namespace VirtualGris5A.Model {
         RLRTN,
         RULNG,
         RURTN,
-        MPLNG,
-        MPRTN
+        GALNG,
+        GARTN
       }
 
     }
