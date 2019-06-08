@@ -1,19 +1,15 @@
 # GRIS5A
-GRIS5A is a DIY open source motion phantom. It has 5 axes which can be individually moved in longitudinal direction and can be rotated.
+GRIS5A is a motion phantom with 5 motion axes which are controlled independently for both linear and rotary motion.
 The name "Gris" "5A" comes from its color (gray) and the 5 axes. 
 
-GRIS5A is a working motion phantom. It has a respiratory motion platform and four cylindrical probe holders. The body and the cylinders are made out of wood.
+![No2 Motion Phantom](GRIS5A-Photo-Small-BW.png "")
 
-GRIS5A is a working design prototype; it is meant as a source of inspiration for your own motion phantom:
-
- - Create your phantom body and the cylinders with different materials
- - Choose the number of axes (the software supports up to five axes)
- - Rearrange the cylinders and  respiratory motion platform
- - Change the software with different motion patterns
+## Project History
+The project was launched in 2017 and has been added to github in 2018.
 
 ## File structure
-This motion phantom is a (mechanical) device which is controlled by an Arduino (software) and has an input device (hardware).
-The repository has therefore the sub folders:
+This motion phantom is a electromechanical device which is controlled by an Arduino and has an input device.
+The repository has the sub folders:
 
 - Mechanics
 - Hardware
@@ -30,6 +26,10 @@ Tool | Licence
 SketchUp | SketchUp Make 2017 User
 Ultimaker Cura | GPL
 
+Device | Licence
+---- | -------
+LnR-Actuator | CC BY-SA
+
 ### Hardware
 
 Tool | Licence
@@ -41,7 +41,6 @@ Fritzing | GPL
 Application | Licence
 ----------- | -------
 mophapp | GPL
-calibration | LGPL
 SoftDKb | LGPL
 VirtualGris5A  | LGPL
 
@@ -59,12 +58,12 @@ Libraries
 Library | Licence
 ------- | -------
 prfServo | LGPL
-twi.h | LGPL
-Wire.h | LGPL
+mophlib | LGPL, BSD
 Arduino.h | LGPL
-Stream.h | LGPL
-Adafruit_PWMServoDriver.h | BSD
 qpn.h | GPL
 Processing Core | LPGL
 .NET 4.6.2 | MS license
 Helix toolkit | MIT
+
+## License
+This work is licensed under the Creative Commons Attribution-ShareAlike 4.0 International License. To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/4.0/ or send a letter to Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
