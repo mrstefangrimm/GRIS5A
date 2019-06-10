@@ -1,0 +1,4 @@
+Adafruit_PWMServoDriver	KEYWORD1
+setPWM	KEYWORD2
+setPWMOn	KEYWORD2
+setPWMOff	KEYWORD2
