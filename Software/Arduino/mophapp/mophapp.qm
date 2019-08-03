@@ -525,11 +525,20 @@ uint8_t dir = args.getDirection() == FORWARDS ? MOTOR_STEP_FORWARD_SIG : MOTOR_S
   MotorEvArgs m(args.ServoNum, me-&gt;speed, step);
   QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, dir, m.raw);
 #endif</action>
-      <tran_glyph conn="3,73,3,-1,12">
+      <tran_glyph conn="4,73,3,-1,12">
        <action box="0,-3,22,2"/>
       </tran_glyph>
      </tran>
-     <state_glyph node="3,65,26,13">
+     <tran trig="PROGRAM_CHANGE">
+      <action>Serial.println(&quot;Calibration Program Button Pressed&quot;);
+
+ProgramChangeEvArgs args(Q_PAR(me));
+me-&gt;speed = args.ProgNo;</action>
+      <tran_glyph conn="4,77,3,-1,12">
+       <action box="0,-3,18,2"/>
+      </tran_glyph>
+     </tran>
+     <state_glyph node="4,65,26,14">
       <entry box="1,2,6,2"/>
      </state_glyph>
     </state>
@@ -697,7 +706,7 @@ QACTIVE_POST((QMActive *)&amp;AO_DKbOut, REMOTE_MODE_SIG, 0L);
 #endif</entry>
       <tran trig="CALIBRATION_MODE" target="../../../1">
        <action>Serial.println(F(&quot;StateChange Calibration |J|&quot;));</action>
-       <tran_glyph conn="44,56,3,0,-22,9">
+       <tran_glyph conn="44,56,3,0,-21,9">
         <action box="-16,-2,18,2"/>
        </tran_glyph>
       </tran>
