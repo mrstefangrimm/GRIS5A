@@ -268,9 +268,9 @@ if (!isMoving) {
        <action>Serial.println(F(&quot;MotorsOut: Enter Calibration&quot;));
 
 for (int n = 0; n &lt; NUMSERVOS; n++) {
-  servoLib.write(n, 100);
-  me-&gt;servoPosition[n] = 100;
-  me-&gt;target[n] = 100;
+  servoLib.write(n, 150);
+  me-&gt;servoPosition[n] = 150;
+  me-&gt;target[n] = 150;
   me-&gt;stepSize[n] = 1;
 }</action>
        <tran_glyph conn="54,54,1,3,11">
@@ -767,11 +767,11 @@ QACTIVE_POST((QMActive *)&amp;AO_DKbOut, REMOTE_MODE_SIG, 0L);
 #include &quot;qpn.h&quot;
 #include &quot;Arduino.h&quot;
 
-#define GRIS5A 1
-//#define NO2 1
+//#define GRIS5A 1
+#define NO2 1
 
-#define DKBIN
-#define DKBOUT
+//#define DKBIN
+//#define DKBOUT
 #define SERIALIN
 #define MOTOROUT
 
@@ -918,7 +918,7 @@ class ServoShieldPCA9685Linear : public prfServo2ImplBase&lt;uint16_t, float&gt;
     }
     #elif NO2
     if (!Calibration) {
-    // LLLNG
+    // LLNG
     params[0][0] = 5.3400000000000000e+002;
     params[0][1] = -1.5833333333333320e+000;
     params[0][2] = 3.6621093749999844e-003;
@@ -926,30 +926,41 @@ class ServoShieldPCA9685Linear : public prfServo2ImplBase&lt;uint16_t, float&gt;
     offsets[0][0] = -1.3322676295501878e-015;
     offsets[0][1] = 7.8125000000000080e-002;
     offsets[0][2] = -2.4414062500000030e-004;
-    // RLLNG
+    // RLNG
     params[1][0] = 2.3420000000000002e+002;
     params[1][1] = 1.5338541666666618e+000;
     params[1][2] = -3.6621093749999460e-003;
     params[1][3] = 6.9936116536456924e-006;
     offsets[1][0] = -4.0000000000000000e+000;
     offsets[1][1] = 1.5625000000000000e-002;
-    // GALNG
+    // GLNG
     params[2][0] = 1.8751428571428568e+002;
     params[2][1] = 2.1677827380952457e+000;
     params[2][2] = -6.6266741071429420e-003;
     params[2][3] = 1.0808308919271054e-005;
     offsets[2][0] = 0;
-    // LLRTN
+    // LRTN
+    /*
     params[3][0] = 1.9000000000000000e+002;
     params[3][1] = 1.3671874999999997e+000;
     params[3][2] = 5.4931640625000050e-004;
     offsets[3][0] = 0;
-    // RLRTN
+    */
+    params[3][0] = 1.7577142857142857e+002;
+    params[3][1] = 2.3523809523809520e+000;
+    params[3][2] = -5.2910052910052920e-003;
+    params[3][3] = 2.1947873799725652e-005;
+    offsets[3][0] = -7.9428571428571430e+000;
+    offsets[3][1] = 1.3756613756613744e-002;
+    offsets[3][2] = 7.0546737213403880e-004;
+    offsets[3][3] = -3.6579789666209417e-006;
+
+    // RRTN
     params[4][0] = 1.2999999999999994e+002;
     params[4][1] = 1.3750000000000033e+000;
     params[4][2] = 6.1035156249998670e-004;
     offsets[4][0] = -4;
-    // GARTN
+    // GRTN
     params[5][0] = 1.5000000000000000e+002;
     params[5][1] = 1.4843749999999997e+000;
     params[5][2] = 7.3242187500000060e-004;
@@ -1009,7 +1020,7 @@ ServoShieldPCA9685Linear impl(pwm);
 #ifdef GRIS5A
 prfServo2&lt;uint32_t, uint8_t, uint16_t, float&gt; servoLib(&amp;impl, 0x0777DD, 0x0);
 #elif NO2
-prfServo2&lt;uint16_t, uint8_t, uint16_t, float&gt; servoLib(&amp;impl, 0b101010111111, 0b000000000110);
+prfServo2&lt;uint16_t, uint8_t, uint16_t, float&gt; servoLib(&amp;impl, 0b101011111111, 0b000011000110);
 #endif
 
 #endif
