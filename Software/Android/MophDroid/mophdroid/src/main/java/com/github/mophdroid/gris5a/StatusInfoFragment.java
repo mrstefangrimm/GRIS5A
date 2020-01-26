@@ -1,6 +1,8 @@
 	package com.github.mophdroid.gris5a;
 
 import androidx.lifecycle.ViewModel;
+
+import android.app.Activity;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -49,10 +51,10 @@ public class StatusInfoFragment extends Fragment implements ISerialObserver {
         View root = inflater.inflate(R.layout.gris5a_status_info_fragment, container, false);
         mLogOutput = root.findViewById(R.id.txtLogOutput);
         mLogOutput.setMovementMethod(new ScrollingMovementMethod());
-        mLeftLng = root.findViewById(R.id.txtLeftLng);
-        mLeftRtn = root.findViewById(R.id.txtLeftRtn);
-        mRightLng = root.findViewById(R.id.txtRightLng);
-        mRightRtn = root.findViewById(R.id.txtRightRtn);
+        mLeftLng = root.findViewById(R.id.txtLeftUpperLng);
+        mLeftRtn = root.findViewById(R.id.txtLeftUpperRtn);
+        mRightLng = root.findViewById(R.id.txtRightUpperLng);
+        mRightRtn = root.findViewById(R.id.txtRightUpperRtn);
         mGatingLng = root.findViewById(R.id.txtGatingtLng);
         mGatingRtn = root.findViewById(R.id.txtGatingRtn);
         mSynced = root.findViewById(R.id.txtSynced);
@@ -141,5 +143,5 @@ public class StatusInfoFragment extends Fragment implements ISerialObserver {
     }
 
     @Override
-    public void pageChanged(int tabPos) {}
+    public void pageChanged(int tabPos, Activity activity) {}
 }

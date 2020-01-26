@@ -1,5 +1,6 @@
 package com.github.mophdroid;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -301,7 +302,7 @@ public class MainActivity extends AppCompatActivity implements ISerialObservable
 
         private void firePageChanged(int pagePos) {
             for (ISerialObserver recv : mActivity.get().mObservers) {
-                recv.pageChanged(pagePos);
+                recv.pageChanged(pagePos, mActivity.get());
             }
         }
 

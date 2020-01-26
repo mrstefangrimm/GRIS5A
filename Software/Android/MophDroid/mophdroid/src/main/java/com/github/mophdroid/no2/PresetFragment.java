@@ -1,5 +1,6 @@
 package com.github.mophdroid.no2;
 
+import android.app.Activity;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -8,9 +9,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageSwitcher;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.ViewSwitcher;
+
 import com.github.mophdroid.*;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class PresetFragment extends Fragment implements ISerialObserver {
 
@@ -29,6 +37,11 @@ public class PresetFragment extends Fragment implements ISerialObserver {
     private TextView mStatus;
     private State mState;
     private int mSelected;
+
+    private int[] gallery = { R.drawable.no2_preset1, R.drawable.no2_preset3 };
+    private ImageSwitcher mImageSwitcher;
+    private Timer mAnimationTimer;
+    int position = 0;
 
     public static PresetFragment newInstance() {
         return new PresetFragment();
@@ -86,6 +99,7 @@ public class PresetFragment extends Fragment implements ISerialObserver {
         mGatingLng = root.findViewById(R.id.txtGatingtLng);
         mGatingRtn = root.findViewById(R.id.txtGatingRtn);
         mStatus = root.findViewById(R.id.txtStatus);
+        mImageSwitcher = root.findViewById(R.id.imgAniFrontView);
 
         root.findViewById(R.id.btnStart).setOnClickListener(
                 v -> {
@@ -126,6 +140,13 @@ public class PresetFragment extends Fragment implements ISerialObserver {
                     public void onNothingSelected(AdapterView<?> adapterView) {
                     }
                 });
+
+        mImageSwitcher.setFactory(new ViewSwitcher.ViewFactory() {
+            public View makeView() {
+                return new ImageView(container.getContext());
+            }
+        });
+
         return root;
     }
 
@@ -162,12 +183,31 @@ public class PresetFragment extends Fragment implements ISerialObserver {
     }
 
     @Override
-    public void pageChanged(int tabPos) {
+    public void pageChanged(int tabPos, Activity activity) {
         if (tabPos == 2) {
             ISerialObservable act = (ISerialObservable) getActivity();
             act.serialWrite(new byte[] { (byte)0xA9 });
             mState = State.Standing;
             mStatus.setText("Standing");
+
+            mAnimationTimer = new Timer();
+            mAnimationTimer.scheduleAtFixedRate(new TimerTask() {
+
+                public void run() {
+                    // avoid exception: "Only the original thread that created a view hierarchy can touch its views"
+                    activity.runOnUiThread(new Runnable() {
+                        public void run() {
+                            mImageSwitcher.setImageResource(gallery[position]);
+                            position++;
+                            if (position == 2)
+                            {
+                                position = 0;
+                            }
+                        }
+                    });
+                }
+
+            }, 0, 1000);
         }
     }
 }

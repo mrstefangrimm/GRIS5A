@@ -1,0 +1,9 @@
+packages/
+.vs
+bin/
+obj/
+lib/
+res/
+*.db
+/Software/Android/PC2UsbSocketApplication/.gradle
+/Software/Android/PC2UsbSocketApplication/.idea

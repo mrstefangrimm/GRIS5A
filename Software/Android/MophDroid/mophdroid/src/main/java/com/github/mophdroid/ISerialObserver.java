@@ -1,5 +1,7 @@
 package com.github.mophdroid;
 
+import android.app.Activity;
+
 public interface ISerialObserver {
 
     void rawOutput(String rawData);
@@ -12,5 +14,5 @@ public interface ISerialObserver {
 
     void servoPosition(int servoNum, int pos);
 
-    void pageChanged(int tabPos);
+    void pageChanged(int tabPos, Activity activity);
 }

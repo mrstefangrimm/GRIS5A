@@ -1,5 +1,6 @@
 package com.github.mophdroid.gris5a;
 
+import android.app.Activity;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -78,10 +79,10 @@ public class PresetFragment extends Fragment implements ISerialObserver {
         View root = inflater.inflate(R.layout.gris5a_preset_fragment, container, false);
         mPreset = root.findViewById(R.id.spPreset);
         mDesc = root.findViewById(R.id.txtDescription);
-        mLeftLng = root.findViewById(R.id.txtLeftLng);
-        mLeftRtn = root.findViewById(R.id.txtLeftRtn);
-        mRightLng = root.findViewById(R.id.txtRightLng);
-        mRightRtn = root.findViewById(R.id.txtRightRtn);
+        mLeftLng = root.findViewById(R.id.txtLeftUpperLng);
+        mLeftRtn = root.findViewById(R.id.txtLeftUpperRtn);
+        mRightLng = root.findViewById(R.id.txtRightUpperLng);
+        mRightRtn = root.findViewById(R.id.txtRightUpperRtn);
         mGatingLng = root.findViewById(R.id.txtGatingtLng);
         mGatingRtn = root.findViewById(R.id.txtGatingRtn);
 
@@ -160,7 +161,7 @@ public class PresetFragment extends Fragment implements ISerialObserver {
     }
 
     @Override
-    public void pageChanged(int tabPos) {
+    public void pageChanged(int tabPos, Activity activity) {
         if (tabPos == 2) {
             ISerialObservable act = (ISerialObservable) getActivity();
             act.serialWrite(new byte[] { (byte)0xA9 });

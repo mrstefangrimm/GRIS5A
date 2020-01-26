@@ -1,6 +1,8 @@
 package com.github.mophdroid.no2;
 
 import androidx.lifecycle.ViewModel;
+
+import android.app.Activity;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -141,5 +143,5 @@ public class StatusInfoFragment extends Fragment implements ISerialObserver {
     }
 
     @Override
-    public void pageChanged(int tabPos) {}
+    public void pageChanged(int tabPos, Activity activity) {}
 }

@@ -1,6 +1,8 @@
 package com.github.mophdroid.no2;
 
 import androidx.lifecycle.ViewModel;
+
+import android.app.Activity;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -167,7 +169,7 @@ public class ManualMotionFragment extends Fragment implements ISerialObserver {
     }
 
     @Override
-    public void pageChanged(int tabPos) {
+    public void pageChanged(int tabPos, Activity activity) {
         if (tabPos == 1) {
             ISerialObservable act = (ISerialObservable) getActivity();
             act.serialWrite(new byte[] { (byte)0xB1 });
