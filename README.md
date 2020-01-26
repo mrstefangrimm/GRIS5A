@@ -21,7 +21,7 @@ GRIS5A is built with open source tools and open source libraries.
 
 ### Mechanics
 
-Tool | Licence
+Tool | License 
 ---- | -------
 SketchUp | SketchUp Make 2017 User
 Ultimaker Cura | GPL
@@ -32,26 +32,28 @@ LnR-Actuator | CC BY-SA
 
 ### Hardware
 
-Tool | Licence
+Tool | License 
 ---- | -------
 Fritzing | GPL
 
 ### Software
 
-Application | Licence
+Application | License 
 ----------- | -------
 mophapp | GPL
+MophDroid | LGPL 
 SoftDKb | LGPL
 VirtualGris5A  | LGPL
 
-Tool | Licence
+Tool | License 
 ---- | -------
 Arduino IDE | GPL
 avrdude | GPL
 QM | GPL
 Processing | GPL
 gcc | GPL
-VS2017 community | MS license
+VS2017 community | Microsoft license 
+Android Studio | Google license 
 
 Libraries
 
@@ -62,8 +64,9 @@ mophlib | LGPL, BSD
 Arduino.h | LGPL
 qpn.h | GPL
 Processing Core | LPGL
-.NET 4.6.2 | MS license
+.NET 4.6.2 | Microsoft license 
 Helix toolkit | MIT
+Android SDK | Google license 
 
 ## License
 This work is licensed under the Creative Commons Attribution-ShareAlike 4.0 International License. To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/4.0/ or send a letter to Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
