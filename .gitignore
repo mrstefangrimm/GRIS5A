@@ -3,7 +3,6 @@ packages/
 bin/
 obj/
 lib/
-res/
 *.db
-/Software/Android/PC2UsbSocketApplication/.gradle
-/Software/Android/PC2UsbSocketApplication/.idea
+/Software/SoftDKb/res
+/Software/SoftDKb/data
