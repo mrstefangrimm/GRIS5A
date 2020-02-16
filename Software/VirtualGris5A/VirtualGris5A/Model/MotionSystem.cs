@@ -242,7 +242,7 @@ namespace VirtualGris5A.Model {
       if (_serialPort != null && _serialPort.IsOpen) {
         lock (_sendBuffer) {
           byte[] syncMsg = new byte[1];
-          syncMsg[0] = 4;
+          syncMsg[0] = 11;
           _serialPort.Write(syncMsg, 0, 1);
         }
       }

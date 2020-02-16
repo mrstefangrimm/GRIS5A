@@ -162,14 +162,14 @@ namespace VirtualGris5A.Model {
       }
       else if (_preSetTimer >= 3000) {
         const ushort STEPSZ = 10;
-        double targetDeltaSmall = 10 * Math.Sin((_preSetTimer - 3000) / 3000 * Math.PI);
-        double targetDeltaLarge = 40 * Math.Sin((_preSetTimer - 3000) / 3000 * Math.PI);
+        double targetDeltaSmall = 10 * Math.Sin((_preSetTimer - 3000) / 3000d * Math.PI);
+        double targetDeltaLarge = 40 * Math.Sin((_preSetTimer - 3000) / 3000d * Math.PI);
 
         EvCylinderPositions pos = new EvCylinderPositions();
         pos.Positions = new EvCylinderPosition[4];
-        pos.Positions[0] = new EvCylinderPosition() { Cy = Cylinder.LeftUpper, Lng = (ushort)(147 + targetDeltaLarge), Rtn = (ushort)(147 + targetDeltaLarge), StepSize = STEPSZ };
+        pos.Positions[0] = new EvCylinderPosition() { Cy = Cylinder.LeftUpper, Lng = (ushort)(147 - targetDeltaLarge), Rtn = (ushort)(147 + targetDeltaLarge), StepSize = STEPSZ };
         pos.Positions[2] = new EvCylinderPosition() { Cy = Cylinder.RightUpper, Lng = (ushort)(122 - targetDeltaSmall), Rtn = (ushort)(122 - targetDeltaSmall), StepSize = STEPSZ };
-        pos.Positions[1] = new EvCylinderPosition() { Cy = Cylinder.LeftLower, Lng = (ushort)(107 - targetDeltaLarge), Rtn = (ushort)(132 + targetDeltaSmall), StepSize = STEPSZ };
+        pos.Positions[1] = new EvCylinderPosition() { Cy = Cylinder.LeftLower, Lng = (ushort)(107 + targetDeltaLarge), Rtn = (ushort)(132 + targetDeltaSmall), StepSize = STEPSZ };
         pos.Positions[3] = new EvCylinderPosition() { Cy = Cylinder.RightLower, Lng = (ushort)(132 + targetDeltaSmall), Rtn = (ushort)(107 - targetDeltaLarge), StepSize = STEPSZ };
         handler(pos);
       }
@@ -202,10 +202,10 @@ namespace VirtualGris5A.Model {
 
         EvCylinderPositions pos = new EvCylinderPositions();
         pos.Positions = new EvCylinderPosition[5];
-        pos.Positions[0] = new EvCylinderPosition() { Cy = Cylinder.LeftUpper, Lng = (ushort)(target), Rtn = (ushort)(target), StepSize = STEPSZ };
-        pos.Positions[2] = new EvCylinderPosition() { Cy = Cylinder.RightUpper, Lng = (ushort)(target), Rtn = (ushort)(target), StepSize = STEPSZ };
-        pos.Positions[1] = new EvCylinderPosition() { Cy = Cylinder.LeftLower, Lng = (ushort)(target), Rtn = (ushort)(target), StepSize = STEPSZ };
-        pos.Positions[3] = new EvCylinderPosition() { Cy = Cylinder.RightLower, Lng = (ushort)(target), Rtn = (ushort)(target), StepSize = STEPSZ };
+        pos.Positions[0] = new EvCylinderPosition() { Cy = Cylinder.LeftUpper, Lng = (ushort)(target), Rtn = 127, StepSize = STEPSZ };
+        pos.Positions[2] = new EvCylinderPosition() { Cy = Cylinder.RightUpper, Lng = (ushort)(target), Rtn = 127, StepSize = STEPSZ };
+        pos.Positions[1] = new EvCylinderPosition() { Cy = Cylinder.LeftLower, Lng = (ushort)(target), Rtn = 127, StepSize = STEPSZ };
+        pos.Positions[3] = new EvCylinderPosition() { Cy = Cylinder.RightLower, Lng = (ushort)(target), Rtn = 127, StepSize = STEPSZ };
         pos.Positions[4] = new EvCylinderPosition() { Cy = Cylinder.Platform, Lng = (ushort)(target), Rtn = 127, StepSize = STEPSZ };
         handler(pos);
       }
@@ -316,9 +316,9 @@ namespace VirtualGris5A.Model {
 
         EvCylinderPositions pos = new EvCylinderPositions();
         pos.Positions = new EvCylinderPosition[5];
-        pos.Positions[0] = new EvCylinderPosition() { Cy = Cylinder.LeftUpper, Lng = (ushort)(147 + targetDeltaLarge), Rtn = (ushort)(147 + targetDeltaLarge), StepSize = STEPSZ };
+        pos.Positions[0] = new EvCylinderPosition() { Cy = Cylinder.LeftUpper, Lng = (ushort)(147 - targetDeltaLarge), Rtn = (ushort)(147 + targetDeltaLarge), StepSize = STEPSZ };
         pos.Positions[2] = new EvCylinderPosition() { Cy = Cylinder.RightUpper, Lng = (ushort)(122 - targetDeltaSmall), Rtn = (ushort)(122 - targetDeltaSmall), StepSize = STEPSZ };
-        pos.Positions[1] = new EvCylinderPosition() { Cy = Cylinder.LeftLower, Lng = (ushort)(107 - targetDeltaLarge), Rtn = (ushort)(132 + targetDeltaSmall), StepSize = STEPSZ };
+        pos.Positions[1] = new EvCylinderPosition() { Cy = Cylinder.LeftLower, Lng = (ushort)(107 + targetDeltaLarge), Rtn = (ushort)(132 + targetDeltaSmall), StepSize = STEPSZ };
         pos.Positions[3] = new EvCylinderPosition() { Cy = Cylinder.RightLower, Lng = (ushort)(132 + targetDeltaSmall), Rtn = (ushort)(107 - targetDeltaLarge), StepSize = STEPSZ };
         pos.Positions[4] = new EvCylinderPosition() { Cy = Cylinder.Platform, Lng = (ushort)targetGating, Rtn = 127, StepSize = STEPSZ };
         handler(pos);
@@ -357,10 +357,10 @@ namespace VirtualGris5A.Model {
 
         EvCylinderPositions pos = new EvCylinderPositions();
         pos.Positions = new EvCylinderPosition[5];
-        pos.Positions[0] = new EvCylinderPosition() { Cy = Cylinder.LeftUpper, Lng = (ushort)(target), Rtn = (ushort)(target), StepSize = STEPSZ };
-        pos.Positions[2] = new EvCylinderPosition() { Cy = Cylinder.RightUpper, Lng = (ushort)(target), Rtn = (ushort)(target), StepSize = STEPSZ };
-        pos.Positions[1] = new EvCylinderPosition() { Cy = Cylinder.LeftLower, Lng = (ushort)(target), Rtn = (ushort)(target), StepSize = STEPSZ };
-        pos.Positions[3] = new EvCylinderPosition() { Cy = Cylinder.RightLower, Lng = (ushort)(target), Rtn = (ushort)(target), StepSize = STEPSZ };
+        pos.Positions[0] = new EvCylinderPosition() { Cy = Cylinder.LeftUpper, Lng = (ushort)(target), Rtn = 127, StepSize = STEPSZ };
+        pos.Positions[2] = new EvCylinderPosition() { Cy = Cylinder.RightUpper, Lng = (ushort)(target), Rtn = 127, StepSize = STEPSZ };
+        pos.Positions[1] = new EvCylinderPosition() { Cy = Cylinder.LeftLower, Lng = (ushort)(target), Rtn = 127, StepSize = STEPSZ };
+        pos.Positions[3] = new EvCylinderPosition() { Cy = Cylinder.RightLower, Lng = (ushort)(target), Rtn = 127, StepSize = STEPSZ };
         pos.Positions[4] = new EvCylinderPosition() { Cy = Cylinder.Platform, Lng = (ushort)(target), Rtn = rtnMP, StepSize = STEPSZ };
         handler(pos);
       }

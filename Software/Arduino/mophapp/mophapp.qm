@@ -163,6 +163,9 @@ digitalWrite(LATCHPIN_OUT, HIGH);</entry>
    <operation name="isInitialized" type="bool" visibility="0x00" properties="0x00">
     <code>return me-&gt;initializeCounter == NUMSERVOS;</code>
    </operation>
+   <operation name="isCalibrationMode" type="bool" visibility="0x00" properties="0x00">
+    <code>return impl.Calibration;</code>
+   </operation>
    <statechart>
     <initial target="../2">
      <action>// Give the capacitor time to load
@@ -185,11 +188,6 @@ Serial.println(F(&quot;MotorOut Initialized&quot;));</action>
 // Meassured with the oscilloscope and digitalWrite(HIGH/LOW)</documentation>
      <entry>//
 Serial.println(F(&quot;MotorsOut: Enter Active&quot;));</entry>
-     <initial target="../3">
-      <initial_glyph conn="51,38,4,0,3">
-       <action box="0,-2,10,2"/>
-      </initial_glyph>
-     </initial>
      <tran trig="MOTOR_STEP_FORWARD">
       <action>uint32_t par = Q_PAR(me);
 MotorEvArgs data(par);
@@ -260,20 +258,12 @@ if (!isMoving) {
   me-&gt;_sendPositionCounter++;
 }
 #endif</action>
-       <tran_glyph conn="29,58,3,-1,12">
+       <tran_glyph conn="27,58,3,-1,12">
         <action box="0,-2,10,2"/>
        </tran_glyph>
       </tran>
-      <tran trig="CALIBRATION_MODE" target="../../4">
-       <action>Serial.println(F(&quot;MotorsOut: Enter Calibration&quot;));
-
-for (int n = 0; n &lt; NUMSERVOS; n++) {
-  servoLib.write(n, 150);
-  me-&gt;servoPosition[n] = 150;
-  me-&gt;target[n] = 150;
-  me-&gt;stepSize[n] = 1;
-}</action>
-       <tran_glyph conn="54,54,1,3,11">
+      <tran trig="CALIBRATION_MODE" target="../../3">
+       <tran_glyph conn="52,54,1,3,12">
         <action box="0,-2,17,2"/>
        </tran_glyph>
       </tran>
@@ -288,16 +278,23 @@ if (data.Pos &gt;= 0 &amp;&amp; data.Pos &lt;= 255) {
 } else {
   me-&gt;target[data.ServoNum] = me-&gt;servoPosition[data.ServoNum];
 }</action>
-       <tran_glyph conn="29,51,3,-1,20">
+       <tran_glyph conn="27,51,3,-1,20">
         <action box="0,-2,23,2"/>
        </tran_glyph>
       </tran>
-      <state_glyph node="29,41,25,21">
+      <state_glyph node="27,41,25,21">
        <entry box="1,2,6,2"/>
       </state_glyph>
      </state>
      <state name="Calibration">
-      <entry>// Debug: crashes the application Serial.println(F(&quot;MotorsOut: Enter Calibration&quot;));</entry>
+      <entry>Serial.println(F(&quot;MotorsOut: Enter Calibration&quot;));
+
+for (int n = 0; n &lt; NUMSERVOS; n++) {
+  servoLib.write(n, 150);
+  me-&gt;servoPosition[n] = 150;
+  me-&gt;target[n] = 150;
+  me-&gt;stepSize[n] = 1;
+}</entry>
       <tran trig="Q_TIMEOUT">
        <action>
 #ifdef SERIALIN
@@ -335,11 +332,11 @@ if (!isMoving) {
   me-&gt;_sendPositionCounter++;
 }
 #endif</action>
-       <tran_glyph conn="65,58,3,-1,12">
+       <tran_glyph conn="64,58,3,-1,12">
         <action box="0,-2,10,2"/>
        </tran_glyph>
       </tran>
-      <state_glyph node="65,44,18,18">
+      <state_glyph node="64,44,18,18">
        <entry box="1,2,6,2"/>
       </state_glyph>
      </state>
@@ -352,14 +349,26 @@ if (!isMoving) {
       <action>QActive_armX((QActive *)me, 0U,
   MOTORSTARTUPDELAY,
   MOTORSTARTUPDELAY);</action>
-      <choice target="../../../1">
+      <choice>
        <guard brief="is initialized">MotorsOut_isInitialized(me)</guard>
        <action>QActive_armX((QActive *)me, 0U,
   MOTORSENDINTERVAL,
   MOTORSENDINTERVAL);
 
 Serial.println(F(&quot;MotorsOut: Enter Active&quot;));</action>
-       <choice_glyph conn="41,12,4,0,9">
+       <choice target="../../../../1/2">
+        <guard brief="else"/>
+        <choice_glyph conn="57,29,4,0,7,-8,5">
+         <action box="0,3,10,2"/>
+        </choice_glyph>
+       </choice>
+       <choice target="../../../../1/3">
+        <guard brief="isCalibrationMode">MotorsOut_isCalibrationMode(me)</guard>
+        <choice_glyph conn="57,29,5,0,17,15">
+         <action box="1,0,15,2"/>
+        </choice_glyph>
+       </choice>
+       <choice_glyph conn="41,12,4,-1,4,16,13">
         <action box="-11,2,11,2"/>
        </choice_glyph>
       </choice>
@@ -388,6 +397,7 @@ me-&gt;initializeCounter++;</action>
   </class>
   <class name="SerialIn" superclass="qpn::QActive">
    <attribute name="remainingBytes" type="uint8_t" visibility="0x00" properties="0x00"/>
+   <attribute name="rwByteCounter" type="uint16_t" visibility="0x00" properties="0x00"/>
    <operation name="processRemainingBytes" type="void" visibility="0x00" properties="0x00">
     <code>while (me-&gt;remainingBytes &gt; 1 &amp;&amp; Serial.available() &gt; 1) {
   uint8_t tmpLow = Serial.read();
@@ -409,6 +419,9 @@ me-&gt;initializeCounter++;</action>
   me-&gt;remainingBytes -= 2;
 }</code>
    </operation>
+   <operation name="hasRemainingDeviceData" type="bool" visibility="0x00" properties="0x00">
+    <code>return me-&gt;rwByteCounter &lt; DEVICEDATALENGTH;</code>
+   </operation>
    <statechart>
     <initial target="../1">
      <action>QActive_armX((QActive *)me, 0U,
@@ -418,7 +431,7 @@ me-&gt;initializeCounter++;</action>
 me-&gt;remainingBytes = 0;
 
 Serial.println(F(&quot;SerialIn Initialized&quot;));</action>
-     <initial_glyph conn="26,12,5,0,13,6">
+     <initial_glyph conn="12,6,5,3,20">
       <action box="0,-2,10,2"/>
      </initial_glyph>
     </initial>
@@ -452,27 +465,168 @@ else if (Serial.available() &gt; 0) {
       // It is possible that not all bytes are in the serial-in buffer.
       SerialIn_processRemainingBytes(me);
     }
-    else if (input.getCmd() == FREEMEM) {
-      // Send free memory
-      Serial.print(F(&quot;|K&quot;));
-      // Debug: int* p = new int[10];
-      // if (p == 0) { Serial.print(999); )
-      Serial.print(freeMemory());
-      Serial.print(F(&quot;|&quot;));
+    else if (input.getCmd() == EXT) {
+
+      switch (input.getCmdExt()) {
+        case SYNC:
+          Serial.print(F(&quot;Synced&quot;));
+          break;
+        case GET_FREEMEM:
+          Serial.print(F(&quot;|K&quot;));
+          // Debug: int* p = new int[10];
+          // if (p == 0) { Serial.print(999); )
+          Serial.print(freeMemory());
+          Serial.print(F(&quot;|&quot;));
+          break;
+        case GET_MODEL:
+          Serial.print(F(&quot;|L&quot;));
+          Serial.print(MODELTYPE);
+          Serial.print(F(&quot;|&quot;));
+          break;
+        case GET_VERSION:
+          Serial.print(F(&quot;|M&quot;));
+          Serial.print(MAJORVERSION);
+          Serial.print(F(&quot;.&quot;));
+          Serial.print(MINORVERSION);
+          Serial.print(F(&quot;.&quot;));
+          Serial.print(IFVERSION);
+          Serial.print(F(&quot;.&quot;));
+          Serial.print(BUILDVERSION);
+          Serial.print(F(&quot;|&quot;));
+          break;
+        case GET_DEVICEDATA:
+          QACTIVE_POST((QMActive*)&amp;AO_Application, GET_DEVICEDATA_SIG, 0L);
+          break;
+        case PUT_DEVICEDATA:
+          QACTIVE_POST((QMActive*)&amp;AO_Application, PUT_DEVICEDATA_SIG, 0L);
+          break;
+      }
     }
-    else if (input.getCmd() == SYNC) {
-      // Send sync
-      Serial.print(F(&quot;Synced&quot;));
+    else if (input.getCmd() == TXT) {
+      if (serin == '\'') {
+        Serial.println(&quot;'&quot;);
+      }
     }
   }
 }</action>
-      <tran_glyph conn="30,27,3,-1,12">
+      <tran_glyph conn="32,13,3,-1,12">
        <action box="0,-2,10,2"/>
       </tran_glyph>
      </tran>
-     <state_glyph node="30,18,16,12"/>
+     <tran trig="PUT_DEVICEDATA" target="../../2">
+      <action>Serial.println(F(&quot;Go PutDeviceData&quot;));
+me-&gt;rwByteCounter = 0;</action>
+      <tran_glyph conn="33,16,2,0,16">
+       <action box="-14,0,16,2"/>
+      </tran_glyph>
+     </tran>
+     <tran trig="GET_DEVICEDATA" target="../../3">
+      <action>Serial.println(F(&quot;Go GetDeviceData&quot;));
+me-&gt;rwByteCounter = 0;</action>
+      <tran_glyph conn="46,16,2,0,16">
+       <action box="0,1,16,2"/>
+      </tran_glyph>
+     </tran>
+     <state_glyph node="32,4,16,12"/>
     </state>
-    <state_diagram size="80,50"/>
+    <state name="PutDeviceData">
+     <tran trig="Q_TIMEOUT">
+      <choice>
+       <guard brief="remaining bytes">SerialIn_hasRemainingDeviceData(me)</guard>
+       <action>if (me-&gt;rwByteCounter == 0) {
+  if (Serial.available() &gt;= (int)sizeof(DeviceDataHeader)) {
+    DeviceDataHeader header;
+    header.model = Serial.read();
+    header.schema = Serial.read();
+    header.name[0] = Serial.read();
+    header.name[1] = Serial.read();
+    header.name[2] = Serial.read();
+    header.name[3] = Serial.read();
+    header.name[4] = Serial.read();
+    header.name[5] = Serial.read();
+    header.name[6] = Serial.read();
+    header.name[7] = Serial.read();
+    header.name[8] = Serial.read();
+    header.name[9] = Serial.read();
+    header.name[10] = '\0';
+
+    EEPROM.put(me-&gt;rwByteCounter, header);
+    me-&gt;rwByteCounter += sizeof(DeviceDataHeader);
+  }
+}
+else {
+  while (Serial.available() &gt; 3) {
+    Float32_t fnum;
+    fnum.b[0] = Serial.read();
+    fnum.b[1] = Serial.read();
+    fnum.b[2] = Serial.read();
+    fnum.b[3] = Serial.read();
+    EEPROM.put(me-&gt;rwByteCounter, fnum.fval);
+    // Debug: Serial.println(fnum.fval, 5); // (replace 'while' with 'if')
+    me-&gt;rwByteCounter += sizeof(Float32_t);
+  }
+}</action>
+       <choice_glyph conn="29,38,4,-1,4">
+        <action box="-13,2,12,2"/>
+       </choice_glyph>
+      </choice>
+      <choice target="../../../1">
+       <guard brief="else"/>
+       <action>Serial.println(F(&quot;Bye PutDeviceData&quot;));
+
+servoLib.end();
+impl.Calibration = false;
+servoLib.begin();
+delay(20);
+
+QACTIVE_POST((QMActive*)&amp;AO_MotorsOut, CALIBRATION_MODE_SIG, 0L);
+</action>
+       <choice_glyph conn="29,38,5,3,-13,-24,16">
+        <action box="-6,-2,10,2"/>
+       </choice_glyph>
+      </choice>
+      <tran_glyph conn="40,38,1,-1,-11">
+       <action box="-9,-2,10,2"/>
+      </tran_glyph>
+     </tran>
+     <state_glyph node="18,32,22,12"/>
+    </state>
+    <state name="GetDeviceData">
+     <tran trig="Q_TIMEOUT">
+      <choice>
+       <guard brief="remaining bytes">SerialIn_hasRemainingDeviceData(me)</guard>
+       <action>if (me-&gt;rwByteCounter == 0) {
+  DeviceDataHeader header;
+  EEPROM.get(0, header);
+  Serial.println(header.model);
+  Serial.println(header.schema);
+  Serial.println(header.name);
+  me-&gt;rwByteCounter += sizeof(DeviceDataHeader);
+}
+else {
+  Float32_t calibVal;
+  EEPROM.get(me-&gt;rwByteCounter, calibVal);
+  Serial.println(calibVal.fval, 5);
+  me-&gt;rwByteCounter += sizeof(Float32_t);
+}</action>
+       <choice_glyph conn="53,38,4,-1,4">
+        <action box="0,1,12,2"/>
+       </choice_glyph>
+      </choice>
+      <choice target="../../../1">
+       <guard brief="else"/>
+       <action>Serial.println(F(&quot;Bye GetDeviceData&quot;));</action>
+       <choice_glyph conn="53,38,5,1,13,-9,-16,-15,-2">
+        <action box="1,-2,10,2"/>
+       </choice_glyph>
+      </choice>
+      <tran_glyph conn="43,38,3,-1,10">
+       <action box="0,-2,10,2"/>
+      </tran_glyph>
+     </tran>
+     <state_glyph node="43,32,22,12"/>
+    </state>
+    <state_diagram size="80,53"/>
    </statechart>
   </class>
   <class name="Application" superclass="qpn::QActive">
@@ -480,73 +634,40 @@ else if (Serial.available() &gt; 0) {
    <attribute name="currentPreSet" type="uint8_t" visibility="0x00" properties="0x00"/>
    <attribute name="preSetTimer" type="uint16_t" visibility="0x00" properties="0x00"/>
    <operation name="isCurrentPreSet" type="bool" visibility="0x00" properties="0x00">
-    <code>Serial.println(&quot;PreSet isCurrentPreSet&quot;);
+    <code>Serial.println(F(&quot;PreSet isCurrentPreSet&quot;));
 
 ProgramChangeEvArgs args(Q_PAR(me));
 return me-&gt;currentPreSet == args.ProgNo;</code>
    </operation>
+   <operation name="isDeviceDataValid" type="bool" visibility="0x00" properties="0x00">
+    <code>Serial.print(F(&quot;Check EEPROM &quot;));
+
+uint8_t model;
+EEPROM.get(0, model);
+uint8_t schema;
+EEPROM.get(1, schema);
+
+if (model != MODELTYPE || schema != DATASCHEMA) {
+  Serial.println(F(&quot;NOK&quot;));
+  return false;
+}
+Serial.println(F(&quot;OK&quot;));
+return true;</code>
+   </operation>
    <statechart>
-    <initial target="../2">
+    <initial target="../1">
      <action>QActive_armX((QActive *)me, 0U,
   PRESETTIMERINTERVAL,
   PRESETTIMERINTERVAL);</action>
-     <initial_glyph conn="23,6,5,3,9">
+     <initial_glyph conn="23,6,5,3,11">
       <action box="0,-2,10,2"/>
      </initial_glyph>
     </initial>
-    <state name="Calibration">
-     <entry>Serial.println(F(&quot;Calibration&quot;));
-
-me-&gt;speed = 1;
-
-#ifdef DKBOUT
-QACTIVE_POST((QMActive*)&amp;AO_DKbOut, CALIBRATION_MODE_SIG, 0L);
-#endif
-
-#ifdef MOTOROUT
-
-servoLib.end();
-impl.Calibration = true;
-servoLib.begin();
-delay(20);
-
-QACTIVE_POST((QMActive*)&amp;AO_MotorsOut, CALIBRATION_MODE_SIG, 0L);
-
-#endif</entry>
-     <tran trig="MOTOR_MOVE_RELATIVE">
-      <action>// Debug: Serial.println(&quot;Calibration Motor Button Pressed&quot;);
-
-MotorMoveRelativeEvArgs args(Q_PAR(me));
-uint8_t step = (me-&gt;speed / 3) + 1;
-uint8_t dir = args.getDirection() == FORWARDS ? MOTOR_STEP_FORWARD_SIG : MOTOR_STEP_BACKWARD_SIG;
-// Debug: Serial.print(&quot;Servo Num: &quot;); Serial.println(args.ServoNum);
-
-#ifdef MOTOROUT
-  MotorEvArgs m(args.ServoNum, me-&gt;speed, step);
-  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, dir, m.raw);
-#endif</action>
-      <tran_glyph conn="4,73,3,-1,12">
-       <action box="0,-3,22,2"/>
-      </tran_glyph>
-     </tran>
-     <tran trig="PROGRAM_CHANGE">
-      <action>Serial.println(&quot;Calibration Program Button Pressed&quot;);
-
-ProgramChangeEvArgs args(Q_PAR(me));
-me-&gt;speed = args.ProgNo;</action>
-      <tran_glyph conn="4,77,3,-1,12">
-       <action box="0,-3,18,2"/>
-      </tran_glyph>
-     </tran>
-     <state_glyph node="4,65,26,14">
-      <entry box="1,2,6,2"/>
-     </state_glyph>
-    </state>
     <state name="Simulation">
      <entry>Serial.println(&quot;Simulation entry&quot;);</entry>
      <initial target="../4">
       <action>me-&gt;speed = 4;</action>
-      <initial_glyph conn="34,7,5,3,4">
+      <initial_glyph conn="43,6,4,0,4">
        <action box="0,-2,10,2"/>
       </initial_glyph>
      </initial>
@@ -568,7 +689,7 @@ uint8_t dir = args.getDirection() == FORWARDS ? MOTOR_STEP_FORWARD_SIG : MOTOR_S
   MotorEvArgs m(args.ServoNum, me-&gt;speed, step);
   QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, dir, m.raw);
 #endif</action>
-       <tran_glyph conn="36,23,3,-1,18">
+       <tran_glyph conn="38,33,3,-1,18">
         <action box="0,-2,21,2"/>
        </tran_glyph>
       </tran>
@@ -577,23 +698,23 @@ uint8_t dir = args.getDirection() == FORWARDS ? MOTOR_STEP_FORWARD_SIG : MOTOR_S
 
 ProgramChangeEvArgs args(Q_PAR(me));
 me-&gt;speed = args.ProgNo;</action>
-       <tran_glyph conn="36,26,3,-1,18">
+       <tran_glyph conn="38,36,3,-1,18">
         <action box="0,-2,18,2"/>
        </tran_glyph>
       </tran>
       <tran trig="PRESET_MODE" target="../../2">
        <action>Serial.println(F(&quot;StateChange PreSet |H|&quot;));</action>
-       <tran_glyph conn="64,22,1,3,17">
+       <tran_glyph conn="66,32,1,3,16">
         <action box="0,-2,16,2"/>
        </tran_glyph>
       </tran>
       <tran trig="REMOTE_MODE" target="../../3">
        <action>Serial.println(F(&quot;StateChange Remote |I|&quot;));</action>
-       <tran_glyph conn="48,29,2,0,20">
-        <action box="0,0,17,2"/>
+       <tran_glyph conn="60,39,2,0,13">
+        <action box="0,1,17,2"/>
        </tran_glyph>
       </tran>
-      <state_glyph node="36,16,28,13">
+      <state_glyph node="38,26,28,13">
        <entry box="1,2,6,2"/>
       </state_glyph>
      </state>
@@ -604,19 +725,19 @@ me-&gt;speed = args.ProgNo;</action>
 QACTIVE_POST((QMActive *)&amp;AO_DKbOut, PRESET_MODE_SIG, 0L);
 #endif</entry>
       <initial target="../3">
-       <initial_glyph conn="94,18,4,0,4">
+       <initial_glyph conn="95,23,4,0,4">
         <action box="0,-2,10,2"/>
        </initial_glyph>
       </initial>
       <tran trig="REMOTE_MODE" target="../../3">
        <action>Serial.println(F(&quot;StateChange Remote |I|&quot;));</action>
-       <tran_glyph conn="88,58,2,1,3,-21">
-        <action box="1,1,15,2"/>
+       <tran_glyph conn="88,63,2,1,1,-16">
+        <action box="-5,1,15,2"/>
        </tran_glyph>
       </tran>
       <tran trig="MANUAL_MOTION_MODE" target="../../1">
        <action>Serial.println(F(&quot;StateChange ManualMotion |G|&quot;));</action>
-       <tran_glyph conn="81,28,3,1,-15,-3,-2">
+       <tran_glyph conn="82,35,3,1,-16">
         <action box="-14,0,19,2"/>
        </tran_glyph>
       </tran>
@@ -630,11 +751,11 @@ me-&gt;preSetTimer = 0;</entry>
 ProgramChangeEvArgs args(Q_PAR(me));
 me-&gt;currentPreSet = args.ProgNo;
 me-&gt;preSetTimer = 0;</action>
-        <tran_glyph conn="88,28,2,0,6">
+        <tran_glyph conn="89,33,2,0,6">
          <action box="0,0,17,2"/>
         </tran_glyph>
        </tran>
-       <state_glyph node="83,22,24,6">
+       <state_glyph node="84,27,24,6">
         <entry box="1,2,6,2"/>
        </state_glyph>
       </state>
@@ -643,17 +764,17 @@ me-&gt;preSetTimer = 0;</action>
        <tran trig="PROGRAM_CHANGE">
         <choice target="../../../3">
          <guard brief="else"/>
-         <choice_glyph conn="95,43,5,2,10,-15">
+         <choice_glyph conn="96,48,5,2,10,-15">
           <action box="1,0,10,2"/>
          </choice_glyph>
         </choice>
         <choice>
          <guard brief="current PreSet">Application_isCurrentPreSet(me)</guard>
-         <choice_glyph conn="95,43,4,-1,5">
+         <choice_glyph conn="96,48,4,-1,5">
           <action box="-11,1,13,3"/>
          </choice_glyph>
         </choice>
-        <tran_glyph conn="83,43,3,-1,12">
+        <tran_glyph conn="84,48,3,-1,12">
          <action box="0,-3,17,3"/>
         </tran_glyph>
        </tran>
@@ -686,15 +807,15 @@ else if (me-&gt;currentPreSet == 8) {
 }
 
 #endif</action>
-        <tran_glyph conn="83,51,3,-1,15">
+        <tran_glyph conn="84,56,3,-1,15">
          <action box="0,-2,10,2"/>
         </tran_glyph>
        </tran>
-       <state_glyph node="83,34,24,19">
+       <state_glyph node="84,39,24,19">
         <entry box="1,2,6,2"/>
        </state_glyph>
       </state>
-      <state_glyph node="81,14,29,44">
+      <state_glyph node="82,18,28,45">
        <entry box="1,2,6,2"/>
       </state_glyph>
      </state>
@@ -704,9 +825,9 @@ else if (me-&gt;currentPreSet == 8) {
 #ifdef DKBOUT
 QACTIVE_POST((QMActive *)&amp;AO_DKbOut, REMOTE_MODE_SIG, 0L);
 #endif</entry>
-      <tran trig="CALIBRATION_MODE" target="../../../1">
+      <tran trig="CALIBRATION_MODE" target="../../../2">
        <action>Serial.println(F(&quot;StateChange Calibration |J|&quot;));</action>
-       <tran_glyph conn="44,56,3,0,-21,9">
+       <tran_glyph conn="49,64,3,1,-21">
         <action box="-16,-2,18,2"/>
        </tran_glyph>
       </tran>
@@ -717,49 +838,127 @@ QACTIVE_POST((QMActive *)&amp;AO_DKbOut, REMOTE_MODE_SIG, 0L);
 #ifdef MOTOROUT
   QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, MOTOR_MOVE_ASOLUTE_SIG, Q_PAR(me));
 #endif</action>
-       <tran_glyph conn="44,60,3,-1,9">
+       <tran_glyph conn="49,63,3,-1,9">
         <action box="0,-2,22,2"/>
        </tran_glyph>
       </tran>
       <tran trig="PRESET_MODE" target="../../2">
        <action>Serial.println(F(&quot;StateChange PreSet |H|&quot;));</action>
-       <tran_glyph conn="62,49,0,3,-8,19">
+       <tran_glyph conn="67,52,0,3,-7,15">
         <action box="0,-2,14,2"/>
        </tran_glyph>
       </tran>
       <tran trig="MANUAL_MOTION_MODE" target="../../1">
        <action>Serial.println(F(&quot;StateChange ManualMotion |G|&quot;));</action>
-       <tran_glyph conn="46,49,0,2,-20">
-        <action box="-20,-2,23,2"/>
+       <tran_glyph conn="56,52,0,2,-13">
+        <action box="-19,-3,23,2"/>
        </tran_glyph>
       </tran>
-      <state_glyph node="44,49,23,14">
+      <state_glyph node="49,52,23,14">
        <entry box="1,2,6,2"/>
       </state_glyph>
      </state>
      <state name="Init">
       <tran trig="Q_TIMEOUT">
-       <choice target="../../../1">
-        <guard brief="DKb connected">isDKbEnabled()</guard>
-        <action>Serial.println(F(&quot;StateChange ManualMotion |G|&quot;));</action>
-        <choice_glyph conn="48,9,5,0,13,7">
-         <action box="1,0,12,2"/>
+       <choice>
+        <guard brief="Valid Device Data">Application_isDeviceDataValid(me)</guard>
+        <action>Serial.println(F(&quot;Device Data is valid.&quot;));</action>
+        <choice target="../../../../1">
+         <guard brief="DKb connected">isDKbEnabled()</guard>
+         <action>Serial.println(F(&quot;StateChange ManualMotion |G|&quot;));</action>
+         <choice_glyph conn="57,15,5,0,7,11">
+          <action box="7,3,14,2"/>
+         </choice_glyph>
+        </choice>
+        <choice target="../../../../3">
+         <guard brief="else"/>
+         <action>Serial.println(F(&quot;StateChange Remote |I|&quot;));</action>
+         <choice_glyph conn="57,15,4,3,9,-21,32,13">
+          <action box="-5,3,10,2"/>
+         </choice_glyph>
+        </choice>
+        <choice_glyph conn="49,15,5,-1,8">
+         <action box="1,-3,12,2"/>
         </choice_glyph>
        </choice>
-       <choice target="../../../3">
+       <choice target="../../../../2">
         <guard brief="else"/>
-        <action>Serial.println(F(&quot;StateChange Remote |I|&quot;));</action>
-        <choice_glyph conn="48,9,4,3,5,-15,39,11">
-         <action box="-4,1,10,2"/>
+        <action>Serial.println(F(&quot;StateChange Calibration |J|&quot;));</action>
+        <choice_glyph conn="49,15,4,1,7,-17,37,-4">
+         <action box="-5,3,10,2"/>
         </choice_glyph>
        </choice>
-       <tran_glyph conn="38,9,3,-1,10">
+       <tran_glyph conn="38,15,3,-1,11">
         <action box="0,-2,10,2"/>
        </tran_glyph>
       </tran>
-      <state_glyph node="38,4,34,8"/>
+      <state_glyph node="38,10,34,8"/>
      </state>
-     <state_glyph node="32,2,80,77">
+     <state_glyph node="34,2,78,70">
+      <entry box="1,2,6,2"/>
+     </state_glyph>
+    </state>
+    <state name="Calibration">
+     <entry>Serial.println(F(&quot;Calibration&quot;));
+
+me-&gt;speed = 1;
+
+#ifdef DKBOUT
+QACTIVE_POST((QMActive*)&amp;AO_DKbOut, CALIBRATION_MODE_SIG, 0L);
+#endif
+
+#ifdef MOTOROUT
+
+servoLib.end();
+impl.Calibration = true;
+servoLib.begin();
+delay(20);
+
+QACTIVE_POST((QMActive*)&amp;AO_MotorsOut, CALIBRATION_MODE_SIG, 0L);
+
+#endif</entry>
+     <tran trig="MOTOR_MOVE_RELATIVE">
+      <action>// Debug: Serial.println(&quot;Calibration Motor Button Pressed&quot;);
+
+MotorMoveRelativeEvArgs args(Q_PAR(me));
+uint8_t step = (me-&gt;speed / 3) + 1;
+uint8_t dir = args.getDirection() == FORWARDS ? MOTOR_STEP_FORWARD_SIG : MOTOR_STEP_BACKWARD_SIG;
+// Debug: Serial.print(&quot;Servo Num: &quot;); Serial.println(args.ServoNum);
+
+#ifdef MOTOROUT
+  MotorEvArgs m(args.ServoNum, me-&gt;speed, step);
+  QACTIVE_POST((QMActive *)&amp;AO_MotorsOut, dir, m.raw);
+#endif</action>
+      <tran_glyph conn="2,56,3,-1,20">
+       <action box="0,-2,22,2"/>
+      </tran_glyph>
+     </tran>
+     <tran trig="PROGRAM_CHANGE">
+      <action>Serial.println(&quot;Calibration Program Button Pressed&quot;);
+
+ProgramChangeEvArgs args(Q_PAR(me));
+me-&gt;speed = args.ProgNo;</action>
+      <tran_glyph conn="2,59,3,-1,20">
+       <action box="0,-2,18,2"/>
+      </tran_glyph>
+     </tran>
+     <tran trig="GET_DEVICEDATA">
+      <action>Serial.println(F(&quot;Enter GetDeviceData&quot;));
+
+QACTIVE_POST((QMActive*)&amp;AO_SerialIn, GET_DEVICEDATA_SIG, 0L);</action>
+      <tran_glyph conn="2,65,3,-1,20">
+       <action box="0,-2,16,2"/>
+      </tran_glyph>
+     </tran>
+     <tran trig="PUT_DEVICEDATA">
+      <action>Serial.println(F(&quot;Enter PutDeviceData&quot;));
+
+QACTIVE_POST((QMActive*)&amp;AO_SerialIn, PUT_DEVICEDATA_SIG, 0L);</action>
+      <tran_glyph conn="2,62,3,-1,20">
+       <action box="0,-2,15,2"/>
+      </tran_glyph>
+     </tran>
+     <state_glyph node="2,48,26,24">
       <entry box="1,2,6,2"/>
      </state_glyph>
     </state>
@@ -770,33 +969,30 @@ QACTIVE_POST((QMActive *)&amp;AO_DKbOut, REMOTE_MODE_SIG, 0L);
  <directory name=".">
   <file name="mophapp.ino">
    <text>/* mophapp.qm - Arduino software for the GRIS5A (C) and No2 (C) motion phantom
- * Copyright (C) 2018-2019 by Stefan Grimm
+ * Copyright (C) 2018-2020 by Stefan Grimm
  */
 
 #include &quot;qpn.h&quot;
 #include &quot;Arduino.h&quot;
+#include &lt;C:\Users\Stefan Grimm\AppData\Local\Arduino15\packages\arduino\hardware\avr\1.8.2\libraries\EEPROM\src\EEPROM.h&gt;
 
-//#define GRIS5A 1
-#define NO2 1
+#define MODELTYPE 1
+#include &quot;modeltraits.h&quot;
 
-//#define DKBIN
-//#define DKBOUT
-#define SERIALIN
-#define MOTOROUT
+#define MAJORVERSION 1
+#define MINORVERSION 0
+#define IFVERSION    1
+#define BUILDVERSION 0
 
-#ifdef GRIS5A
-#define NUMSERVOS 10
-#elif NO2
-#define NUMSERVOS 6
-#endif
-
-#define Q_PARAM_SIZE 2
+//#define Q_PARAM_SIZE 2
 
 #include &quot;FreeMemory.h&quot;
 #include &quot;dkb.h&quot;
 #include &quot;preset.h&quot;
 #include &quot;events.h&quot;
 #include &quot;constants.h&quot;
+#include &quot;devicedata.h&quot;
+
 
 #ifdef MOTOROUT
 #include &quot;_Adafruit_PWMServoDriver.h&quot;
@@ -820,112 +1016,219 @@ class ServoShieldPCA9685Linear : public prfServo2ImplBase&lt;uint16_t, float&gt;
   }
 
   void get(float** params, float** offsets) const {
-    #ifdef GRIS5A
+#if MODELTYPE == 1
     if (!Calibration) {
-    // LURTN
-    params[0][0] = 1.2942268654268088e+002;
-    params[0][1] = 1.6668375402407262e+000;
-    offsets[0][0] = 0;
-    // LULNG
-    params[1][0] = 5.5452380952380930e+002;
-    params[1][1] = -2.6484593837534930e+000;
-    params[1][2] = 1.1929477673422232e-002;
-    params[1][3] = -2.7138883234954693e-005;
-    offsets[1][0] = 0;
-    // LLRTN
-    params[2][0] = 1.5442914556378040e+002;
-    params[2][1] = 1.5882527835305206e+000;
-    offsets[2][0] = 0;
-    // LLLNG
-    params[3][0] = 1.3666666666666668e+002;
-    params[3][1] = 2.8253968253968250e+000;
-    params[3][2] = -1.3016971494480146e-002;
-    params[3][3] = 3.0757400999615536e-005;
-    offsets[3][0] = 0;
-    // RLLNG
-    params[4][0] = 5.7880952380952260e+002;
-    params[4][1] = -2.3641456582632174e+000;
-    params[4][2] = 9.3590377327392710e-003;
-    params[4][3] = -2.1711106587961670e-005;
-    offsets[4][0] = 0;
-    // RLRTN
-    params[5][0] = 1.3774938998134064e+002;
-    params[5][1] = 1.5490885603559636e+000;
-    offsets[5][0] = 0;
-    // RULNG
-    params[6][0] = 1.8559523809523685e+002;
-    params[6][1] = 2.1031746031746907e+000;
-    params[6][2] = -7.4147305981224840e-003;
-    params[6][3] = 1.8092588823305492e-005;
-    offsets[6][0] = 0;
-    // RURTN
-    params[7][0] = 1.6024944124341286e+002;
-    params[7][1] = 1.6079886813344540e+000;
-    offsets[7][0] = 0;
-    // GALNG
-    params[8][0] = 5.3464285714285590e+002;
-    params[8][1] = -2.8109243697478114e+000;
-    params[8][2] = 1.3346515076618000e-002;
-    params[8][3] = -3.2566659881943620e-005;
-    offsets[8][0] = 0;
-    // GARTN
-    params[9][0] = 1.4526246180975622e+002;
-    params[9][1] = 1.5686194098710244e+000;
-    offsets[9][0] = 0;
+      uint8_t model = EEPROM.read(0);
+      uint8_t schema = EEPROM.read(1);
+
+      // Debug: Serial.print(model);
+      // Debug: Serial.print(&quot; &quot;);
+      // Debug: Serial.println(schema);
+      if (model == MODELTYPE &amp;&amp; schema == DATASCHEMA) {
+        int addr = sizeof(DeviceDataHeader);
+        Float32_t calibVal;
+        // LURTN
+        EEPROM.get(addr, calibVal); params[0][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[0][1] = calibVal.fval; addr += sizeof(Float32_t);
+        // LULNG
+        EEPROM.get(addr, calibVal); params[1][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[1][1] = calibVal.fval; addr += sizeof(Float32_t);
+        // LLRTN
+        EEPROM.get(addr, calibVal); params[2][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[2][1] = calibVal.fval; addr += sizeof(Float32_t);
+        // LLLNG
+        EEPROM.get(addr, calibVal); params[3][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[3][1] = calibVal.fval; addr += sizeof(Float32_t);
+        // RLLNG
+        EEPROM.get(addr, calibVal); params[4][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[4][1] = calibVal.fval; addr += sizeof(Float32_t);
+        // RLRTN
+        EEPROM.get(addr, calibVal); params[5][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[5][1] = calibVal.fval; addr += sizeof(Float32_t);
+        // RULNG
+        EEPROM.get(addr, calibVal); params[6][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[6][1] = calibVal.fval; addr += sizeof(Float32_t);
+        // RURTN
+        EEPROM.get(addr, calibVal); params[7][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[7][1] = calibVal.fval; addr += sizeof(Float32_t);
+        // GALNG
+        EEPROM.get(addr, calibVal); params[8][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[8][1] = calibVal.fval; addr += sizeof(Float32_t);
+        // GARTN
+        EEPROM.get(addr, calibVal); params[9][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[9][1] = calibVal.fval; addr += sizeof(Float32_t);
+
+        EEPROM.get(addr, calibVal); offsets[0][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); offsets[1][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); offsets[2][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); offsets[3][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); offsets[4][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); offsets[5][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); offsets[6][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); offsets[7][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); offsets[8][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); offsets[9][0] = calibVal.fval;
+      }
     }
     else {
-    // LURTN
-    params[0][0] = 100;
-    params[0][1] = 2;
-    offsets[0][0] = 0;
-    // LULNG
-    params[1][0] = 100;
-    params[1][1] = 2;
-    params[1][2] = 0;
-    params[1][3] = 0;
-    offsets[1][0] = 0;
-    // LLRTN
-    params[2][0] = 100;
-    params[2][1] = 2;
-    offsets[2][0] = 0;
-    // LLLNG
-    params[3][0] = 100;
-    params[3][1] = 2;
-    params[3][2] = 0;
-    params[3][3] = 0;
-    offsets[3][0] = 0;
-    // RLLNG
-    params[4][0] = 100;
-    params[4][1] = 2;
-    params[4][2] = 0;
-    params[4][3] = 0;
-    offsets[4][0] = 0;
-    // RLRTN
-    params[5][0] = 100;
-    params[5][1] = 2;
-    offsets[5][0] = 0;
-    // RULNG
-    params[6][0] = 100;
-    params[6][1] = 2;
-    params[6][2] = 0;
-    params[6][3] = 0;
-    offsets[6][0] = 0;
-    // RURTN
-    params[7][0] = 100;
-    params[7][1] = 2;
-    offsets[7][0] = 0;
-    // GALNG
-    params[8][0] = 100;
-    params[8][1] = 2;
-    params[8][2] = 0;
-    params[8][3] = 0;
-    offsets[8][0] = 0;
-    // GARTN
-    params[9][0] = 100;
-    params[9][1] = 2;
-    offsets[9][0] = 0;
+      // LURTN
+      params[0][0] = 100;
+      params[0][1] = 2;
+      offsets[0][0] = 0;
+      // LULNG
+      params[1][0] = 100;
+      params[1][1] = 2;
+      offsets[1][0] = 0;
+      // LLRTN
+      params[2][0] = 100;
+      params[2][1] = 2;
+      offsets[2][0] = 0;
+      // LLLNG
+      params[3][0] = 100;
+      params[3][1] = 2;
+      offsets[3][0] = 0;
+      // RLLNG
+      params[4][0] = 100;
+      params[4][1] = 2;
+      offsets[4][0] = 0;
+      // RLRTN
+      params[5][0] = 100;
+      params[5][1] = 2;
+      offsets[5][0] = 0;
+      // RULNG
+      params[6][0] = 100;
+      params[6][1] = 2;
+      offsets[6][0] = 0;
+      // RURTN
+      params[7][0] = 100;
+      params[7][1] = 2;
+      offsets[7][0] = 0;
+      // GALNG
+      params[8][0] = 100;
+      params[8][1] = 2;
+      offsets[8][0] = 0;
+      // GARTN
+      params[9][0] = 100;
+      params[9][1] = 2;
+      offsets[9][0] = 0;
     }
-    #elif NO2
+#elif MODELTYPE == 2 || MODELTYPE == 3
+    if (!Calibration) {
+      uint8_t model = EEPROM.read(0);
+      uint8_t schema = EEPROM.read(1);
+      // Debug: Serial.print(model);
+      // Debug: Serial.print(&quot; &quot;);
+      // Debug: Serial.println(schema);
+
+      if (model == MODELTYPE &amp;&amp; schema == DATASCHEMA) {
+        int addr = sizeof(DeviceDataHeader);
+        Float32_t calibVal;
+        // LURTN
+        EEPROM.get(addr, calibVal); params[0][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[0][1] = calibVal.fval; addr += sizeof(Float32_t);
+        // LULNG
+        EEPROM.get(addr, calibVal); params[1][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[1][1] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[1][2] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[1][3] = calibVal.fval; addr += sizeof(Float32_t);
+        // LLRTN
+        EEPROM.get(addr, calibVal); params[2][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[2][1] = calibVal.fval; addr += sizeof(Float32_t);
+        // LLLNG
+        EEPROM.get(addr, calibVal); params[3][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[3][1] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[3][2] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[3][3] = calibVal.fval; addr += sizeof(Float32_t);
+        // RLLNG
+        EEPROM.get(addr, calibVal); params[4][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[4][1] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[4][2] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[4][3] = calibVal.fval; addr += sizeof(Float32_t);
+        // RLRTN
+        EEPROM.get(addr, calibVal); params[5][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[5][1] = calibVal.fval; addr += sizeof(Float32_t);
+        // RULNG
+        EEPROM.get(addr, calibVal); params[6][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[6][1] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[6][2] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[6][3] = calibVal.fval; addr += sizeof(Float32_t);
+        // RURTN
+        EEPROM.get(addr, calibVal); params[7][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[7][1] = calibVal.fval; addr += sizeof(Float32_t);
+        // GALNG
+        EEPROM.get(addr, calibVal); params[8][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[8][1] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[8][2] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[8][3] = calibVal.fval; addr += sizeof(Float32_t);
+        // GARTN
+        EEPROM.get(addr, calibVal); params[9][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[9][1] = calibVal.fval; addr += sizeof(Float32_t);
+
+        EEPROM.get(addr, calibVal); offsets[0][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); offsets[1][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); offsets[2][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); offsets[3][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); offsets[4][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); offsets[5][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); offsets[6][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); offsets[7][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); offsets[8][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); offsets[9][0] = calibVal.fval;
+      }
+    }
+    else {
+      // LURTN
+      params[0][0] = 100;
+      params[0][1] = 2;
+      offsets[0][0] = 0;
+      // LULNG
+      params[1][0] = 100;
+      params[1][1] = 2;
+      params[1][2] = 0;
+      params[1][3] = 0;
+      offsets[1][0] = 0;
+      // LLRTN
+      params[2][0] = 100;
+      params[2][1] = 2;
+      offsets[2][0] = 0;
+      // LLLNG
+      params[3][0] = 100;
+      params[3][1] = 2;
+      params[3][2] = 0;
+      params[3][3] = 0;
+      offsets[3][0] = 0;
+      // RLLNG
+      params[4][0] = 100;
+      params[4][1] = 2;
+      params[4][2] = 0;
+      params[4][3] = 0;
+      offsets[4][0] = 0;
+      // RLRTN
+      params[5][0] = 100;
+      params[5][1] = 2;
+      offsets[5][0] = 0;
+      // RULNG
+      params[6][0] = 100;
+      params[6][1] = 2;
+      params[6][2] = 0;
+      params[6][3] = 0;
+      offsets[6][0] = 0;
+      // RURTN
+      params[7][0] = 100;
+      params[7][1] = 2;
+      offsets[7][0] = 0;
+      // GALNG
+      params[8][0] = 100;
+      params[8][1] = 2;
+      params[8][2] = 0;
+      params[8][3] = 0;
+      offsets[8][0] = 0;
+      // GARTN
+      params[9][0] = 100;
+      params[9][1] = 2;
+      offsets[9][0] = 0;
+    }
+#elif MODELTYPE == 4
     if (!Calibration) {
     // LLNG
     params[0][0] = 5.3400000000000000e+002;
@@ -1013,7 +1316,9 @@ class ServoShieldPCA9685Linear : public prfServo2ImplBase&lt;uint16_t, float&gt;
     params[5][2] = 0;
     offsets[5][0] = 0;
     }
-    #endif
+#elif
+#error Invalid model type
+#endif
   }
 
   void write(uint8_t num, uint16_t servoVal) {
@@ -1026,11 +1331,7 @@ class ServoShieldPCA9685Linear : public prfServo2ImplBase&lt;uint16_t, float&gt;
 
 Adafruit_PWMServoDriver pwm;
 ServoShieldPCA9685Linear impl(pwm);
-#ifdef GRIS5A
-prfServo2&lt;uint32_t, uint8_t, uint16_t, float&gt; servoLib(&amp;impl, 0x0777DD, 0x0);
-#elif NO2
-prfServo2&lt;uint16_t, uint8_t, uint16_t, float&gt; servoLib(&amp;impl, 0b101011111111, 0b000011000110);
-#endif
+prfServo2&lt;TORD, uint8_t, uint16_t, float&gt; servoLib(&amp;impl, PARAM, OFFSET);
 
 #endif
 
@@ -1118,7 +1419,7 @@ void setup() {
   #endif
 
   // initialize the hardware used in this sketch...
-  Serial.begin(9600);   // Stanard baud rates: 9600, 38400, 115200 bps
+  Serial.begin(9600);   // Standard baud rates: 9600, 38400, 115200 bps
   Serial.print(F(&quot;Synced&quot;));
   Serial.print(F(&quot;Start, QP-nano: &quot;));
   Serial.println(F(QP_VERSION_STR));
@@ -1230,7 +1531,9 @@ enum Signals {
   MOTOR_STEP_BACKWARD_SIG,
   MOTOR_MOVE_RELATIVE_SIG,
   MOTOR_MOVE_ASOLUTE_SIG,
-  DKBIN_DISPATCH_SIG
+  DKBIN_DISPATCH_SIG,
+  GET_DEVICEDATA_SIG,
+  PUT_DEVICEDATA_SIG
 };
 
 #ifdef GRIS5A
@@ -1246,7 +1549,7 @@ enum ServoNumber {
   GALNG,
   GARTN
 };
-#elif NO2
+#elif defined(NO2)
 enum ServoNumber {
   LLNG=0,
   RLNG,
@@ -1260,8 +1563,17 @@ enum ServoNumber {
 enum SerialInCommand {
   SOFTDKB = 1,
   ABSMOVE = 2,
-  FREEMEM = 3,
-  SYNC = 4
+  EXT = 3,
+  TXT = 7
+};
+
+enum SerialInCommandExt {
+  SYNC = 1,
+  GET_FREEMEM = 2,
+  GET_MODEL = 3,
+  GET_VERSION = 4,
+  GET_DEVICEDATA = 5,
+  PUT_DEVICEDATA = 6
 };
 
 struct SerialInEvArgs {
@@ -1270,6 +1582,7 @@ struct SerialInEvArgs {
   SerialInEvArgs (uint8_t rawValue) : raw(rawValue) {}
 
   SerialInCommand getCmd() { return (SerialInCommand)Cmd; }
+  SerialInCommandExt getCmdExt() { return (SerialInCommandExt)Data; }
 
   union {
     struct {
@@ -1531,7 +1844,7 @@ void processDKb(QMActive* recv, const DKbInEvArgs&amp; dkb)
   }
   //printDKbInData(dkb);
 }
-#elif NO2
+#elif defined(NO2)
 void processDKb(QMActive* recv, const DKbInEvArgs&amp; dkb)
 {
   if (dkb.GAL) {
@@ -1859,7 +2172,7 @@ void prog3(QMActive* recv, uint16_t&amp; preSetTimer) {
       float targetDeltaSmall = 10 * sin((preSetTimer - 3000) / 3000.0 * PI);
       float targetDeltaLarge = 40 * sin((preSetTimer - 3000) / 3000.0 * PI);
 
-      MotorEvArgs lulng(LULNG, 147 + targetDeltaLarge, STEPSZ);
+      MotorEvArgs lulng(LULNG, 147 - targetDeltaLarge, STEPSZ);
       QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, lulng.raw);
       MotorEvArgs lurtn(LURTN, 147 + targetDeltaLarge, STEPSZ);
       QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, lurtn.raw);
@@ -1867,7 +2180,7 @@ void prog3(QMActive* recv, uint16_t&amp; preSetTimer) {
       QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rulng.raw);
       MotorEvArgs rurtn(RURTN, 122 - targetDeltaSmall, STEPSZ);
       QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rurtn.raw);
-      MotorEvArgs lllng(LLLNG, 107 - targetDeltaLarge, STEPSZ);
+      MotorEvArgs lllng(LLLNG, 107 + targetDeltaLarge, STEPSZ);
       QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, lllng.raw);
       MotorEvArgs llrtn(LLRTN, 132 + targetDeltaSmall, STEPSZ);
       QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, llrtn.raw);
@@ -2046,7 +2359,7 @@ void prog6(QMActive* recv, uint16_t&amp; preSetTimer) {
       float targetDeltaLarge = 40 * sin((preSetTimer - 3000) / 3000.0 * PI);
       float targetGating = 127 + 80 * sin((preSetTimer - 3000) / 3000.0 * PI);
 
-      MotorEvArgs lulng(LULNG, 147 + targetDeltaLarge, STEPSZ);
+      MotorEvArgs lulng(LULNG, 147 - targetDeltaLarge, STEPSZ);
       QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, lulng.raw);
       MotorEvArgs lurtn(LURTN, 147 + targetDeltaLarge, STEPSZ);
       QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, lurtn.raw);
@@ -2054,7 +2367,7 @@ void prog6(QMActive* recv, uint16_t&amp; preSetTimer) {
       QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rulng.raw);
       MotorEvArgs rurtn(RURTN, 122 - targetDeltaSmall, STEPSZ);
       QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rurtn.raw);
-      MotorEvArgs lllng(LLLNG, 107 - targetDeltaLarge, STEPSZ);
+      MotorEvArgs lllng(LLLNG, 107 + targetDeltaLarge, STEPSZ);
       QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, lllng.raw);
       MotorEvArgs llrtn(LLRTN, 132 + targetDeltaSmall, STEPSZ);
       QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, llrtn.raw);
@@ -2189,7 +2502,7 @@ void prog8(QMActive* recv, uint16_t&amp; preSetTimer) {
     }
 }
 
-#elif NO2
+#elif defined(NO2)
 
 void prog1(QMActive* recv, uint16_t&amp; preSetTimer) {
   //  Position 1
@@ -2504,6 +2817,117 @@ void prog8(QMActive* recv, uint16_t&amp; preSetTimer) {
 
 #endif
 
+
+#endif</text>
+  </file>
+  <file name="devicedata.h">
+   <text>/* devicedata.h - Arduino software for the GRIS5A (C) and No2 (C) motion phantom
+ * Copyright (C) 2020 by Stefan Grimm
+ */
+
+#ifndef __DEVICEDATA_H
+#define __DEVICEDATA_H
+
+union Float32_t {
+   byte b[4];
+   float fval;
+};
+
+struct DeviceDataHeader {
+  uint8_t model;
+  uint8_t schema;
+  char    name[11];
+};
+
+#endif</text>
+  </file>
+  <file name="modeltraits.h">
+   <text>/* modeltraits.h - Arduino software for the GRIS5A (C) and No2 (C) motion phantom
+ * Copyright (C) 2020 by Stefan Grimm
+ */
+
+#ifndef __MODELTRAITS_H
+#define __MODELTRAITS_H
+
+#include &quot;devicedata.h&quot;
+
+#if MODELTYPE == 1
+
+// GRIS5A
+// DKb: no
+// 5 x Lng Param Ord 1, Offset Ord 0
+// 5 x Rtn Param Ord 1, Offset Ord 0
+
+#define GRIS5A
+#define SERIALIN
+#define MOTOROUT
+#define TORD uint32_t
+
+const uint8_t NUMSERVOS  = 10;
+const uint8_t DATASCHEMA = 1;
+const TORD PARAM         = 0x00055555; //  01010101010101010101
+const TORD OFFSET        = 0x0;
+const uint8_t DEVICEDATALENGTH = (10 * 2 + 10 * 1) * sizeof(Float32_t) + sizeof(DeviceDataHeader);
+
+#elif MODELTYPE == 2
+
+// GRIS5A
+// DKb: no
+// 5 x Lng Param Ord 3, Offset Ord 0
+// 5 x Rtn Param Ord 1, Offset Ord 0
+
+#define GRIS5A
+#define SERIALIN
+#define MOTOROUT
+#define TORD uint32_t
+
+const uint8_t NUMSERVOS  = 10;
+const uint8_t DATASCHEMA = 1;
+const TORD PARAM         = 0x000777DD;
+const TORD OFFSET        = 0x0;
+const uint8_t DEVICEDATALENGTH = (5 * 4 + 5 * 2 + 10 * 1) * sizeof(Float32_t) + sizeof(DeviceDataHeader);
+
+#elif MODELTYPE == 3
+
+// GRIS5A
+// DKb: yes
+// 5 x Lng Param Ord 3, Offset Ord 0
+// 5 x Rtn Param Ord 1, Offset Ord 0
+
+#define GRIS5A
+#define SERIALIN
+#define MOTOROUT
+#define DKBIN
+#define DKBOUT
+#define TORD uint32_t
+
+const uint8_t NUMSERVOS  = 10;
+const uint8_t DATASCHEMA = 1;
+const TORD PARAM         = 0x0777DD;
+const TORD OFFSET        = 0x0777DD;
+const uint8_t DEVICEDATALENGTH = (5 * 4 + 5 * 2 + 10 * 1) * sizeof(Float32_t) + sizeof(DeviceDataHeader);
+
+#elif MODELTYPE == 4
+
+// No2
+// DKb: no
+// 3 x Lng Param Ord 3, Offset Ord 2
+// 3 x Rtn Param Ord 2, Offset Ord 1
+
+#define NO2
+#define SERIALIN
+#define MOTOROUT
+#define TORD uint16_t
+
+const uint8_t NUMSERVOS  = 6;
+const uint8_t DATASCHEMA = 1;
+const TORD PARAM         = 0b0000101011111111;
+const TORD OFFSET        = 0b0000000011000110;
+const uint8_t DEVICEDATALENGTH = (6 * 3 + 10 * 1) * sizeof(Float32_t) + sizeof(DeviceDataHeader);
+
+#define DEVICEDATALENGTH 133
+
+#endif
 
 #endif</text>
   </file>
