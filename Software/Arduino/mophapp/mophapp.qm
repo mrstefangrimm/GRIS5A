@@ -530,6 +530,7 @@ me-&gt;rwByteCounter = 0;</action>
      <state_glyph node="32,4,16,12"/>
     </state>
     <state name="PutDeviceData">
+     <entry>Serial.println(F(&quot;Enter PutDeviceData&quot;));</entry>
      <tran trig="Q_TIMEOUT">
       <choice>
        <guard brief="remaining bytes">SerialIn_hasRemainingDeviceData(me)</guard>
@@ -589,9 +590,12 @@ QACTIVE_POST((QMActive*)&amp;AO_MotorsOut, CALIBRATION_MODE_SIG, 0L);
        <action box="-9,-2,10,2"/>
       </tran_glyph>
      </tran>
-     <state_glyph node="18,32,22,12"/>
+     <state_glyph node="18,32,22,12">
+      <entry box="1,2,6,2"/>
+     </state_glyph>
     </state>
     <state name="GetDeviceData">
+     <entry>Serial.println(F(&quot;Enter GetDeviceData&quot;));</entry>
      <tran trig="Q_TIMEOUT">
       <choice>
        <guard brief="remaining bytes">SerialIn_hasRemainingDeviceData(me)</guard>
@@ -624,7 +628,9 @@ else {
        <action box="0,-2,10,2"/>
       </tran_glyph>
      </tran>
-     <state_glyph node="43,32,22,12"/>
+     <state_glyph node="43,32,22,12">
+      <entry box="1,2,6,2"/>
+     </state_glyph>
     </state>
     <state_diagram size="80,53"/>
    </statechart>
@@ -943,17 +949,13 @@ me-&gt;speed = args.ProgNo;</action>
       </tran_glyph>
      </tran>
      <tran trig="GET_DEVICEDATA">
-      <action>Serial.println(F(&quot;Enter GetDeviceData&quot;));
-
-QACTIVE_POST((QMActive*)&amp;AO_SerialIn, GET_DEVICEDATA_SIG, 0L);</action>
+      <action>QACTIVE_POST((QMActive*)&amp;AO_SerialIn, GET_DEVICEDATA_SIG, 0L);</action>
       <tran_glyph conn="2,65,3,-1,20">
        <action box="0,-2,16,2"/>
       </tran_glyph>
      </tran>
      <tran trig="PUT_DEVICEDATA">
-      <action>Serial.println(F(&quot;Enter PutDeviceData&quot;));
-
-QACTIVE_POST((QMActive*)&amp;AO_SerialIn, PUT_DEVICEDATA_SIG, 0L);</action>
+      <action>QACTIVE_POST((QMActive*)&amp;AO_SerialIn, PUT_DEVICEDATA_SIG, 0L);</action>
       <tran_glyph conn="2,62,3,-1,20">
        <action box="0,-2,15,2"/>
       </tran_glyph>
@@ -1354,7 +1356,7 @@ $declare(AOs::MotorsOut)
 
 // AO instances and event queue buffers for them...
 Application AO_Application;
-static QEvt l_ApplicationQSto[10];
+static QEvt l_ApplicationQSto[10*2];
 #ifdef DKBIN
 DKbIn AO_DKbIn;
 static QEvt l_DKbInQSto[1];
