@@ -38,17 +38,32 @@ String version = new String("");
 void setup() {
   
   size(900, 800);
-  
+
   // Debug : printArray(PFont.list());
-  PFont font = createFont(PFont.list()[2], 34);
-  textFont(font);
+  PFont font = createFont("Consolas", 16);
+  textFont(font, 24);
   
-  // Get all the available serial ports:
-  String[] comPorts = Serial.list();
-  if (comPorts != null && comPorts.length > 0) {
-    String portName = Serial.list()[0];
-    println(portName);
-    comPort = new Serial(this, portName, 9600);
+  if (args != null && args.length == 1) { //<>//
+    String portName = args[0];
+    String[] comPorts = Serial.list();
+    if (comPorts != null) {
+      for (int n=0; n < comPorts.length; n++) {
+        if (portName.contentEquals(comPorts[n])) {
+          println(portName);
+          comPort = new Serial(this, portName, 9600);
+          break;
+        }
+      }     
+    }
+  }
+  else {  
+    // Get all the available serial ports:
+    String[] comPorts = Serial.list();
+    if (comPorts != null && comPorts.length > 0) {
+      String portName = comPorts[0];
+      println(portName);
+      comPort = new Serial(this, portName, 9600);
+    }
   }
 }
 
