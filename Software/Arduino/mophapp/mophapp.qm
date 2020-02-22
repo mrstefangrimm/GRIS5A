@@ -321,8 +321,8 @@ for (int n=0; n &lt; NUMSERVOS; n++) {
 
 #ifdef SERIALIN
 if (!isMoving) {
-  if (me-&gt;_sendPositionCounter % NUMSERVOS  == 0) {
-    int servo = (me-&gt;_sendPositionCounter / NUMSERVOS) - 1;
+  if (me-&gt;_sendPositionCounter % 10 == 0) {
+    int servo = (me-&gt;_sendPositionCounter / 10) - 1;
     Serial.print(&quot;|&quot;);
     Serial.print(servo);
     Serial.print(me-&gt;servoPosition[servo] * 2 + 100);
@@ -978,13 +978,12 @@ me-&gt;speed = args.ProgNo;</action>
 #include &quot;Arduino.h&quot;
 #include &lt;C:\Users\Stefan Grimm\AppData\Local\Arduino15\packages\arduino\hardware\avr\1.8.2\libraries\EEPROM\src\EEPROM.h&gt;
 
-#define MODELTYPE 1
 #include &quot;modeltraits.h&quot;
 
 #define MAJORVERSION 1
 #define MINORVERSION 0
 #define IFVERSION    1
-#define BUILDVERSION 0
+#define BUILDVERSION 1
 
 //#define Q_PARAM_SIZE 2
 
