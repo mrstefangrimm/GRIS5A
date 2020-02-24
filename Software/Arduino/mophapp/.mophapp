@@ -28,7 +28,7 @@
    <item name="icon">3</item>
    <item name="title">build</item>
    <item name="command">&quot;%ARDUINO_SKETCHBOOK%\tools\utils\tclsh.exe&quot;</item>
-   <item name="args">&quot;%ARDUINO_SKETCHBOOK%\tools\scripts\build_avr.tcl&quot; %PROJECT% &quot;qpn_avr mophlib prfServo&quot;</item>
+   <item name="args">&quot;%ARDUINO_SKETCHBOOK%\tools\scripts\build_avr.tcl&quot; %PROJECT% &quot;qpn_avr mophlib prfServo&quot; &quot;MODELTYPE=1&quot;</item>
    <item name="dir">.</item>
    <item name="options">3</item>
   </group>

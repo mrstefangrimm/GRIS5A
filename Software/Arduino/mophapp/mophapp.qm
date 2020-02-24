@@ -1231,91 +1231,92 @@ class ServoShieldPCA9685Linear : public prfServo2ImplBase&lt;uint16_t, float&gt;
     }
 #elif MODELTYPE == 4
     if (!Calibration) {
-    // LLNG
-    params[0][0] = 5.3400000000000000e+002;
-    params[0][1] = -1.5833333333333320e+000;
-    params[0][2] = 3.6621093749999844e-003;
-    params[0][3] = -6.3578287760416260e-006;
-    offsets[0][0] = -1.3322676295501878e-015;
-    offsets[0][1] = 7.8125000000000080e-002;
-    offsets[0][2] = -2.4414062500000030e-004;
-    // RLNG
-    params[1][0] = 2.3420000000000002e+002;
-    params[1][1] = 1.5338541666666618e+000;
-    params[1][2] = -3.6621093749999460e-003;
-    params[1][3] = 6.9936116536456924e-006;
-    offsets[1][0] = -4.0000000000000000e+000;
-    offsets[1][1] = 1.5625000000000000e-002;
-    // GLNG
-    params[2][0] = 1.8751428571428568e+002;
-    params[2][1] = 2.1677827380952457e+000;
-    params[2][2] = -6.6266741071429420e-003;
-    params[2][3] = 1.0808308919271054e-005;
-    offsets[2][0] = 0;
-    // LRTN
-    /*
-    params[3][0] = 1.9000000000000000e+002;
-    params[3][1] = 1.3671874999999997e+000;
-    params[3][2] = 5.4931640625000050e-004;
-    offsets[3][0] = 0;
-    */
-    params[3][0] = 1.7577142857142857e+002;
-    params[3][1] = 2.3523809523809520e+000;
-    params[3][2] = -5.2910052910052920e-003;
-    params[3][3] = 2.1947873799725652e-005;
-    offsets[3][0] = -7.9428571428571430e+000;
-    offsets[3][1] = 1.3756613756613744e-002;
-    offsets[3][2] = 7.0546737213403880e-004;
-    offsets[3][3] = -3.6579789666209417e-006;
 
-    // RRTN
-    params[4][0] = 1.2999999999999994e+002;
-    params[4][1] = 1.3750000000000033e+000;
-    params[4][2] = 6.1035156249998670e-004;
-    offsets[4][0] = -4;
-    // GRTN
-    params[5][0] = 1.5000000000000000e+002;
-    params[5][1] = 1.4843749999999997e+000;
-    params[5][2] = 7.3242187500000060e-004;
-    offsets[5][0] = 0;
+      uint8_t model = EEPROM.read(0);
+      uint8_t schema = EEPROM.read(1);
+      // Debug: Serial.print(model);
+      // Debug: Serial.print(&quot; &quot;);
+      // Debug: Serial.println(schema);
+
+      if (model == MODELTYPE &amp;&amp; schema == DATASCHEMA) {
+        int addr = sizeof(DeviceDataHeader);
+        Float32_t calibVal;
+        // LLNG
+        EEPROM.get(addr, calibVal); params[0][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[0][1] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[0][2] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[0][3] = calibVal.fval; addr += sizeof(Float32_t);
+        // RLNG
+        EEPROM.get(addr, calibVal); params[1][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[1][1] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[1][2] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[1][3] = calibVal.fval; addr += sizeof(Float32_t);
+        // GLNG
+        EEPROM.get(addr, calibVal); params[2][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[2][1] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[2][2] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[2][3] = calibVal.fval; addr += sizeof(Float32_t);
+        // LRTN
+        EEPROM.get(addr, calibVal); params[3][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[3][1] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[3][2] = calibVal.fval; addr += sizeof(Float32_t);
+        // RRTN
+        EEPROM.get(addr, calibVal); params[4][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[4][1] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[4][2] = calibVal.fval; addr += sizeof(Float32_t);
+        // GRTN
+        EEPROM.get(addr, calibVal); params[5][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[5][1] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[5][2] = calibVal.fval; addr += sizeof(Float32_t);
+
+        // LLNG
+        EEPROM.get(addr, calibVal); offsets[0][0] = calibVal.fval; addr += sizeof(Float32_t);
+         // RLNG
+        EEPROM.get(addr, calibVal); offsets[1][0] = calibVal.fval; addr += sizeof(Float32_t);
+        // GLNG
+        EEPROM.get(addr, calibVal); offsets[2][0] = calibVal.fval; addr += sizeof(Float32_t);
+        // LLNG
+        EEPROM.get(addr, calibVal); offsets[3][0] = calibVal.fval; addr += sizeof(Float32_t);
+        // RLNG
+        EEPROM.get(addr, calibVal); offsets[4][0] = calibVal.fval; addr += sizeof(Float32_t);
+        // GLNG
+        EEPROM.get(addr, calibVal); offsets[5][0] = calibVal.fval; addr += sizeof(Float32_t);
+      }
     }
     else {
-    // LLLNG
-    params[0][0] = 100;
-    params[0][1] = 2;
-    params[0][2] = 0;
-    params[0][3] = 0;
-    offsets[0][0] = 0;
-    offsets[0][1] = 0;
-    offsets[0][2] = 0;
-    // RLLNG
-    params[1][0] = 100;
-    params[1][1] = 2;
-    params[1][2] = 0;
-    params[1][3] = 0;
-    offsets[1][0] = 0;
-    offsets[1][1] = 0;
-    // GALNG
-    params[2][0] = 100;
-    params[2][1] = 2;
-    params[2][2] = 0;
-    params[2][3] = 0;
-    offsets[2][0] = 0;
-    // LLRTN
-    params[3][0] = 100;
-    params[3][1] = 2;
-    params[3][2] = 0;
-    offsets[3][0] = 0;
-    // RLRTN
-    params[4][0] = 100;
-    params[4][1] = 2;
-    params[4][2] = 0;
-    offsets[4][0] = 0;
-    // GARTN
-    params[5][0] = 100;
-    params[5][1] = 2;
-    params[5][2] = 0;
-    offsets[5][0] = 0;
+      // LLLNG
+      params[0][0] = 100;
+      params[0][1] = 2;
+      params[0][2] = 0;
+      params[0][3] = 0;
+      offsets[0][0] = 0;
+      // RLLNG
+      params[1][0] = 100;
+      params[1][1] = 2;
+      params[1][2] = 0;
+      params[1][3] = 0;
+      offsets[1][0] = 0;
+      // GALNG
+      params[2][0] = 100;
+      params[2][1] = 2;
+      params[2][2] = 0;
+      params[2][3] = 0;
+      offsets[2][0] = 0;
+      // LLRTN
+      params[3][0] = 100;
+      params[3][1] = 2;
+      params[3][2] = 0;
+      offsets[3][0] = 0;
+      // RLRTN
+      params[4][0] = 100;
+      params[4][1] = 2;
+      params[4][2] = 0;
+      offsets[4][0] = 0;
+      // GARTN
+      params[5][0] = 100;
+      params[5][1] = 2;
+      params[5][2] = 0;
+      offsets[5][0] = 0;
     }
 #elif
 #error Invalid model type
@@ -2912,8 +2913,8 @@ const uint8_t DEVICEDATALENGTH = (5 * 4 + 5 * 2 + 10 * 1) * sizeof(Float32_t) + 
 
 // No2
 // DKb: no
-// 3 x Lng Param Ord 3, Offset Ord 2
-// 3 x Rtn Param Ord 2, Offset Ord 1
+// 3 x Lng Param Ord 3, Offset Ord 0
+// 3 x Rtn Param Ord 2, Offset Ord 0
 
 #define NO2
 #define SERIALIN
@@ -2922,11 +2923,9 @@ const uint8_t DEVICEDATALENGTH = (5 * 4 + 5 * 2 + 10 * 1) * sizeof(Float32_t) + 
 
 const uint8_t NUMSERVOS  = 6;
 const uint8_t DATASCHEMA = 1;
-const TORD PARAM         = 0b0000101011111111;
-const TORD OFFSET        = 0b0000000011000110;
-const uint8_t DEVICEDATALENGTH = (6 * 3 + 10 * 1) * sizeof(Float32_t) + sizeof(DeviceDataHeader);
-
-#define DEVICEDATALENGTH 133
+const TORD PARAM         = 0b0000101010111111;
+const TORD OFFSET        = 0;
+const uint8_t DEVICEDATALENGTH = (3 * 4 + 3 * 3 + 6 * 1) * sizeof(Float32_t) + sizeof(DeviceDataHeader);
 
 #endif
 

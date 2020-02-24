@@ -35,7 +35,7 @@ class No2 implements IPhantom {
   }
   
   public boolean isPresentation(int model) {
-    return 0 < model && model < 4;
+    return model == 4;
   }
     
   public void setMotionState(int motor, int value) {
