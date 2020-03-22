@@ -1,4 +1,4 @@
-﻿/* App.xaml.cs - Virtual Phantom (C) motion phantom application.
+﻿/* App.xaml.cs - ViphApp (C) motion phantom application.
  * Copyright (C) 2019-2020 by Stefan Grimm
  *
  * This is free software: you can redistribute it and/or modify

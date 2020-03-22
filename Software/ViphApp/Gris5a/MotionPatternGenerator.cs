@@ -1,4 +1,4 @@
-﻿/* MotionPatternGenerator.cs - Virtual Phantom (C) motion phantom application.
+﻿/* MotionPatternGenerator.cs - ViphApp (C) motion phantom application.
  * Copyright (C) 2018-2020 by Stefan Grimm
  *
  * This is free software: you can redistribute it and/or modify
