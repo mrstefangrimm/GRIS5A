@@ -1,4 +1,4 @@
-﻿/* IPluginPhantom.cs - ViphApp (C) motion phantom application.
+﻿/* IPluginCreator.cs - ViphApp (C) motion phantom application.
  * Copyright (C) 2020 by Stefan Grimm
  *
  * This is free software: you can redistribute it and/or modify
@@ -16,13 +16,19 @@
  * <http://www.gnu.org/licenses/>.
  */
 
+using System;
+using ViphApp.Common.Com;
 using ViphApp.Common.UI;
 
-namespace ViphApp.App
-{
-  public interface IPluginPhantom {
-    string Name { get; }
-    IPlugInPhantomViewModel Phantom { get; }
-    IPlugInControlViewModel Control { get; }
+namespace ViphApp.Common {
+  public interface IPluginCreator {
+
+    IPlugInPhantomViewModel CreatePhantomViewModel();
+    Type GetPhantomViewModelType();
+    Type GetPhantomViewType();
+
+    IPlugInControlViewModel CreateControlViewModel(MophAppProxy mophApp);
+    Type GetControlViewModelType();
+    Type GetControlViewType();
   }
 }

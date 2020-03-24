@@ -20,6 +20,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using ViphApp.App.Plugin;
 using ViphApp.Common.UI;
 
 namespace ViphApp.App.UI {

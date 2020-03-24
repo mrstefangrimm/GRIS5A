@@ -20,7 +20,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Threading;
 using System.Windows;
-using System.Windows.Markup;
+using ViphApp.App.Plugin;
 
 namespace ViphApp.App {
 
@@ -36,31 +36,29 @@ namespace ViphApp.App {
 
       _mophApp = new Common.Com.MophAppProxy();
 
-      var gris5aPhantom = new Gris5a.UI.Gris5aPhantomViewModel();
-      var gris5aControls = new Gris5a.UI.Gris5aControlViewModel(_mophApp);
-      var no2Phantom = new No2.UI.No2PhantomViewModel();
-      var no2Controls = new No2.UI.No2ControlViewModel(_mophApp);
+      var pluginFactory = new PluginFactory();
+
+      string pluginPath = Environment.CurrentDirectory;
+      
+      var gris5aPluginCreator = pluginFactory.CreatePluginCreator(string.Format(@"{0}\ViphApp.Gris5a.dll", pluginPath));
+      var no2PluginCreator = pluginFactory.CreatePluginCreator(string.Format(@"{0}\ViphApp.No2.dll", pluginPath));
+
       ObservableCollection<PluginPhantom> availablePhantoms = new ObservableCollection<PluginPhantom>() {
-        new PluginPhantom("Gris5a", gris5aPhantom, gris5aControls),
-        new PluginPhantom("No2", no2Phantom, no2Controls)
+        new PluginPhantom("Gris5a", gris5aPluginCreator.CreatePhantomViewModel(), gris5aPluginCreator.CreateControlViewModel(_mophApp)),
+        new PluginPhantom("No2", no2PluginCreator.CreatePhantomViewModel(), no2PluginCreator.CreateControlViewModel(_mophApp))
       };
       var mainViewModel = new UI.MainViewModel(_mophApp, availablePhantoms);
 
       var app = new UI.Views.MainWindow();
       app.DataContext = mainViewModel;
 
-      // https://www.ikriv.com/dev/wpf/DataTemplateCreation/
-      // https://www.ikriv.com/dev/wpf/DataTemplateCreation/DataTemplateManager.cs
-      //var manager = new DataTemplateManager();
-      //manager.RegisterDataTemplate<ViewModelA, ViewA>();
-      //manager.RegisterDataTemplate<ViewModelB, ViewB>();
-      var templ = CreateTemplate(typeof(Gris5a.UI.Gris5aPhantomViewModel), typeof(Gris5a.UI.Views.Gris5aPhantomView));
+      var templ = pluginFactory.CreateTemplate(gris5aPluginCreator.GetPhantomViewModelType(), gris5aPluginCreator.GetPhantomViewType());
       app.Resources.Add(templ.DataTemplateKey, templ);
-      templ = CreateTemplate(typeof(Gris5a.UI.Gris5aControlViewModel), typeof(Gris5a.UI.Views.Gris5aControlView));
+      templ = pluginFactory.CreateTemplate(gris5aPluginCreator.GetControlViewModelType(), gris5aPluginCreator.GetControlViewType());
       app.Resources.Add(templ.DataTemplateKey, templ);
-      templ = CreateTemplate(typeof(No2.UI.No2PhantomViewModel), typeof(No2.UI.Views.No2PhantomView));
+      templ = pluginFactory.CreateTemplate(no2PluginCreator.GetPhantomViewModelType(), no2PluginCreator.GetPhantomViewType());
       app.Resources.Add(templ.DataTemplateKey, templ);
-      templ = CreateTemplate(typeof(No2.UI.No2ControlViewModel), typeof(No2.UI.Views.No2ControlView));
+      templ = pluginFactory.CreateTemplate(no2PluginCreator.GetControlViewModelType(), no2PluginCreator.GetControlViewType());
       app.Resources.Add(templ.DataTemplateKey, templ);
       app.Closing += mainViewModel.OnClosing;
       app.Show();
@@ -70,25 +68,6 @@ namespace ViphApp.App {
       base.OnExit(e);
       _cancellationTokenSource.Cancel();
       _mophApp.Dispose();
-    }
-
-    DataTemplate CreateTemplate(Type viewModelType, Type viewType) {
-      const string xamlTemplate = "<DataTemplate DataType=\"{{x:Type vm:{0}}}\"><v:{1} /></DataTemplate>";
-      var xaml = String.Format(xamlTemplate, viewModelType.Name, viewType.Name, viewModelType.Namespace, viewType.Namespace);
-
-      var context = new ParserContext();
-
-      context.XamlTypeMapper = new XamlTypeMapper(new string[0]);
-      context.XamlTypeMapper.AddMappingProcessingInstruction("vm", viewModelType.Namespace, viewModelType.Assembly.FullName);
-      context.XamlTypeMapper.AddMappingProcessingInstruction("v", viewType.Namespace, viewType.Assembly.FullName);
-
-      context.XmlnsDictionary.Add("", "http://schemas.microsoft.com/winfx/2006/xaml/presentation");
-      context.XmlnsDictionary.Add("x", "http://schemas.microsoft.com/winfx/2006/xaml");
-      context.XmlnsDictionary.Add("vm", "vm");
-      context.XmlnsDictionary.Add("v", "v");
-
-      var template = (DataTemplate)XamlReader.Parse(xaml, context);
-      return template;
     }
   }
 }
