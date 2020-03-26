@@ -19,50 +19,22 @@
 using System;
 using System.Linq;
 using System.Reflection;
-using System.Windows;
-using System.Windows.Markup;
-using ViphApp.Common;
+using ViphApp.Common.Plugin;
 
 namespace ViphApp.App.Plugin {
 
   class PluginFactory {
 
-    public IPluginCreator CreatePluginCreator(string pluginAsmName) {
+    public IPluginBuilder CreatePluginBuilder(string pluginAsmName) {
       var asm = Assembly.LoadFile(pluginAsmName);
       var allTypes = asm.GetTypes();
       foreach (Type clType in asm.GetTypes()) {
-        var implIf = clType.GetInterfaces().Any(i => i == typeof(IPluginCreator));
+        var implIf = clType.GetInterfaces().Any(i => i == typeof(IPluginBuilder));
         if (implIf) {
-          return Activator.CreateInstance(clType) as IPluginCreator;
+          return Activator.CreateInstance(clType) as IPluginBuilder;
         }
       }
       return null;
-    }
-
-    public DataTemplate CreateTemplate(Type viewModelType, Type viewType) {
-
-      // https://www.ikriv.com/dev/wpf/DataTemplateCreation/
-      // https://www.ikriv.com/dev/wpf/DataTemplateCreation/DataTemplateManager.cs
-      //var manager = new DataTemplateManager();
-      //manager.RegisterDataTemplate<ViewModelA, ViewA>();
-      //manager.RegisterDataTemplate<ViewModelB, ViewB>();
-
-      const string xamlTemplate = "<DataTemplate DataType=\"{{x:Type vm:{0}}}\"><v:{1} /></DataTemplate>";
-      var xaml = string.Format(xamlTemplate, viewModelType.Name, viewType.Name, viewModelType.Namespace, viewType.Namespace);
-
-      var context = new ParserContext();
-
-      context.XamlTypeMapper = new XamlTypeMapper(new string[0]);
-      context.XamlTypeMapper.AddMappingProcessingInstruction("vm", viewModelType.Namespace, viewModelType.Assembly.FullName);
-      context.XamlTypeMapper.AddMappingProcessingInstruction("v", viewType.Namespace, viewType.Assembly.FullName);
-
-      context.XmlnsDictionary.Add("", "http://schemas.microsoft.com/winfx/2006/xaml/presentation");
-      context.XmlnsDictionary.Add("x", "http://schemas.microsoft.com/winfx/2006/xaml");
-      context.XmlnsDictionary.Add("vm", "vm");
-      context.XmlnsDictionary.Add("v", "v");
-
-      var template = (DataTemplate)XamlReader.Parse(xaml, context);
-      return template;
     }
   }
 }

@@ -89,8 +89,6 @@
     <Compile Include="Plugin\PluginFactory.cs" />
     <Compile Include="UI\AppSettingsViewModel.cs" />
     <Compile Include="UI\ComStatusViewModel.cs" />
-    <Compile Include="Plugin\IPluginPhantom.cs" />
-    <Compile Include="Plugin\PluginPhantom.cs" />
     <Compile Include="UI\Views\AppSettingsViewDetails.xaml.cs">
       <DependentUpon>AppSettingsViewDetails.xaml</DependentUpon>
     </Compile>

@@ -1,4 +1,4 @@
-﻿/* IPlugInMotionPatternGenerator.cs - ViphApp (C) motion phantom application.
+﻿/* IPluginBuilder.cs - ViphApp (C) motion phantom application.
  * Copyright (C) 2020 by Stefan Grimm
  *
  * This is free software: you can redistribute it and/or modify
@@ -16,28 +16,13 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-using System;
+using System.Windows;
+using ViphApp.Common.Com;
 
-namespace ViphApp.Common {
-  
-  public enum MotionPatternGeneratorState {
-    Stopped,
-    Running
-  }
-
-  public class MotionPatternGeneratorStateEventArgs : EventArgs {
-    MotionPatternGeneratorStateEventArgs(MotionPatternGeneratorState state) {
-      State = state;
-    }
-    public MotionPatternGeneratorState State { get; private set; }
-  }
-
-  public class MotionPatternGeneratorPositionEventArgs : EventArgs {
-
-  }
-  
-  interface IPlugInMotionPatternGenerator {
-    event EventHandler<MotionPatternGeneratorStateEventArgs> StateChanged;
-    event EventHandler<MotionPatternGeneratorPositionEventArgs> PositionChanged;
+namespace ViphApp.Common.Plugin {
+  public interface IPluginBuilder {
+    IPluginPhantom BuildPluginPhantom(MophAppProxy mophApp);
+    DataTemplate BuildPhantomTemplate();
+    DataTemplate BuildControlTemplate();
   }
 }

@@ -20,7 +20,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using ViphApp.App.Plugin;
+using ViphApp.Common.Plugin;
 using ViphApp.Common.UI;
 
 namespace ViphApp.App.UI {
@@ -28,17 +28,17 @@ namespace ViphApp.App.UI {
   public class AppSettingsViewModel : INotifyPropertyChanged {
 
     private MainViewModel _parent;
-    private PluginPhantom _selectedPhantom;
+    private IPluginPhantom _selectedPhantom;
 
-    public AppSettingsViewModel(MainViewModel parent, ObservableCollection<PluginPhantom> availablePhantoms) {
+    public AppSettingsViewModel(MainViewModel parent, ObservableCollection<IPluginPhantom> availablePhantoms) {
       _parent = parent;
       AvailablePhantoms = availablePhantoms;
       _selectedPhantom = availablePhantoms[0];
     }
 
-    public ObservableCollection<PluginPhantom> AvailablePhantoms { get; private set; }
+    public ObservableCollection<IPluginPhantom> AvailablePhantoms { get; private set; }
 
-    public PluginPhantom SelectedPhantom {
+    public IPluginPhantom SelectedPhantom {
       get {
         return _selectedPhantom;
       }

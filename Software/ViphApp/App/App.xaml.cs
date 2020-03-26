@@ -21,6 +21,7 @@ using System.Collections.ObjectModel;
 using System.Threading;
 using System.Windows;
 using ViphApp.App.Plugin;
+using ViphApp.Common.Plugin;
 
 namespace ViphApp.App {
 
@@ -40,25 +41,25 @@ namespace ViphApp.App {
 
       string pluginPath = Environment.CurrentDirectory;
       
-      var gris5aPluginCreator = pluginFactory.CreatePluginCreator(string.Format(@"{0}\ViphApp.Gris5a.dll", pluginPath));
-      var no2PluginCreator = pluginFactory.CreatePluginCreator(string.Format(@"{0}\ViphApp.No2.dll", pluginPath));
+      var gris5aPluginBulder= pluginFactory.CreatePluginBuilder(string.Format(@"{0}\ViphApp.Gris5a.dll", pluginPath));
+      var no2PluginBulder = pluginFactory.CreatePluginBuilder(string.Format(@"{0}\ViphApp.No2.dll", pluginPath));
 
-      ObservableCollection<PluginPhantom> availablePhantoms = new ObservableCollection<PluginPhantom>() {
-        new PluginPhantom("Gris5a", gris5aPluginCreator.CreatePhantomViewModel(), gris5aPluginCreator.CreateControlViewModel(_mophApp)),
-        new PluginPhantom("No2", no2PluginCreator.CreatePhantomViewModel(), no2PluginCreator.CreateControlViewModel(_mophApp))
-      };
+      ObservableCollection<IPluginPhantom> availablePhantoms = new ObservableCollection<IPluginPhantom>() {
+        gris5aPluginBulder.BuildPluginPhantom(_mophApp),
+        no2PluginBulder.BuildPluginPhantom(_mophApp)};
+
       var mainViewModel = new UI.MainViewModel(_mophApp, availablePhantoms);
 
       var app = new UI.Views.MainWindow();
       app.DataContext = mainViewModel;
 
-      var templ = pluginFactory.CreateTemplate(gris5aPluginCreator.GetPhantomViewModelType(), gris5aPluginCreator.GetPhantomViewType());
+      var templ = gris5aPluginBulder.BuildPhantomTemplate();
       app.Resources.Add(templ.DataTemplateKey, templ);
-      templ = pluginFactory.CreateTemplate(gris5aPluginCreator.GetControlViewModelType(), gris5aPluginCreator.GetControlViewType());
+      templ = gris5aPluginBulder.BuildControlTemplate();
       app.Resources.Add(templ.DataTemplateKey, templ);
-      templ = pluginFactory.CreateTemplate(no2PluginCreator.GetPhantomViewModelType(), no2PluginCreator.GetPhantomViewType());
+      templ = no2PluginBulder.BuildPhantomTemplate();
       app.Resources.Add(templ.DataTemplateKey, templ);
-      templ = pluginFactory.CreateTemplate(no2PluginCreator.GetControlViewModelType(), no2PluginCreator.GetControlViewType());
+      templ = no2PluginBulder.BuildControlTemplate();
       app.Resources.Add(templ.DataTemplateKey, templ);
       app.Closing += mainViewModel.OnClosing;
       app.Show();

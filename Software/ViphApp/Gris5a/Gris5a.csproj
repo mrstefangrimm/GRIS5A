@@ -51,7 +51,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PluginCreator.cs" />
+    <Compile Include="PluginBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="MotionPatternGenerator.cs" />
     <Compile Include="ServoNumber.cs" />

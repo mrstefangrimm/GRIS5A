@@ -20,7 +20,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using ViphApp.App.Plugin;
+using ViphApp.Common.Plugin;
 using ViphApp.Common.UI;
 
 namespace ViphApp.App.UI {
@@ -51,7 +51,7 @@ namespace ViphApp.App.UI {
     private ComStatusViewState _comStatusViewState;
     private AppSettingsViewState _appSettingsViewState;
        
-    public MainViewModel(Common.Com.MophAppProxy mophApp, ObservableCollection<PluginPhantom> availablePhantoms) {
+    public MainViewModel(Common.Com.MophAppProxy mophApp, ObservableCollection<IPluginPhantom> availablePhantoms) {
       _mophApp = mophApp;
       Status = new ComStatusViewModel(this, _mophApp);
       Settings = new AppSettingsViewModel(this, availablePhantoms);
