@@ -42,8 +42,11 @@
 
       <Button Width="30"
               HorizontalAlignment="Left"
-              Content="|||"
-              Command="{Binding DoSetMinimized}"/>
+              Command="{Binding DoSetMinimized}">
+        <StackPanel>
+          <Image Source="pack://application:,,,/ViphApp.Common;component/UI/Icons/ArrowLeft.bmp" />
+        </StackPanel>
+      </Button>
 
     </StackPanel>
 
@@ -63,8 +66,11 @@
       <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Height="30">
         <Button Width="30"
               HorizontalAlignment="Left"
-              Content="|||"
-              Command="{Binding DoSetMinimized}"/>
+              Command="{Binding DoSetMinimized}">
+          <StackPanel>
+            <Image Source="pack://application:,,,/ViphApp.Common;component/UI/Icons/ArrowRight.bmp" />
+          </StackPanel>
+        </Button>
 
         <RadioButton Width="60" 
                    Content="Manual"

@@ -57,6 +57,17 @@
     <Compile Include="UI\NegateDoubleConverter.cs" />
     <Compile Include="UI\RelayCommand.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="UI\Icons\ArrowDown.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Icons\ArrowLeft.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Icons\ArrowRight.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Icons\ArrowUp.bmp" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

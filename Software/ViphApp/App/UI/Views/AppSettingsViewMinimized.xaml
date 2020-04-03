@@ -29,8 +29,11 @@
     Width="30"
     Orientation="Vertical">
     <Button Width="30"
-      Content="|||" 
-      Command="{Binding Settings.DoShowSettingsDetails}" />
+      Command="{Binding Settings.DoShowSettingsDetails}">
+      <StackPanel>
+        <Image Source="pack://application:,,,/ViphApp.Common;component/UI/Icons/ArrowRight.bmp" />
+      </StackPanel>
+    </Button>
   </StackPanel>
   
 </UserControl>

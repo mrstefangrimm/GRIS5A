@@ -26,7 +26,11 @@
   <StackPanel>
     
     <StackPanel Height="30" Orientation="Horizontal">
-      <Button Width="30" Content="[ x ]" Command="{Binding Status.DoShowStatusMaximized}" />
+      <Button Width="30" Command="{Binding Status.DoShowStatusMaximized}">
+        <StackPanel>
+          <Image Source="pack://application:,,,/ViphApp.Common;component/UI/Icons/ArrowDown.bmp" />
+        </StackPanel>
+      </Button>
       <Label Content="Port:"></Label>
       <ComboBox Width="100" 
                 ItemsSource="{Binding Path=Status.SerialPorts, Mode=OneWay}"    
