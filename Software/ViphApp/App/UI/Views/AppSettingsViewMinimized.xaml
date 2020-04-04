@@ -25,14 +25,13 @@
              d:DesignHeight="600" d:DesignWidth="30">
   
   <StackPanel
-    Background="Black"
     Width="30"
     Orientation="Vertical">
-    <Button Width="30"
-      Command="{Binding Settings.DoShowSettingsDetails}">
-      <StackPanel>
-        <Image Source="pack://application:,,,/ViphApp.Common;component/UI/Icons/ArrowRight.bmp" />
-      </StackPanel>
+    <Button Width="30" 
+            Background="Transparent"
+            BorderBrush="Transparent"
+            Command="{Binding Settings.DoShowSettingsDetails}">
+      <Image Source="pack://application:,,,/ViphApp.Common;component/UI/Icons/ArrowRight.png" />
     </Button>
   </StackPanel>
   

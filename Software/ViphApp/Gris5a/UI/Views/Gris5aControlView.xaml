@@ -25,7 +25,7 @@
              xmlns:VM="clr-namespace:ViphApp.Gris5a.UI"
              d:DesignHeight="600" d:DesignWidth="200">
 
-  <StackPanel Background="DarkGray">
+  <StackPanel Background="#FF1F1F1F">
 
     <StackPanel>
 
@@ -42,10 +42,10 @@
 
       <Button Width="30"
               HorizontalAlignment="Left"
+              Background="Transparent"
+              BorderBrush="Transparent"
               Command="{Binding DoSetMinimized}">
-        <StackPanel>
-          <Image Source="pack://application:,,,/ViphApp.Common;component/UI/Icons/ArrowLeft.bmp" />
-        </StackPanel>
+        <Image Source="pack://application:,,,/ViphApp.Common;component/UI/Icons/ArrowLeft.png" />
       </Button>
 
     </StackPanel>
@@ -65,22 +65,28 @@
 
       <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Height="30">
         <Button Width="30"
-              HorizontalAlignment="Left"
-              Command="{Binding DoSetMinimized}">
-          <StackPanel>
-            <Image Source="pack://application:,,,/ViphApp.Common;component/UI/Icons/ArrowRight.bmp" />
-          </StackPanel>
+                HorizontalAlignment="Left"
+                Background="Transparent"
+                BorderBrush="Transparent"
+                Command="{Binding DoSetMinimized}">
+          <Image Source="pack://application:,,,/ViphApp.Common;component/UI/Icons/ArrowRight.png" />
         </Button>
 
-        <RadioButton Width="60" 
-                   Content="Manual"
-                   Style="{StaticResource {x:Type ToggleButton}}"
-                   Command="{Binding DoSetManual}"
-                   IsChecked="True"/>
-        <RadioButton Width="60"
-                   Style="{StaticResource {x:Type ToggleButton}}"
-                   Command="{Binding DoSetAutomatic}"
-                   Content="Automatic" />
+        <RadioButton Width="80" 
+                     Content="Manual"
+                     Foreground="White"
+                     Background="Transparent"
+                     FontWeight="Bold"
+                     Style="{StaticResource {x:Type ToggleButton}}"
+                     Command="{Binding DoSetManual}"
+                     IsChecked="True"/>
+        <RadioButton Width="80"
+                     Foreground="White"
+                     Background="Transparent"
+                     FontWeight="Bold"
+                     Style="{StaticResource {x:Type ToggleButton}}"
+                     Command="{Binding DoSetAutomatic}"
+                     Content="Automatic" />
       </StackPanel>
 
       <StackPanel>
@@ -96,43 +102,43 @@
           </Style>
         </StackPanel.Style>
 
-        <GroupBox Header="Left Upper" Foreground="White" FontWeight="Bold">
+        <GroupBox Header="Left Upper" Foreground="White" BorderThickness="0" FontWeight="Bold">
           <StackPanel>
-            <TextBox Text="{Binding LU.LNGInt, UpdateSourceTrigger=PropertyChanged}" Background="DarkGray" Foreground="White" />
+            <TextBox Text="{Binding LU.LNGInt, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" Foreground="White" />
             <Slider Minimum="0" Maximum="255" Value="{Binding LU.LNGInt}" />
-            <TextBox Text="{Binding LU.RTNInt, UpdateSourceTrigger=PropertyChanged}" Background="DarkGray" Foreground="White" />
+            <TextBox Text="{Binding LU.RTNInt, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" Foreground="White" />
             <Slider Minimum="0" Maximum="255" Value="{Binding LU.RTNInt}" />
           </StackPanel>
         </GroupBox>
-        <GroupBox Header="Left Lower" Foreground="White" FontWeight="Bold">
+        <GroupBox Header="Left Lower" Foreground="White" BorderThickness="0" FontWeight="Bold">
           <StackPanel>
-            <TextBox Text="{Binding LL.LNGInt, UpdateSourceTrigger=PropertyChanged}" Background="DarkGray" Foreground="White" />
+            <TextBox Text="{Binding LL.LNGInt, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" Foreground="White" />
             <Slider Minimum="0" Maximum="255" Value="{Binding LL.LNGInt}"/>
-            <TextBox Text="{Binding LL.RTNInt, UpdateSourceTrigger=PropertyChanged}" Background="DarkGray" Foreground="White" />
+            <TextBox Text="{Binding LL.RTNInt, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" Foreground="White" />
             <Slider Minimum="0" Maximum="255" Value="{Binding LL.RTNInt}" />
           </StackPanel>
         </GroupBox>
-        <GroupBox Header="Right Upper" Foreground="White" FontWeight="Bold">
+        <GroupBox Header="Right Upper" Foreground="White" BorderThickness="0" FontWeight="Bold">
           <StackPanel>
-            <TextBox Text="{Binding RU.LNGInt, UpdateSourceTrigger=PropertyChanged}" Background="DarkGray" Foreground="White" />
+            <TextBox Text="{Binding RU.LNGInt, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" Foreground="White" />
             <Slider Minimum="0" Maximum="255" Value="{Binding RU.LNGInt}"/>
-            <TextBox Text="{Binding RU.RTNInt, UpdateSourceTrigger=PropertyChanged}" Background="DarkGray" Foreground="White"/>
+            <TextBox Text="{Binding RU.RTNInt, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" Foreground="White"/>
             <Slider Minimum="0" Maximum="255" Value="{Binding RU.RTNInt}" />
           </StackPanel>
         </GroupBox>
-        <GroupBox Header="Right Lower" Foreground="White" FontWeight="Bold">
+        <GroupBox Header="Right Lower" Foreground="White" BorderThickness="0" FontWeight="Bold">
           <StackPanel>
-            <TextBox Text="{Binding RL.LNGInt, UpdateSourceTrigger=PropertyChanged}" Background="DarkGray" Foreground="White" />
+            <TextBox Text="{Binding RL.LNGInt, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" Foreground="White" />
             <Slider Minimum="0" Maximum="255" Value="{Binding RL.LNGInt}"/>
-            <TextBox Text="{Binding RL.RTNInt, UpdateSourceTrigger=PropertyChanged}" Background="DarkGray" Foreground="White" />
+            <TextBox Text="{Binding RL.RTNInt, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" Foreground="White" />
             <Slider Minimum="0" Maximum="255" Value="{Binding RL.RTNInt}" />
           </StackPanel>
         </GroupBox>
-        <GroupBox Header="Gating Platform" Foreground="White" FontWeight="Bold">
+        <GroupBox Header="Gating Platform" Foreground="White" BorderThickness="0" FontWeight="Bold">
           <StackPanel>
-            <TextBox Text="{Binding GA.LNGInt, UpdateSourceTrigger=PropertyChanged}" Background="DarkGray" Foreground="White" />
+            <TextBox Text="{Binding GA.LNGInt, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" Foreground="White" />
             <Slider Minimum="0" Maximum="255" Value="{Binding GA.LNGInt}"/>
-            <TextBox Text="{Binding GA.RTNInt, UpdateSourceTrigger=PropertyChanged}" Background="DarkGray" Foreground="White" />
+            <TextBox Text="{Binding GA.RTNInt, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" Foreground="White" />
             <Slider Minimum="0" Maximum="255" Value="{Binding GA.RTNInt}" />
           </StackPanel>
         </GroupBox>
@@ -152,14 +158,14 @@
         </StackPanel.Style>
 
         <Button Content="Stop" Command="{Binding DoStopAutoProgram}"/>
-        <Button Content="Program 1" Command="{Binding DoAutoProgram}" CommandParameter="1" Background="LightGray" Foreground="White" FontWeight="Bold"/>
-        <Button Content="Program 2" Command="{Binding DoAutoProgram}" CommandParameter="2" Background="LightGray" Foreground="White" FontWeight="Bold"/>
-        <Button Content="Program 3" Command="{Binding DoAutoProgram}" CommandParameter="3" Background="LightGray" Foreground="White" FontWeight="Bold"/>
-        <Button Content="Program 4" Command="{Binding DoAutoProgram}" CommandParameter="4" Background="LightGray" Foreground="White" FontWeight="Bold"/>
-        <Button Content="Program 5" Command="{Binding DoAutoProgram}" CommandParameter="5" Background="LightGray" Foreground="White" FontWeight="Bold"/>
-        <Button Content="Program 6" Command="{Binding DoAutoProgram}" CommandParameter="6" Background="LightGray" Foreground="White" FontWeight="Bold"/>
-        <Button Content="Program 7" Command="{Binding DoAutoProgram}" CommandParameter="7" Background="LightGray" Foreground="White" FontWeight="Bold"/>
-        <Button Content="Program 8" Command="{Binding DoAutoProgram}" CommandParameter="8" Background="LightGray" Foreground="White" FontWeight="Bold"/>
+        <Button Content="Program 1" Command="{Binding DoAutoProgram}" CommandParameter="1" Background="Transparent" Foreground="White" FontWeight="Bold"/>
+        <Button Content="Program 2" Command="{Binding DoAutoProgram}" CommandParameter="2" Background="Transparent" Foreground="White" FontWeight="Bold"/>
+        <Button Content="Program 3" Command="{Binding DoAutoProgram}" CommandParameter="3" Background="Transparent" Foreground="White" FontWeight="Bold"/>
+        <Button Content="Program 4" Command="{Binding DoAutoProgram}" CommandParameter="4" Background="Transparent" Foreground="White" FontWeight="Bold"/>
+        <Button Content="Program 5" Command="{Binding DoAutoProgram}" CommandParameter="5" Background="Transparent" Foreground="White" FontWeight="Bold"/>
+        <Button Content="Program 6" Command="{Binding DoAutoProgram}" CommandParameter="6" Background="Transparent" Foreground="White" FontWeight="Bold"/>
+        <Button Content="Program 7" Command="{Binding DoAutoProgram}" CommandParameter="7" Background="Transparent" Foreground="White" FontWeight="Bold"/>
+        <Button Content="Program 8" Command="{Binding DoAutoProgram}" CommandParameter="8" Background="Transparent" Foreground="White" FontWeight="Bold"/>
 
       </StackPanel>
 

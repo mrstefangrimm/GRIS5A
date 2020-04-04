@@ -24,6 +24,7 @@
         xmlns:local="clr-namespace:ViphApp.App.UI.Views"
         xmlns:common="clr-namespace:ViphApp.Common.UI;assembly=ViphApp.Common"
         xmlns:VM="clr-namespace:ViphApp.App.UI"
+        Background="#FF1F1F1F"
         mc:Ignorable="d"
         Title="Virtual Phantom Application" Width="800" Height="600">
   <Window.Resources>

@@ -58,16 +58,12 @@
     <Compile Include="UI\RelayCommand.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="UI\Icons\ArrowDown.bmp" />
+    <Resource Include="UI\Icons\ArrowRight.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="UI\Icons\ArrowLeft.bmp" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Icons\ArrowRight.bmp" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Icons\ArrowUp.bmp" />
+    <Resource Include="UI\Icons\ArrowDown.png" />
+    <Resource Include="UI\Icons\ArrowLeft.png" />
+    <Resource Include="UI\Icons\ArrowUp.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
