@@ -1,5 +1,5 @@
 ﻿<!-- Gris5aControlView.xaml - ViphApp (C) motion phantom application.
- * Copyright (C) 2018-2020 by Stefan Grimm
+ * Copyright (C) 2020 by Stefan Grimm
  *
  * This is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -23,9 +23,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d"
              xmlns:VM="clr-namespace:ViphApp.Gris5a.UI"
+             xmlns:views="clr-namespace:ViphApp.Gris5a.UI.Views"
              d:DesignHeight="600" d:DesignWidth="200">
 
-  <StackPanel Background="#FF1F1F1F">
+  <StackPanel>
 
     <StackPanel>
 
@@ -51,7 +52,6 @@
     </StackPanel>
 
     <StackPanel>
-
       <StackPanel.Style>
         <Style TargetType="StackPanel">
           <Setter Property="Visibility" Value="Visible" />
@@ -90,7 +90,6 @@
       </StackPanel>
 
       <StackPanel>
-
         <StackPanel.Style>
           <Style TargetType="StackPanel">
             <Setter Property="Visibility" Value="Collapsed" />
@@ -101,51 +100,10 @@
             </Style.Triggers>
           </Style>
         </StackPanel.Style>
-
-        <GroupBox Header="Left Upper" Foreground="White" BorderThickness="0" FontWeight="Bold">
-          <StackPanel>
-            <TextBox Text="{Binding LU.LNGInt, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" Foreground="White" />
-            <Slider Minimum="0" Maximum="255" Value="{Binding LU.LNGInt}" />
-            <TextBox Text="{Binding LU.RTNInt, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" Foreground="White" />
-            <Slider Minimum="0" Maximum="255" Value="{Binding LU.RTNInt}" />
-          </StackPanel>
-        </GroupBox>
-        <GroupBox Header="Left Lower" Foreground="White" BorderThickness="0" FontWeight="Bold">
-          <StackPanel>
-            <TextBox Text="{Binding LL.LNGInt, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" Foreground="White" />
-            <Slider Minimum="0" Maximum="255" Value="{Binding LL.LNGInt}"/>
-            <TextBox Text="{Binding LL.RTNInt, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" Foreground="White" />
-            <Slider Minimum="0" Maximum="255" Value="{Binding LL.RTNInt}" />
-          </StackPanel>
-        </GroupBox>
-        <GroupBox Header="Right Upper" Foreground="White" BorderThickness="0" FontWeight="Bold">
-          <StackPanel>
-            <TextBox Text="{Binding RU.LNGInt, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" Foreground="White" />
-            <Slider Minimum="0" Maximum="255" Value="{Binding RU.LNGInt}"/>
-            <TextBox Text="{Binding RU.RTNInt, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" Foreground="White"/>
-            <Slider Minimum="0" Maximum="255" Value="{Binding RU.RTNInt}" />
-          </StackPanel>
-        </GroupBox>
-        <GroupBox Header="Right Lower" Foreground="White" BorderThickness="0" FontWeight="Bold">
-          <StackPanel>
-            <TextBox Text="{Binding RL.LNGInt, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" Foreground="White" />
-            <Slider Minimum="0" Maximum="255" Value="{Binding RL.LNGInt}"/>
-            <TextBox Text="{Binding RL.RTNInt, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" Foreground="White" />
-            <Slider Minimum="0" Maximum="255" Value="{Binding RL.RTNInt}" />
-          </StackPanel>
-        </GroupBox>
-        <GroupBox Header="Gating Platform" Foreground="White" BorderThickness="0" FontWeight="Bold">
-          <StackPanel>
-            <TextBox Text="{Binding GA.LNGInt, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" Foreground="White" />
-            <Slider Minimum="0" Maximum="255" Value="{Binding GA.LNGInt}"/>
-            <TextBox Text="{Binding GA.RTNInt, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" Foreground="White" />
-            <Slider Minimum="0" Maximum="255" Value="{Binding GA.RTNInt}" />
-          </StackPanel>
-        </GroupBox>
+        <views:Gris5aControlViewManualPanel />
       </StackPanel>
 
       <StackPanel>
-
         <StackPanel.Style>
           <Style TargetType="StackPanel">
             <Setter Property="Visibility" Value="Collapsed" />
@@ -156,17 +114,7 @@
             </Style.Triggers>
           </Style>
         </StackPanel.Style>
-
-        <Button Content="Stop" Command="{Binding DoStopAutoProgram}"/>
-        <Button Content="Program 1" Command="{Binding DoAutoProgram}" CommandParameter="1" Background="Transparent" Foreground="White" FontWeight="Bold"/>
-        <Button Content="Program 2" Command="{Binding DoAutoProgram}" CommandParameter="2" Background="Transparent" Foreground="White" FontWeight="Bold"/>
-        <Button Content="Program 3" Command="{Binding DoAutoProgram}" CommandParameter="3" Background="Transparent" Foreground="White" FontWeight="Bold"/>
-        <Button Content="Program 4" Command="{Binding DoAutoProgram}" CommandParameter="4" Background="Transparent" Foreground="White" FontWeight="Bold"/>
-        <Button Content="Program 5" Command="{Binding DoAutoProgram}" CommandParameter="5" Background="Transparent" Foreground="White" FontWeight="Bold"/>
-        <Button Content="Program 6" Command="{Binding DoAutoProgram}" CommandParameter="6" Background="Transparent" Foreground="White" FontWeight="Bold"/>
-        <Button Content="Program 7" Command="{Binding DoAutoProgram}" CommandParameter="7" Background="Transparent" Foreground="White" FontWeight="Bold"/>
-        <Button Content="Program 8" Command="{Binding DoAutoProgram}" CommandParameter="8" Background="Transparent" Foreground="White" FontWeight="Bold"/>
-
+        <views:Gris5aControlViewAutomaticPanel />
       </StackPanel>
 
     </StackPanel>

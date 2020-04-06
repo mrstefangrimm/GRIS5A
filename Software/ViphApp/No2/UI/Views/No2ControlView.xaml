@@ -1,5 +1,5 @@
 ﻿<!-- No2ControlView.xaml - ViphApp (C) motion phantom application.
- * Copyright (C) 2018-2020 by Stefan Grimm
+ * Copyright (C) 2020 by Stefan Grimm
  *
  * This is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -23,12 +23,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              xmlns:VM="clr-namespace:ViphApp.No2.UI"
+             xmlns:views="clr-namespace:ViphApp.No2.UI.Views"
              d:DesignHeight="600" d:DesignWidth="200">
 
-  <StackPanel Background="#FF1F1F1F">
+  <StackPanel>
 
     <StackPanel>
-
       <StackPanel.Style>
         <Style TargetType="StackPanel">
           <Setter Property="Visibility" Value="Collapsed" />
@@ -51,7 +51,6 @@
     </StackPanel>
 
     <StackPanel>
-
       <StackPanel.Style>
         <Style TargetType="StackPanel">
           <Setter Property="Visibility" Value="Visible" />
@@ -90,7 +89,6 @@
       </StackPanel>
 
       <StackPanel>
-
         <StackPanel.Style>
           <Style TargetType="StackPanel">
             <Setter Property="Visibility" Value="Collapsed" />
@@ -101,36 +99,10 @@
             </Style.Triggers>
           </Style>
         </StackPanel.Style>
-
-        <GroupBox Header="Left" Foreground="White" BorderThickness="0" FontWeight="Bold">
-          <StackPanel>
-            <TextBox Text="{Binding L.LNGInt, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" Foreground="White" />
-            <Slider Minimum="0" Maximum="255" Value="{Binding L.LNGInt}"/>
-            <TextBox Text="{Binding L.RTNInt, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" Foreground="White" />
-            <Slider Minimum="0" Maximum="255" Value="{Binding L.RTNInt}" />
-          </StackPanel>
-        </GroupBox>
-        <GroupBox Header="Right" Foreground="White" BorderThickness="0" FontWeight="Bold">
-          <StackPanel>
-            <TextBox Text="{Binding R.LNGInt, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" Foreground="White" />
-            <Slider Minimum="0" Maximum="255" Value="{Binding R.LNGInt}"/>
-            <TextBox Text="{Binding R.RTNInt, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" Foreground="White" />
-            <Slider Minimum="0" Maximum="255" Value="{Binding R.RTNInt}" />
-          </StackPanel>
-        </GroupBox>
-        <GroupBox Header="Gating Platform" Foreground="White" BorderThickness="0" FontWeight="Bold">
-          <StackPanel>
-            <TextBox Text="{Binding GA.LNGInt, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" Foreground="White" />
-            <Slider Minimum="0" Maximum="255" Value="{Binding GA.LNGInt}"/>
-            <TextBox Text="{Binding GA.RTNInt, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" Foreground="White" />
-            <Slider Minimum="0" Maximum="255" Value="{Binding GA.RTNInt}" />
-          </StackPanel>
-        </GroupBox>
-
+        <views:No2ControlViewManualPanel />
       </StackPanel>
 
       <StackPanel>
-
         <StackPanel.Style>
           <Style TargetType="StackPanel">
             <Setter Property="Visibility" Value="Collapsed" />
@@ -141,17 +113,7 @@
             </Style.Triggers>
           </Style>
         </StackPanel.Style>
-
-        <Button Content="Stop" Command="{Binding DoStopAutoProgram}"/>
-        <Button Content="Program 1" Command="{Binding DoAutoProgram}" CommandParameter="1" Background="Transparent" Foreground="White" FontWeight="Bold"/>
-        <Button Content="Program 2" Command="{Binding DoAutoProgram}" CommandParameter="2" Background="Transparent" Foreground="White" FontWeight="Bold"/>
-        <Button Content="Program 3" Command="{Binding DoAutoProgram}" CommandParameter="3" Background="Transparent" Foreground="White" FontWeight="Bold"/>
-        <Button Content="Program 4" Command="{Binding DoAutoProgram}" CommandParameter="4" Background="Transparent" Foreground="White" FontWeight="Bold"/>
-        <Button Content="Program 5" Command="{Binding DoAutoProgram}" CommandParameter="5" Background="Transparent" Foreground="White" FontWeight="Bold"/>
-        <Button Content="Program 6" Command="{Binding DoAutoProgram}" CommandParameter="6" Background="Transparent" Foreground="White" FontWeight="Bold"/>
-        <Button Content="Program 7" Command="{Binding DoAutoProgram}" CommandParameter="7" Background="Transparent" Foreground="White" FontWeight="Bold"/>
-        <Button Content="Program 8" Command="{Binding DoAutoProgram}" CommandParameter="8" Background="Transparent" Foreground="White" FontWeight="Bold"/>
-
+        <views:No2ControlViewAutomaticPanel />
       </StackPanel>
 
     </StackPanel>

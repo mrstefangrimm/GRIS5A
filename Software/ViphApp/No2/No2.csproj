@@ -60,6 +60,12 @@
     <Compile Include="UI\Views\No2ControlView.xaml.cs">
       <DependentUpon>No2ControlView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\Views\No2ControlViewAutomaticPanel.xaml.cs">
+      <DependentUpon>No2ControlViewAutomaticPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Views\No2ControlViewManualPanel.xaml.cs">
+      <DependentUpon>No2ControlViewManualPanel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Views\No2PhantomView.xaml.cs">
       <DependentUpon>No2PhantomView.xaml</DependentUpon>
     </Compile>
@@ -77,6 +83,14 @@
     <Page Include="UI\Views\No2ControlView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Views\No2ControlViewAutomaticPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Views\No2ControlViewManualPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Views\No2PhantomView.xaml">
       <Generator>MSBuild:Compile</Generator>

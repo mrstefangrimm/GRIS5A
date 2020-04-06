@@ -59,6 +59,12 @@
     <Compile Include="UI\Views\Gris5aControlView.xaml.cs">
       <DependentUpon>Gris5aControlView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\Views\Gris5aControlViewAutomaticPanel.xaml.cs">
+      <DependentUpon>Gris5aControlViewAutomaticPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Views\Gris5aControlViewManualPanel.xaml.cs">
+      <DependentUpon>Gris5aControlViewManualPanel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Views\Gris5aPhantomView.xaml.cs">
       <DependentUpon>Gris5aPhantomView.xaml</DependentUpon>
     </Compile>
@@ -78,6 +84,14 @@
     <Page Include="UI\Views\Gris5aControlView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Views\Gris5aControlViewAutomaticPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Views\Gris5aControlViewManualPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Views\Gris5aPhantomView.xaml">
       <Generator>MSBuild:Compile</Generator>
