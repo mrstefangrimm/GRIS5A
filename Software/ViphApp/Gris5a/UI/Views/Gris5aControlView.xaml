@@ -22,25 +22,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d"
+             xmlns:qc="clr-namespace:QuickConverter;assembly=QuickConverter"
              xmlns:VM="clr-namespace:ViphApp.Gris5a.UI"
              xmlns:views="clr-namespace:ViphApp.Gris5a.UI.Views"
              d:DesignHeight="600" d:DesignWidth="200">
 
   <StackPanel>
 
-    <StackPanel>
-
-      <StackPanel.Style>
-        <Style TargetType="StackPanel">
-          <Setter Property="Visibility" Value="Collapsed" />
-          <Style.Triggers>
-            <DataTrigger Binding="{Binding Path=ControlViewState}" Value="{x:Static VM:ControlViewState.Minimized}">
-              <Setter Property="Visibility" Value="Visible" />
-            </DataTrigger>
-          </Style.Triggers>
-        </Style>
-      </StackPanel.Style>
-
+    <StackPanel Visibility="{qc:Binding '$P==ControlViewState.Manual_Minimized || $P==ControlViewState.Automatic_Minimized ? Visibility.Visible : Visibility.Collapsed', P={Binding Path=ControlViewState}}">
       <Button Width="30"
               HorizontalAlignment="Left"
               Background="Transparent"
@@ -51,18 +40,7 @@
 
     </StackPanel>
 
-    <StackPanel>
-      <StackPanel.Style>
-        <Style TargetType="StackPanel">
-          <Setter Property="Visibility" Value="Visible" />
-          <Style.Triggers>
-            <DataTrigger Binding="{Binding Path=ControlViewState}" Value="{x:Static VM:ControlViewState.Minimized}">
-              <Setter Property="Visibility" Value="Collapsed" />
-            </DataTrigger>
-          </Style.Triggers>
-        </Style>
-      </StackPanel.Style>
-
+    <StackPanel Visibility="{qc:Binding '$P==ControlViewState.Manual || $P==ControlViewState.Automatic ? Visibility.Visible : Visibility.Collapsed', P={Binding Path=ControlViewState}}">
       <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Height="30">
         <Button Width="30"
                 HorizontalAlignment="Left"
@@ -72,21 +50,20 @@
           <Image Source="pack://application:,,,/ViphApp.Common;component/UI/Icons/ArrowRight.png" />
         </Button>
 
-        <RadioButton Width="80" 
-                     Content="Manual"
-                     Foreground="White"
-                     Background="Transparent"
-                     FontWeight="Bold"
-                     Style="{StaticResource {x:Type ToggleButton}}"
-                     Command="{Binding DoSetManual}"
-                     IsChecked="True"/>
-        <RadioButton Width="80"
-                     Foreground="White"
-                     Background="Transparent"
-                     FontWeight="Bold"
-                     Style="{StaticResource {x:Type ToggleButton}}"
-                     Command="{Binding DoSetAutomatic}"
-                     Content="Automatic" />
+        <ToggleButton Width="80" 
+                      Content="Manual"
+                      Foreground="White"
+                      Background="Transparent"
+                      FontWeight="Bold"
+                      IsChecked="{qc:Binding '$P==ControlViewState.Manual', P={Binding Path=ControlViewState, Mode=OneWay}}"
+                      Command="{Binding DoSetManual}"/>
+        <ToggleButton Width="80"
+                      Content="Automatic"
+                      Foreground="White"
+                      Background="Transparent"
+                      FontWeight="Bold"
+                      IsChecked="{qc:Binding '$P==ControlViewState.Automatic', P={Binding Path=ControlViewState, Mode=OneWay}}"
+                      Command="{Binding DoSetAutomatic}"/>
       </StackPanel>
 
       <StackPanel>

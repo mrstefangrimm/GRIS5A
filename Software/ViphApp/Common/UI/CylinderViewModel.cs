@@ -17,7 +17,6 @@
  */
 
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
 
 namespace ViphApp.Common.UI {
 
@@ -52,11 +51,6 @@ namespace ViphApp.Common.UI {
       get { return (_lng - 127) / 255.0 * 45; }
     }
 
-    //internal void SetLngInt(int val) {
-    //  _lng = val;
-    //  OnPropertyChanged("LNGExt");
-    //}
-
     public int RTNInt {
       get { return _rtn; }
       set {
@@ -69,11 +63,6 @@ namespace ViphApp.Common.UI {
     public double RTNExt {
       get { return (_rtn - 127) / 255.0 * 180; }
     }
-
-    //internal void SetRtnInt(int val) {
-    //  _rtn = val;
-    //  OnPropertyChanged("RTNExt");
-    //}
 
     public event PropertyChangedEventHandler PropertyChanged;
     protected void OnPropertyChanged(CylinderPropertyChangedEventArgs args) {

@@ -16,6 +16,8 @@
  * <http://www.gnu.org/licenses/>.
  */
 
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Input;
 using ViphApp.Common.Com;
@@ -25,24 +27,45 @@ namespace ViphApp.Gris5a.UI {
 
   public enum ControlViewState {
     Manual,
+    Manual_Minimized,
     Automatic,
-    Minimized
+    Automatic_Minimized
   }
 
   public class Gris5aControlViewModel : Gris5aViewModel, IPlugInControlViewModel {
 
     private MophAppProxy _mophApp;
     private ControlViewState _viewState;
+    private bool _isRunning;
+    private string _selectedProgram;
+    private MotionPatternGenerator _patternGenerator;
+
+    static Gris5aControlViewModel() {
+      QuickConverter.EquationTokenizer.AddNamespace(typeof(ControlViewState));
+      QuickConverter.EquationTokenizer.AddNamespace(typeof(System.Windows.Visibility));
+    }
 
     public Gris5aControlViewModel(MophAppProxy mophApp) {
       _mophApp = mophApp;
       ControlViewState = ControlViewState.Manual;
 
+      Programs.Add("Program 1");
+      Programs.Add("Program 2");
+      Programs.Add("Program 3");
+      Programs.Add("Program 4");
+      Programs.Add("Program 5");
+      Programs.Add("Program 6");
+      Programs.Add("Program 7");
+      Programs.Add("Program 8");
+      SelectedProgram = "Program 1";
+      
       LU.PropertyChanged += LU_PropertyChanged;
       LL.PropertyChanged += LL_PropertyChanged;
       RU.PropertyChanged += RU_PropertyChanged;
       RL.PropertyChanged += RL_PropertyChanged;
       GA.PropertyChanged += GA_PropertyChanged;
+
+      _patternGenerator = new MotionPatternGenerator(CylinderToMotionSystem);
     }
 
     public ControlViewState ControlViewState {
@@ -74,44 +97,64 @@ namespace ViphApp.Gris5a.UI {
     public ICommand DoSetMinimized {
       get {
         return new RelayCommand<object>(param => {
-          if (ControlViewState == ControlViewState.Minimized) {
+          switch (ControlViewState) {
+          default:
+          case ControlViewState.Manual_Minimized:
             ControlViewState = ControlViewState.Manual;
-          }
-          else {
-            ControlViewState = ControlViewState.Minimized;
-          }
-        });
-      }
-    }
-
-    public ICommand DoStopAutoProgram {
-      get {
-        return new RelayCommand<object>(param => {
-          _mophApp.FreeMem();
-          //var msg = new EvManualMotionClick();
-          //Mediator.OnEvManualMotionClick(msg);
-          //var mqmsg = WireMessage.Serialize(msg);
-          //using (var frame = new ZFrame(mqmsg)) { _mqOutgoging.Send(frame); }
-        });
-      }
-    }
-
-    public ICommand DoAutoProgram {
-      get {
-        return new RelayCommand<string>(param => {
-          ushort n;
-          if (ushort.TryParse(param, out n)) {
-            //var msg = new EvPresetMotionClick();
-            //msg.Num = n;
-            //Mediator.OnEvPresetMotionClick(msg);
-            //var mqmsg = WireMessage.Serialize(msg);
-            //_mqOutgoging.Send(new ZFrame(mqmsg));
-          }
-        });
+            break;
+          case ControlViewState.Automatic_Minimized:
+            ControlViewState = ControlViewState.Automatic;
+            break;
+          case ControlViewState.Manual:
+            ControlViewState = ControlViewState.Manual_Minimized;
+            break;
+          case ControlViewState.Automatic:
+            ControlViewState = ControlViewState.Automatic_Minimized;
+            break;
+          }});
       }
     }
 
     INotifyPropertyChanged IPlugInControlViewModel.GA => GA;
+
+    public ObservableCollection<string> Programs { get; } = new ObservableCollection<string>();
+    public string SelectedProgram { get {
+        return _selectedProgram;
+      }
+      set {
+        if (_selectedProgram != value) {
+          _selectedProgram = value;
+          OnPropertyChanged();
+          OnPropertyChanged("SelectedProgramDescription");          
+        }
+      }
+    }
+    public string SelectedProgramDescription {
+      get {        
+        return string.Format("This is a description what '{0}' is doing. This is just some more text.", SelectedProgram);
+      }      
+    }
+
+    public bool IsRunning {
+      get {
+        return _isRunning;
+      }
+      set {
+        if (_isRunning != value) {
+          _isRunning = value;
+          if (_isRunning) {
+            string[] progrIds = SelectedProgram.Split(' ');
+            if (progrIds != null && progrIds.Length == 2) {
+              _patternGenerator.Start(int.Parse(progrIds[1]));
+            }
+          }
+          else {
+            _patternGenerator.Stop();
+          }
+          OnPropertyChanged();
+        }
+      }
+    }
 
     private void LU_PropertyChanged(object sender, PropertyChangedEventArgs e) {
       var internalProp = !((CylinderPropertyChangedEventArgs)e).External;
@@ -183,5 +226,32 @@ namespace ViphApp.Gris5a.UI {
       }
     }
 
+    private void CylinderToMotionSystem(IEnumerable<CylinderPosition> positions) {
+      foreach (var pos in positions) {
+        switch (pos.Cy) {
+        default: break;
+        case Cylinder.LeftUpper:
+          LU.LNGInt = pos.Lng;
+          LU.RTNInt = pos.Rtn;
+          break;
+        case Cylinder.LeftLower:
+          LL.LNGInt = pos.Lng;
+          LL.RTNInt = pos.Rtn;
+          break;
+        case Cylinder.RightUpper:
+          RU.LNGInt = pos.Lng;
+          RU.RTNInt = pos.Rtn;
+          break;
+        case Cylinder.RightLower:
+          RL.LNGInt = pos.Lng;
+          RL.RTNInt = pos.Rtn;
+          break;
+        case Cylinder.Platform:
+          GA.LNGInt = pos.Lng;
+          GA.RTNInt = pos.Rtn;
+          break;
+        }
+      }     
+    }
   }
 }

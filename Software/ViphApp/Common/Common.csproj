@@ -47,7 +47,6 @@
     <Compile Include="Com\MophAppProxy.cs" />
     <Compile Include="Com\MotionSystemMotorPosition.cs" />
     <Compile Include="Plugin\IPluginBuilder.cs" />
-    <Compile Include="Plugin\IPlugInMotionPatternGenerator.cs" />
     <Compile Include="Plugin\IPluginPhantom.cs" />
     <Compile Include="Plugin\PluginPhantom.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

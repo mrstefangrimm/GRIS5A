@@ -39,6 +39,9 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="QuickConverter, Version=1.2.5.0, Culture=neutral, PublicKeyToken=9c892aa7bc2af2cf, processorArchitecture=MSIL">
+      <HintPath>..\packages\QuickConverter.1.2.5\lib\net40\QuickConverter.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xaml" />
@@ -53,7 +56,7 @@
   <ItemGroup>
     <Compile Include="PluginBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <None Include="MotionPatternGenerator.cs" />
+    <Compile Include="MotionPatternGenerator.cs" />
     <Compile Include="ServoNumber.cs" />
     <Compile Include="UI\Gris5aViewModel.cs" />
     <Compile Include="UI\Views\Gris5aControlView.xaml.cs">
