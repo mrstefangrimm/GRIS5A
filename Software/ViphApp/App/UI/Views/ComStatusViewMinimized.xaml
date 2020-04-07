@@ -156,9 +156,8 @@
 
   </UserControl.Resources>
 
-  <StackPanel
-    Height="30" 
-    Orientation="Horizontal">
+  <StackPanel Height="30" 
+              Orientation="Horizontal">
     <Button Width="30" 
             Background="Transparent"
             BorderBrush="Transparent"
@@ -167,17 +166,16 @@
     </Button>
     <Label Foreground="White" FontWeight="Bold" Content="Port:"/>
     <ComboBox Width="100" 
-              ItemsSource="{Binding Path=Status.SerialPorts, Mode=OneWay}"    
-              SelectedItem="{Binding Path=Status.SSerialPorts, Mode=TwoWay}">
-    </ComboBox>
+              ItemsSource="{Binding Status.SerialPorts, Mode=OneWay}"    
+              SelectedItem="{Binding Status.SelectedSerialPort, Mode=TwoWay}" />
+
     <Button Content="Refresh" 
             Background="Transparent" Foreground="White" FontWeight="Bold"
             Command="{Binding Status.DoRefreshSerialPorts}"/>
-    <CheckBox Content="Connect" 
+    <ToggleButton Content="Connect" 
               Foreground="White" 
               Background="Transparent"
               FontWeight="Bold"
-              Style="{StaticResource {x:Type ToggleButton}}"
-              IsChecked="{Binding Path=Status.IsConnected, Mode=TwoWay}"  />
+              IsChecked="{Binding Status.IsConnected, Mode=TwoWay}"  />
   </StackPanel>
 </UserControl>

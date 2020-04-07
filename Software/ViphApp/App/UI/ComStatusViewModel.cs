@@ -37,15 +37,15 @@ namespace ViphApp.App.UI {
       _parent = parent;
       _mophApp = mophApp;
       _mophApp.LogOutput += OnLogOutput;
-      SSerialPorts = "None";
-      SerialPorts.Add(SSerialPorts);
+      SelectedSerialPort = "None";
+      SerialPorts.Add(SelectedSerialPort);
       foreach (var port in SerialPort.GetPortNames()) {
         SerialPorts.Add(port);
       }
     }
 
     public ObservableCollection<string> SerialPorts { get; } = new ObservableCollection<string>();
-    public string SSerialPorts { get; set; }
+    public string SelectedSerialPort { get; set; }
     public string LogOutput { get; private set; } = string.Empty;
     public string CommandRegister { get; set; } = "0";
 
@@ -55,7 +55,12 @@ namespace ViphApp.App.UI {
         if (_isConnected != value) {
           _isConnected = value;
           if (_isConnected) {
-            _mophApp.Connect(SSerialPorts);
+            _isConnected = _mophApp.Connect(SelectedSerialPort);
+            if (!IsConnected) {
+              SelectedSerialPort = "None";
+              OnPropertyChanged("SelectedSerialPort");
+              OnPropertyChanged("IsConnected");
+            }
           }
           else {
             _mophApp.Disconnect();
@@ -73,7 +78,7 @@ namespace ViphApp.App.UI {
           else {
             _parent.ComStatusViewState = ComStatusViewState.Minimized;
           }
-          OnPropertyChanged("SSerialPorts");
+          OnPropertyChanged("SelectedSerialPort");
           OnPropertyChanged("IsConnected");
         });
       }
@@ -90,7 +95,7 @@ namespace ViphApp.App.UI {
             _parent.ComStatusViewState = ComStatusViewState.Maximized;
             _parent.MainViewState = MainViewState.StatusViewMaximized;
           }
-          OnPropertyChanged("SSerialPorts");
+          OnPropertyChanged("SelectedSerialPort");
           OnPropertyChanged("IsConnected");
         });
       }
@@ -100,13 +105,13 @@ namespace ViphApp.App.UI {
       get {
         return new RelayCommand<object>(param => {
           SerialPorts.Clear();
-          SSerialPorts = "None";
-          SerialPorts.Add(SSerialPorts);
+          SelectedSerialPort = "None";
+          SerialPorts.Add(SelectedSerialPort);
           foreach (var port in SerialPort.GetPortNames()) {
             SerialPorts.Add(port);
           }
           OnPropertyChanged("SerialPorts");
-          OnPropertyChanged("SSerialPorts");
+          OnPropertyChanged("SelectedSerialPort");
         });
       }
     }

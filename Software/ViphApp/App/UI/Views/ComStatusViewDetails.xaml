@@ -172,21 +172,20 @@
       </Button>
       <Label Foreground="White" FontWeight="Bold" Content="Port:"></Label>
       <ComboBox Width="100" 
-                ItemsSource="{Binding Path=Status.SerialPorts, Mode=OneWay}"    
-                SelectedItem="{Binding Path=Status.SSerialPorts, Mode=TwoWay}" />
+                ItemsSource="{Binding Status.SerialPorts, Mode=OneWay}"    
+                SelectedItem="{Binding Status.SelectedSerialPort, Mode=TwoWay}" />
       <Button Content="Refresh" 
               Background="Transparent" Foreground="White" FontWeight="Bold"
               Command="{Binding Status.DoRefreshSerialPorts}" />
-      <CheckBox Content="Connect" 
-                Foreground="White" 
-                Background="Transparent"
-                FontWeight="Bold"
-                Style="{StaticResource {x:Type ToggleButton}}"
-                IsChecked="{Binding Path=Status.IsConnected, Mode=TwoWay}"  />
+      <ToggleButton Content="Connect" 
+                    Foreground="White" 
+                    Background="Transparent"
+                    FontWeight="Bold"
+                    IsChecked="{Binding Status.IsConnected, Mode=TwoWay}"  />
     </StackPanel>
 
     <ScrollViewer Height="220" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-      <TextBlock Margin="4" Foreground="LightGreen" Background="#FF505050" Text="{Binding Path=Status.LogOutput, Mode=OneWay}"/>
+      <TextBlock Margin="4" Foreground="LightGreen" Background="#FF505050" Text="{Binding Status.LogOutput, Mode=OneWay}"/>
     </ScrollViewer>
 
   </StackPanel>

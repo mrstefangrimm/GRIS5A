@@ -89,6 +89,7 @@ namespace ViphApp.App.UI {
         }
       }
     }
+
     public ComStatusViewModel Status { get; private set; }
 
     public AppSettingsViewState AppSettingsViewState {
@@ -100,6 +101,7 @@ namespace ViphApp.App.UI {
         }
       }
     }
+
     public AppSettingsViewModel Settings { get; private set; }
 
     public IPlugInPhantomViewModel Phantom {

@@ -118,9 +118,12 @@ namespace ViphApp.Common.Com {
       SerialDisconnect();
     }
 
-    public void Connect(string comPort) {
-      SerialConnect(comPort);
-      SendSync();
+    public bool Connect(string comPort) {
+      bool connected = SerialConnect(comPort);
+      if (connected) {
+        SendSync();
+      }
+      return connected;
     }
 
     public void Disconnect() {
@@ -188,7 +191,7 @@ namespace ViphApp.Common.Com {
       }
     }
 
-    private void SerialConnect(string comPort) {
+    private bool SerialConnect(string comPort) {
       SerialDisconnect();
 
       string logMsg = null;
@@ -214,7 +217,7 @@ namespace ViphApp.Common.Com {
       if (logMsg != null) {
         LogOutput?.Invoke(this, new LogOutputEventArgs { Text = logMsg });
       }
-
+      return _serialPort != null;
     }
 
     private void SerialDisconnect() {
