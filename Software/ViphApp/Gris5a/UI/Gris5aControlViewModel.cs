@@ -25,7 +25,7 @@ using ViphApp.Common.UI;
 
 namespace ViphApp.Gris5a.UI {
 
-  public enum ControlViewState {
+  public enum Gri5aControlViewState {
     Manual,
     Manual_Minimized,
     Automatic,
@@ -35,19 +35,19 @@ namespace ViphApp.Gris5a.UI {
   public class Gris5aControlViewModel : Gris5aViewModel, IPlugInControlViewModel {
 
     private MophAppProxy _mophApp;
-    private ControlViewState _viewState;
+    private Gri5aControlViewState _viewState;
     private bool _isRunning;
     private string _selectedProgram;
     private MotionPatternGenerator _patternGenerator;
 
     static Gris5aControlViewModel() {
-      QuickConverter.EquationTokenizer.AddNamespace(typeof(ControlViewState));
+      QuickConverter.EquationTokenizer.AddNamespace(typeof(Gri5aControlViewState));
       QuickConverter.EquationTokenizer.AddNamespace(typeof(System.Windows.Visibility));
     }
 
     public Gris5aControlViewModel(MophAppProxy mophApp) {
       _mophApp = mophApp;
-      ControlViewState = ControlViewState.Manual;
+      ControlViewState = Gri5aControlViewState.Manual;
 
       Programs.Add("Program 1");
       Programs.Add("Program 2");
@@ -65,10 +65,10 @@ namespace ViphApp.Gris5a.UI {
       RL.PropertyChanged += RL_PropertyChanged;
       GA.PropertyChanged += GA_PropertyChanged;
 
-      _patternGenerator = new MotionPatternGenerator(CylinderToMotionSystem);
+      _patternGenerator = new MotionPatternGenerator(OnCylinderPositionsChanged);
     }
 
-    public ControlViewState ControlViewState {
+    public Gri5aControlViewState ControlViewState {
       get { return _viewState; }
       private set {
         if (_viewState != value) {
@@ -81,7 +81,7 @@ namespace ViphApp.Gris5a.UI {
     public ICommand DoSetManual {
       get {
         return new RelayCommand<object>(param => {
-          ControlViewState = ControlViewState.Manual;
+          ControlViewState = Gri5aControlViewState.Manual;
         });
       }
     }
@@ -89,7 +89,7 @@ namespace ViphApp.Gris5a.UI {
     public ICommand DoSetAutomatic {
       get {
         return new RelayCommand<object>(param => {
-          ControlViewState = ControlViewState.Automatic;
+          ControlViewState = Gri5aControlViewState.Automatic;
         });
       }
     }
@@ -99,17 +99,17 @@ namespace ViphApp.Gris5a.UI {
         return new RelayCommand<object>(param => {
           switch (ControlViewState) {
           default:
-          case ControlViewState.Manual_Minimized:
-            ControlViewState = ControlViewState.Manual;
+          case Gri5aControlViewState.Manual_Minimized:
+            ControlViewState = Gri5aControlViewState.Manual;
             break;
-          case ControlViewState.Automatic_Minimized:
-            ControlViewState = ControlViewState.Automatic;
+          case Gri5aControlViewState.Automatic_Minimized:
+            ControlViewState = Gri5aControlViewState.Automatic;
             break;
-          case ControlViewState.Manual:
-            ControlViewState = ControlViewState.Manual_Minimized;
+          case Gri5aControlViewState.Manual:
+            ControlViewState = Gri5aControlViewState.Manual_Minimized;
             break;
-          case ControlViewState.Automatic:
-            ControlViewState = ControlViewState.Automatic_Minimized;
+          case Gri5aControlViewState.Automatic:
+            ControlViewState = Gri5aControlViewState.Automatic_Minimized;
             break;
           }});
       }
@@ -226,7 +226,7 @@ namespace ViphApp.Gris5a.UI {
       }
     }
 
-    private void CylinderToMotionSystem(IEnumerable<CylinderPosition> positions) {
+    private void OnCylinderPositionsChanged(IEnumerable<CylinderPosition> positions) {
       foreach (var pos in positions) {
         switch (pos.Cy) {
         default: break;

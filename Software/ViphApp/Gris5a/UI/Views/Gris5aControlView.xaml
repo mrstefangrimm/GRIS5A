@@ -29,7 +29,7 @@
 
   <StackPanel>
 
-    <StackPanel Visibility="{qc:Binding '$P==ControlViewState.Manual_Minimized || $P==ControlViewState.Automatic_Minimized ? Visibility.Visible : Visibility.Collapsed', P={Binding Path=ControlViewState}}">
+    <StackPanel Visibility="{qc:Binding '$P==Gri5aControlViewState.Manual_Minimized || $P==Gri5aControlViewState.Automatic_Minimized ? Visibility.Visible : Visibility.Collapsed', P={Binding ControlViewState}}">
       <Button Width="30"
               HorizontalAlignment="Left"
               Background="Transparent"
@@ -40,7 +40,7 @@
 
     </StackPanel>
 
-    <StackPanel Visibility="{qc:Binding '$P==ControlViewState.Manual || $P==ControlViewState.Automatic ? Visibility.Visible : Visibility.Collapsed', P={Binding Path=ControlViewState}}">
+    <StackPanel Visibility="{qc:Binding '$P==Gri5aControlViewState.Manual || $P==Gri5aControlViewState.Automatic ? Visibility.Visible : Visibility.Collapsed', P={Binding ControlViewState}}">
       <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Height="30">
         <Button Width="30"
                 HorizontalAlignment="Left"
@@ -55,14 +55,14 @@
                       Foreground="White"
                       Background="Transparent"
                       FontWeight="Bold"
-                      IsChecked="{qc:Binding '$P==ControlViewState.Manual', P={Binding Path=ControlViewState, Mode=OneWay}}"
+                      IsChecked="{qc:Binding '$P==Gri5aControlViewState.Manual', P={Binding ControlViewState, Mode=OneWay}}"
                       Command="{Binding DoSetManual}"/>
         <ToggleButton Width="80"
                       Content="Automatic"
                       Foreground="White"
                       Background="Transparent"
                       FontWeight="Bold"
-                      IsChecked="{qc:Binding '$P==ControlViewState.Automatic', P={Binding Path=ControlViewState, Mode=OneWay}}"
+                      IsChecked="{qc:Binding '$P==Gri5aControlViewState.Automatic', P={Binding ControlViewState, Mode=OneWay}}"
                       Command="{Binding DoSetAutomatic}"/>
       </StackPanel>
 
@@ -71,7 +71,7 @@
           <Style TargetType="StackPanel">
             <Setter Property="Visibility" Value="Collapsed" />
             <Style.Triggers>
-              <DataTrigger Binding="{Binding Path=ControlViewState}" Value="{x:Static VM:ControlViewState.Manual}">
+              <DataTrigger Binding="{Binding ControlViewState}" Value="{x:Static VM:Gri5aControlViewState.Manual}">
                 <Setter Property="Visibility" Value="Visible" />
               </DataTrigger>
             </Style.Triggers>
@@ -85,7 +85,7 @@
           <Style TargetType="StackPanel">
             <Setter Property="Visibility" Value="Collapsed" />
             <Style.Triggers>
-              <DataTrigger Binding="{Binding Path=ControlViewState}" Value="{x:Static VM:ControlViewState.Automatic}">
+              <DataTrigger Binding="{Binding ControlViewState}" Value="{x:Static VM:Gri5aControlViewState.Automatic}">
                 <Setter Property="Visibility" Value="Visible" />
               </DataTrigger>
             </Style.Triggers>
