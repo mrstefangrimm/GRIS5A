@@ -28,8 +28,6 @@ namespace ViphApp.No2.UI {
     private static CylinderViewModel _right = new CylinderViewModel();
     private static CylinderViewModel _gating = new CylinderViewModel();
 
-    public string Name { get { return "No2"; } }
-
     public CylinderViewModel L { get { return _left; } }
     public CylinderViewModel R { get { return _right; } }
     public CylinderViewModel GA { get { return _gating; } }

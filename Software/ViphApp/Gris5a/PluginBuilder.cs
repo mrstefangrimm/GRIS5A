@@ -47,7 +47,7 @@ namespace ViphApp.Gris5a {
   public class PluginBuilder : IPluginBuilder {
 
     public IPluginPhantom BuildPluginPhantom(MophAppProxy mophApp) {
-      return new PluginPhantom("Gris5a", new Gris5aPhantomViewModel(), new Gris5aControlViewModel(mophApp));
+      return new PluginPhantom("Marker Phantom", new Gris5aPhantomViewModel(), new Gris5aControlViewModel(mophApp));
     }
 
     public DataTemplate BuildPhantomTemplate() {

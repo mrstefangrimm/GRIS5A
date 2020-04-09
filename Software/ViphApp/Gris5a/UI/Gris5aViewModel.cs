@@ -30,8 +30,6 @@ namespace ViphApp.Gris5a.UI {
     private static CylinderViewModel _rl = new CylinderViewModel();
     private static CylinderViewModel _ga = new CylinderViewModel();
 
-    public string Name { get { return "Gris5a"; } }
-
     public CylinderViewModel LU { get { return _lu; } }
     public CylinderViewModel RU { get { return _ru; } }
     public CylinderViewModel LL { get { return _ll; } }

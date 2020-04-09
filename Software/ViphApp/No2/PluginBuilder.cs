@@ -47,7 +47,7 @@ namespace ViphApp.No2 {
   public class PluginBuilder : IPluginBuilder {
 
     public IPluginPhantom BuildPluginPhantom(MophAppProxy mophApp) {
-      return new PluginPhantom("No2", new No2PhantomViewModel(), new No2ControlViewModel(mophApp));
+      return new PluginPhantom("Liver Phantom", new No2PhantomViewModel(), new No2ControlViewModel(mophApp));
     }
 
     public DataTemplate BuildPhantomTemplate() {
