@@ -12,7 +12,7 @@
  * GNU Lesser General Public License for more details.
 
  * You should have received a copy of the GNU Lesser General Public License
- * along with the VirtualGris05 software.  If not, see
+ * along with the ViphApp software.  If not, see
  * <http://www.gnu.org/licenses/>.
  */
 
@@ -43,10 +43,12 @@ namespace ViphApp.App {
       
       var gris5aPluginBulder= pluginFactory.CreatePluginBuilder(string.Format(@"{0}\ViphApp.Gris5a.dll", pluginPath));
       var no2PluginBulder = pluginFactory.CreatePluginBuilder(string.Format(@"{0}\ViphApp.No2.dll", pluginPath));
+      var no3PluginBulder = pluginFactory.CreatePluginBuilder(string.Format(@"{0}\ViphApp.No3.dll", pluginPath));
 
       ObservableCollection<IPluginPhantom> availablePhantoms = new ObservableCollection<IPluginPhantom>() {
         gris5aPluginBulder.BuildPluginPhantom(_mophApp),
-        no2PluginBulder.BuildPluginPhantom(_mophApp)};
+        no2PluginBulder.BuildPluginPhantom(_mophApp),
+        no3PluginBulder.BuildPluginPhantom(_mophApp)};
 
       var mainViewModel = new UI.MainViewModel(_mophApp, availablePhantoms);
 
@@ -60,6 +62,10 @@ namespace ViphApp.App {
       templ = no2PluginBulder.BuildPhantomTemplate();
       app.Resources.Add(templ.DataTemplateKey, templ);
       templ = no2PluginBulder.BuildControlTemplate();
+      app.Resources.Add(templ.DataTemplateKey, templ);
+      templ = no3PluginBulder.BuildPhantomTemplate();
+      app.Resources.Add(templ.DataTemplateKey, templ);
+      templ = no3PluginBulder.BuildControlTemplate();
       app.Resources.Add(templ.DataTemplateKey, templ);
       app.Closing += mainViewModel.OnClosing;
       app.Show();

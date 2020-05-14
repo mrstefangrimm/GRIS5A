@@ -173,6 +173,10 @@
       <Project>{a8b13711-34df-4f49-9662-2d3eeceddcb7}</Project>
       <Name>No2</Name>
     </ProjectReference>
+    <ProjectReference Include="..\No3\No3.csproj">
+      <Project>{4469228c-a0f4-44f7-8536-e6e4752cb861}</Project>
+      <Name>No3</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6.2">
