@@ -30,10 +30,6 @@ Tool | License
 SketchUp | SketchUp Shop 
 Ultimaker Cura | GPL
 
-Device | Licence
----- | -------
-LnR-Actuator | CC BY-SA
-
 ### Hardware
 
 Tool | License 
