@@ -62,6 +62,7 @@
       <local:LungLeftModel3D Fill="#AA0000FF"/>
       <local:LungLeftUpperCylinder Fill="#AA0000FF"/>
       <local:LungLeftLowerCylinder Fill="#AA0000FF"/>
+      <local:StaticPLAStructure Fill="AliceBlue" />
 
     </h:HelixViewport3D>
 

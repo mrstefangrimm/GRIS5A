@@ -58,6 +58,9 @@
     <Compile Include="PluginBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServoNumber.cs" />
+    <Compile Include="UI\Models3D\StaticPLAStructure.xaml.cs">
+      <DependentUpon>StaticPLAStructure.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Models3D\ThoraxFrontPlate.xaml.cs">
       <DependentUpon>ThoraxFrontPlate.xaml</DependentUpon>
     </Compile>
@@ -123,6 +126,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="UI\Models3D\StaticPLAStructure.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="UI\Models3D\ThoraxFrontPlate.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
