@@ -1,4 +1,4 @@
-/* No2.java - Dedicated Keyboard Processing 3.0 software for the GRIS5A (C) motion phantom
+/* No2.java
  * Copyright (C) 2020 by Stefan Grimm
  *
  * This is free software: you can redistribute it and/or modify
@@ -12,8 +12,7 @@
  * GNU Lesser General Public License for more details.
 
  * You should have received a copy of the GNU Lesser General Public License
- * along with the SoftDKb software.  If not, see
- * <http://www.gnu.org/licenses/>.
+ * along with the software.  If not, see http://www.gnu.org/licenses/.
  */
  
 import processing.serial.*;
@@ -87,15 +86,15 @@ class No2 implements IPhantom {
     else if (mousePressedLT(x, y)) { _parent.comPort.write((27<<3) | 0x1); _parent.sendBuffer = "0x1 0000 1000 0000 0000 0000 0000 0000 0000"; } 
   }
   
-  boolean mousePressedLT(int x, int y) { return ((x >= 150) && (x <= 190) && (y >= 250) && (y <= 390)); }
-  boolean mousePressedLL(int x, int y) { return ((x >= 100) && (x <= 140) && (y >= 300) && (y <= 440)); }
-  boolean mousePressedLR(int x, int y) { return ((x >= 200) && (x <= 240) && (y >= 300) && (y <= 440)); }
-  boolean mousePressedLB(int x, int y) { return ((x >= 150) && (x <= 190) && (y >= 350) && (y <= 490)); }
+  boolean mousePressedLT(int x, int y) { return ((x >= 150) && (x <= 190) && (y >= 250) && (y <= 290)); }
+  boolean mousePressedLL(int x, int y) { return ((x >= 100) && (x <= 140) && (y >= 300) && (y <= 340)); }
+  boolean mousePressedLR(int x, int y) { return ((x >= 200) && (x <= 240) && (y >= 300) && (y <= 340)); }
+  boolean mousePressedLB(int x, int y) { return ((x >= 150) && (x <= 190) && (y >= 350) && (y <= 390)); }
 
-  boolean mousePressedRT(int x, int y) { return ((x >= 350) && (x <= 390) && (y >= 250) && (y <= 390)); }
-  boolean mousePressedRL(int x, int y) { return ((x >= 300) && (x <= 340) && (y >= 300) && (y <= 440)); }
-  boolean mousePressedRR(int x, int y) { return ((x >= 400) && (x <= 440) && (y >= 300) && (y <= 440)); }
-  boolean mousePressedRB(int x, int y) { return ((x >= 350) && (x <= 390) && (y >= 350) && (y <= 490)); }
+  boolean mousePressedRT(int x, int y) { return ((x >= 350) && (x <= 390) && (y >= 250) && (y <= 290)); }
+  boolean mousePressedRL(int x, int y) { return ((x >= 300) && (x <= 340) && (y >= 300) && (y <= 340)); }
+  boolean mousePressedRR(int x, int y) { return ((x >= 400) && (x <= 440) && (y >= 300) && (y <= 340)); }
+  boolean mousePressedRB(int x, int y) { return ((x >= 350) && (x <= 390) && (y >= 350) && (y <= 390)); }
 
   boolean mousePressedGT(int x, int y) { return ((x >= 550) && (x <= 590) && (y >= 250) && (y <= 290)); }
   boolean mousePressedGL(int x, int y) { return ((x >= 500) && (x <= 540) && (y >= 300) && (y <= 340)); }

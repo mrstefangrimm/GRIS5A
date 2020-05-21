@@ -970,7 +970,7 @@ me-&gt;speed = args.ProgNo;</action>
  </package>
  <directory name=".">
   <file name="mophapp.ino">
-   <text>/* mophapp.qm - Arduino software for the GRIS5A (C) and No2 (C) motion phantom
+   <text>/* mophapp.qm - Arduino software for the GRIS5A (C), No2 (C) and No3 (C) motion phantom
  * Copyright (C) 2018-2020 by Stefan Grimm
  */
 
@@ -1318,6 +1318,96 @@ class ServoShieldPCA9685Linear : public prfServo2ImplBase&lt;uint16_t, float&gt;
       params[5][2] = 0;
       offsets[5][0] = 0;
     }
+
+#elif MODELTYPE == 5
+    if (!Calibration) {
+
+      uint8_t model = EEPROM.read(0);
+      uint8_t schema = EEPROM.read(1);
+      // Debug: Serial.print(model);
+      // Debug: Serial.print(&quot; &quot;);
+      // Debug: Serial.println(schema);
+
+      if (model == MODELTYPE &amp;&amp; schema == DATASCHEMA) {
+        int addr = sizeof(DeviceDataHeader);
+        Float32_t calibVal;
+        // LLNG
+        EEPROM.get(addr, calibVal); params[0][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[0][1] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[0][2] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[0][3] = calibVal.fval; addr += sizeof(Float32_t);
+        // RLNG
+        EEPROM.get(addr, calibVal); params[1][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[1][1] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[1][2] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[1][3] = calibVal.fval; addr += sizeof(Float32_t);
+        // GLNG
+        EEPROM.get(addr, calibVal); params[2][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[2][1] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[2][2] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[2][3] = calibVal.fval; addr += sizeof(Float32_t);
+        // LRTN
+        EEPROM.get(addr, calibVal); params[3][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[3][1] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[3][2] = calibVal.fval; addr += sizeof(Float32_t);
+        // RRTN
+        EEPROM.get(addr, calibVal); params[4][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[4][1] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[4][2] = calibVal.fval; addr += sizeof(Float32_t);
+        // GRTN
+        EEPROM.get(addr, calibVal); params[5][0] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[5][1] = calibVal.fval; addr += sizeof(Float32_t);
+        EEPROM.get(addr, calibVal); params[5][2] = calibVal.fval; addr += sizeof(Float32_t);
+
+        // LLNG
+        EEPROM.get(addr, calibVal); offsets[0][0] = calibVal.fval; addr += sizeof(Float32_t);
+         // RLNG
+        EEPROM.get(addr, calibVal); offsets[1][0] = calibVal.fval; addr += sizeof(Float32_t);
+        // GLNG
+        EEPROM.get(addr, calibVal); offsets[2][0] = calibVal.fval; addr += sizeof(Float32_t);
+        // LLNG
+        EEPROM.get(addr, calibVal); offsets[3][0] = calibVal.fval; addr += sizeof(Float32_t);
+        // RLNG
+        EEPROM.get(addr, calibVal); offsets[4][0] = calibVal.fval; addr += sizeof(Float32_t);
+        // GLNG
+        EEPROM.get(addr, calibVal); offsets[5][0] = calibVal.fval; addr += sizeof(Float32_t);
+      }
+    }
+    else {
+      // LLLNG
+      params[0][0] = 100;
+      params[0][1] = 2;
+      params[0][2] = 0;
+      params[0][3] = 0;
+      offsets[0][0] = 0;
+      // RLLNG
+      params[1][0] = 100;
+      params[1][1] = 2;
+      params[1][2] = 0;
+      params[1][3] = 0;
+      offsets[1][0] = 0;
+      // GALNG
+      params[2][0] = 100;
+      params[2][1] = 2;
+      params[2][2] = 0;
+      params[2][3] = 0;
+      offsets[2][0] = 0;
+      // LLRTN
+      params[3][0] = 100;
+      params[3][1] = 2;
+      params[3][2] = 0;
+      offsets[3][0] = 0;
+      // RLRTN
+      params[4][0] = 100;
+      params[4][1] = 2;
+      params[4][2] = 0;
+      offsets[4][0] = 0;
+      // GARTN
+      params[5][0] = 100;
+      params[5][1] = 2;
+      params[5][2] = 0;
+      offsets[5][0] = 0;
+    }
 #elif
 #error Invalid model type
 #endif
@@ -1516,8 +1606,8 @@ int freeMemory() {
 #endif</text>
   </file>
   <file name="events.h">
-   <text>/* events.h - Arduino software for the GRIS5A (C) and No2 (C) motion phantom
- * Copyright (C) 2019 by Stefan Grimm
+   <text>/* events.h - Arduino software for the GRIS5A (C), No2 (C) and No3 (C) motion phantom
+ * Copyright (C) 2019-2020 by Stefan Grimm
  */
 
 #ifndef __EVENTS_H
@@ -1559,6 +1649,15 @@ enum ServoNumber {
   LRTN,
   RRTN,
   GRTN
+};
+#elif defined(NO3)
+enum ServoNumber {
+  UPLNG=0,
+  LOLNG,
+  GALNG,
+  UPRTN,
+  LORTN,
+  GARTN
 };
 #endif
 
@@ -1653,7 +1752,7 @@ struct MotorEvArgs {
 #endif</text>
   </file>
   <file name="dkb.h">
-   <text>/* dkb.h - Arduino software for the GRIS5A (C) and No2 (C) motion phantom
+   <text>/* dkb.h - Arduino software for the GRIS5A (C), No2 (C) and No3 (C) motion phantom
  * Copyright (C) 2019 by Stefan Grimm
  */
 
@@ -1943,6 +2042,105 @@ void processDKb(QMActive* recv, const DKbInEvArgs&amp; dkb)
   }
   printDKbInData(dkb);
 }
+
+#elif defined(NO3)
+void processDKb(QMActive* recv, const DKbInEvArgs&amp; dkb)
+{
+  if (dkb.GAL) {
+    MotorMoveRelativeEvArgs args(GARTN, BACKWARDS);
+    QACTIVE_POST(recv, MOTOR_MOVE_RELATIVE_SIG, args.raw);
+  }
+  if (dkb.GAT) {
+    MotorMoveRelativeEvArgs args(GALNG, FORWARDS);
+    QACTIVE_POST(recv, MOTOR_MOVE_RELATIVE_SIG, args.raw);
+  }
+  if (dkb.GAB) {
+    MotorMoveRelativeEvArgs args(GALNG, BACKWARDS);
+    QACTIVE_POST(recv, MOTOR_MOVE_RELATIVE_SIG, args.raw);
+  }
+  if (dkb.GAR) {
+    MotorMoveRelativeEvArgs args(GARTN, FORWARDS);
+    QACTIVE_POST(recv, MOTOR_MOVE_RELATIVE_SIG, args.raw);
+  }
+  if (dkb.FP7) {
+    ProgramChangeEvArgs args(7);
+    QACTIVE_POST(recv, PROGRAM_CHANGE_SIG, args.raw);
+  }
+  if (dkb.FP6) {
+    ProgramChangeEvArgs args(6);
+    QACTIVE_POST(recv, PROGRAM_CHANGE_SIG, args.raw);
+  }
+  if (dkb.FP5) {
+    ProgramChangeEvArgs args(5);
+    QACTIVE_POST(recv, PROGRAM_CHANGE_SIG, args.raw);
+  }
+  if (dkb.FP8) {
+    ProgramChangeEvArgs args(8);
+    QACTIVE_POST(recv, PROGRAM_CHANGE_SIG, args.raw);
+  }
+  if (dkb.RLB) {
+    MotorMoveRelativeEvArgs args(LOLNG, BACKWARDS);
+    QACTIVE_POST(recv, MOTOR_MOVE_RELATIVE_SIG, args.raw);
+  }
+  if (dkb.RLR) {
+    MotorMoveRelativeEvArgs args(LORTN, FORWARDS);
+    QACTIVE_POST(recv, MOTOR_MOVE_RELATIVE_SIG, args.raw);
+  }
+  if (dkb.RLL) {
+    MotorMoveRelativeEvArgs args(LORTN, BACKWARDS);
+    QACTIVE_POST(recv, MOTOR_MOVE_RELATIVE_SIG, args.raw);
+  }
+  if (dkb.RLT) {
+    MotorMoveRelativeEvArgs args(LOLNG, FORWARDS);
+    QACTIVE_POST(recv, MOTOR_MOVE_RELATIVE_SIG, args.raw);
+  }
+  if (dkb.FP4) {
+    ProgramChangeEvArgs args(4);
+    QACTIVE_POST(recv, PROGRAM_CHANGE_SIG, args.raw);
+  }
+  if (dkb.FP3) {
+    ProgramChangeEvArgs args(3);
+    QACTIVE_POST(recv, PROGRAM_CHANGE_SIG, args.raw);
+  }
+  if (dkb.FP2) {
+    ProgramChangeEvArgs args(2);
+    QACTIVE_POST(recv, PROGRAM_CHANGE_SIG, args.raw);
+  }
+  if (dkb.FP1) {
+    ProgramChangeEvArgs args(1);
+    QACTIVE_POST(recv, PROGRAM_CHANGE_SIG, args.raw);
+  }
+  if (dkb.FRM) {
+    QACTIVE_POST(recv, REMOTE_MODE_SIG, 0L);
+  }
+  if (dkb.FPS) {
+    QACTIVE_POST(recv, PRESET_MODE_SIG, 0L);
+  }
+  if (dkb.FMM) {
+    QACTIVE_POST(recv, MANUAL_MOTION_MODE_SIG, 0L);
+  }
+  if (dkb.FCA) {
+    QACTIVE_POST(recv, CALIBRATION_MODE_SIG, 0L);
+  }
+  if (dkb.LLB) {
+    MotorMoveRelativeEvArgs args(UPLNG, BACKWARDS);
+    QACTIVE_POST(recv, MOTOR_MOVE_RELATIVE_SIG, args.raw);
+  }
+  if (dkb.LLR) {
+    MotorMoveRelativeEvArgs args(UPRTN, FORWARDS);
+    QACTIVE_POST(recv, MOTOR_MOVE_RELATIVE_SIG, args.raw);
+  }
+  if (dkb.LLL) {
+    MotorMoveRelativeEvArgs args(UPRTN, BACKWARDS);
+    QACTIVE_POST(recv, MOTOR_MOVE_RELATIVE_SIG, args.raw);
+  }
+  if (dkb.LLT) {
+    MotorMoveRelativeEvArgs args(UPLNG, FORWARDS);
+    QACTIVE_POST(recv, MOTOR_MOVE_RELATIVE_SIG, args.raw);
+  }
+  printDKbInData(dkb);
+}
+
 #endif
 
 
@@ -1994,8 +2192,8 @@ void printDKbInData(const DKbInEvArgs&amp; s) {
 #endif</text>
   </file>
   <file name="constants.h">
-   <text>/* constants.h - Arduino software for the GRIS5A (C) and No2 (C) motion phantom
- * Copyright (C) 2019 by Stefan Grimm
+   <text>/* constants.h - Arduino software for the GRIS5A (C), No2 (C) and No(3) motion phantom
+ * Copyright (C) 2019-2020 by Stefan Grimm
  */
 
 #ifndef __CONSTANTS_H
@@ -2027,8 +2225,8 @@ enum Constants {
 #endif</text>
   </file>
   <file name="preset.h">
-   <text>/* preset.h - Arduino software for the GRIS5A (C) and No2 (C) motion phantom
- * Copyright (C) 2019 by Stefan Grimm
+   <text>/* preset.h - Arduino software for the GRIS5A (C), No2 (C) and No3 (C) motion phantom
+ * Copyright (C) 2019-2020 by Stefan Grimm
  */
 
 #ifndef __PRESET_H
@@ -2817,13 +3015,328 @@ void prog8(QMActive* recv, uint16_t&amp; preSetTimer) {
   }
 }
 
+#elif defined(NO3)
+
+void prog1(QMActive* recv, uint16_t&amp; preSetTimer) {
+  //  Position 1
+  static const uint8_t PROGMEM STEPSZ = 2;
+
+  MotorEvArgs llng(UPLNG, 128, STEPSZ);
+  QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, llng.raw);
+  MotorEvArgs rlng(LOLNG, 128, STEPSZ);
+  QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rlng.raw);
+  MotorEvArgs glng(GALNG, 128, STEPSZ);
+  QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, glng.raw);
+  MotorEvArgs lrtn(UPRTN, 127, STEPSZ);
+  QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, lrtn.raw);
+  MotorEvArgs rrtn(LORTN, 127, STEPSZ);
+  QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rrtn.raw);
+  MotorEvArgs grtn(GARTN, 127, STEPSZ);
+  QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, grtn.raw);
+}
+
+void prog2(QMActive* recv, uint16_t&amp; preSetTimer) {
+  //  Position 2
+  static const uint8_t PROGMEM STEPSZ = 2;
+
+  MotorEvArgs llng(UPLNG, 0, STEPSZ);
+  QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, llng.raw);
+  MotorEvArgs rlng(LOLNG, 40, STEPSZ);
+  QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rlng.raw);
+  MotorEvArgs glng(GALNG, 0, STEPSZ);
+  QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, glng.raw);
+  MotorEvArgs lrtn(UPRTN, 255, STEPSZ);
+  QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, lrtn.raw);
+  MotorEvArgs rrtn(LORTN, 79, STEPSZ);
+  QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rrtn.raw);
+  MotorEvArgs grtn(GARTN, 135, STEPSZ);
+  QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, grtn.raw);
+}
+
+void prog3(QMActive* recv, uint16_t&amp; preSetTimer) {
+  // Position 1 &lt;-&gt; 2
+
+  if (preSetTimer == 0) {
+    static const uint8_t PROGMEM STEPSZ = 2;
+    MotorEvArgs llng(UPLNG, 64, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, llng.raw);
+    MotorEvArgs rlng(LOLNG, 84, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rlng.raw);
+    MotorEvArgs glng(GALNG, 127, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, glng.raw);
+    MotorEvArgs lrtn(UPRTN, 191, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, lrtn.raw);
+    MotorEvArgs rrtn(LORTN, 103, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rrtn.raw);
+    MotorEvArgs grtn(GARTN, 127, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, grtn.raw);
+  }
+  else if (preSetTimer &gt;= 3000) {
+    static const uint8_t PROGMEM STEPSZ = 8;
+
+    float targetLlng = 64 - 64 * sin((preSetTimer - 3000) / 3000.0 * PI);
+    float targetRlng =  84 - 44 * sin((preSetTimer - 3000) / 3000.0 * PI);
+    float targetLrtn = 191 + 64 * sin((preSetTimer - 3000) / 3000.0 * PI);
+    float targetRrtn = 103 - 24 * sin((preSetTimer - 3000) / 3000.0 * PI);
+
+    MotorEvArgs llng(UPLNG, targetLlng, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, llng.raw);
+    MotorEvArgs rlng(LOLNG, targetRlng, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rlng.raw);
+    MotorEvArgs lrtn(UPRTN, targetLrtn, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, lrtn.raw);
+    MotorEvArgs rrtn(LORTN, targetRrtn, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rrtn.raw);
+  }
+
+  if (preSetTimer == 8960) {
+    preSetTimer = 3000;
+  }
+  else {
+    preSetTimer += PRESETTIMERINCR;
+  }
+}
+
+void prog4(QMActive* recv, uint16_t&amp; preSetTimer) {
+  // Free-breath Gating
+
+  if (preSetTimer == 0) {
+    static const uint8_t PROGMEM STEPSZ = 2;
+    MotorEvArgs llng(UPLNG, 127, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, llng.raw);
+    MotorEvArgs rlng(LOLNG, 127, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rlng.raw);
+    MotorEvArgs glng(GALNG, 127, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, glng.raw);
+    MotorEvArgs lrtn(UPRTN, 127, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, lrtn.raw);
+    MotorEvArgs rrtn(LORTN, 127, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rrtn.raw);
+    MotorEvArgs grtn(GARTN, 127, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, grtn.raw);
+  }
+  else if (preSetTimer &gt;= 3000) {
+    static const uint8_t PROGMEM STEPSZ = 8;
+
+    float target = 127 + 80 * sin((preSetTimer - 3000) / 2500.0 * PI);
+
+    MotorEvArgs lllng(UPLNG, target, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, lllng.raw);
+    MotorEvArgs rllng(LOLNG, target, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rllng.raw);
+    MotorEvArgs galng(GALNG, target, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, galng.raw);
+  }
+
+  if (preSetTimer == 7960) {
+    preSetTimer = 3000;
+  }
+  else {
+    preSetTimer += PRESETTIMERINCR;
+  }
+}
+
+void prog5(QMActive* recv, uint16_t&amp; preSetTimer) {
+  // Breath-hold Gating
+
+  if (preSetTimer == 0) {
+    static const uint8_t PROGMEM STEPSZ = 2;
+    MotorEvArgs llng(UPLNG, 60, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, llng.raw);
+    MotorEvArgs rlng(LOLNG, 60, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rlng.raw);
+    MotorEvArgs glng(GALNG, 60, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, glng.raw);
+    MotorEvArgs lrtn(UPRTN, 127, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, lrtn.raw);
+    MotorEvArgs rrtn(LORTN, 127, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rrtn.raw);
+    MotorEvArgs grtn(GARTN, 127, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, grtn.raw);
+  }
+  else if (preSetTimer &gt;= 3000 &amp;&amp; preSetTimer &lt; 28000) {
+    static const uint8_t PROGMEM STEPSZ = 8;
+    float target = 60 + 50 * sin((preSetTimer - 3000) / 2500.0 * PI);
+    MotorEvArgs llng(UPLNG, target, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, llng.raw);
+    MotorEvArgs rlng(LOLNG, target, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rlng.raw);
+    MotorEvArgs glng(GALNG, target, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, glng.raw);
+  }
+  else if (preSetTimer &gt; 28000 &amp;&amp; preSetTimer &lt; 38000) {
+    static const uint8_t PROGMEM STEPSZ = 4;
+    float target = 200 + 50 * cos((preSetTimer - 28000) / 40000.0 * PI);
+    MotorEvArgs llng(UPLNG, target, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, llng.raw);
+    MotorEvArgs rlng(LOLNG, target, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rlng.raw);
+    MotorEvArgs glng(GALNG, target, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, glng.raw);
+  }
+  else if (preSetTimer == 38000) {
+    static const uint8_t PROGMEM STEPSZ = 4;
+    MotorEvArgs llng(UPLNG, 10, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, llng.raw);
+    MotorEvArgs rlng(LOLNG, 10, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rlng.raw);
+    MotorEvArgs glng(GALNG, 10, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, glng.raw);
+  }
+
+  if (preSetTimer == 40000) {
+    preSetTimer = 6720;
+  }
+  else {
+    preSetTimer += PRESETTIMERINCR;
+  }
+}
+
+void prog6(QMActive* recv, uint16_t&amp; preSetTimer) {
+  // Free-breath Gating, Position 1 &lt;-&gt; 2
+
+  if (preSetTimer == 0) {
+    static const uint8_t PROGMEM STEPSZ = 2;
+    MotorEvArgs llng(UPLNG, 64, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, llng.raw);
+    MotorEvArgs rlng(LOLNG, 84, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rlng.raw);
+    MotorEvArgs glng(GALNG, 64, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, glng.raw);
+    MotorEvArgs lrtn(UPRTN, 191, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, lrtn.raw);
+    MotorEvArgs rrtn(LORTN, 103, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rrtn.raw);
+    MotorEvArgs grtn(GARTN, 131, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, grtn.raw);
+  }
+  else if (preSetTimer &gt;= 3000) {
+    static const uint8_t PROGMEM STEPSZ = 8;
+
+    float targetLGlng = 64 - 64 * sin((preSetTimer - 3000) / 3000.0 * PI);
+    float targetRlng =  84 - 44 * sin((preSetTimer - 3000) / 3000.0 * PI);
+    float targetLrtn = 191 + 64 * sin((preSetTimer - 3000) / 3000.0 * PI);
+    float targetRrtn = 103 - 24 * sin((preSetTimer - 3000) / 3000.0 * PI);
+    float targetGrtn = 131 +  4 * sin((preSetTimer - 3000) / 3000.0 * PI);
+
+    MotorEvArgs llng(UPLNG, targetLGlng, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, llng.raw);
+    MotorEvArgs rlng(LOLNG, targetRlng, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rlng.raw);
+    MotorEvArgs glng(GALNG, targetLGlng, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, glng.raw);
+    MotorEvArgs lrtn(UPRTN, targetLrtn, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, lrtn.raw);
+    MotorEvArgs rrtn(LORTN, targetRrtn, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rrtn.raw);
+    MotorEvArgs grtn(GARTN, targetGrtn, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, grtn.raw);
+  }
+
+  if (preSetTimer == 8960) {
+    preSetTimer = 3000;
+  }
+  else {
+    preSetTimer += PRESETTIMERINCR;
+  }
+}
+
+void prog7(QMActive* recv, uint16_t&amp; preSetTimer) {
+  // Free-breath Gating loosing signal
+
+  if (preSetTimer == 0) {
+    static const uint8_t PROGMEM STEPSZ = 2;
+    MotorEvArgs llng(UPLNG, 127, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, llng.raw);
+    MotorEvArgs lrtn(UPRTN, 127, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, lrtn.raw);
+    MotorEvArgs rlng(LOLNG, 127, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rlng.raw);
+    MotorEvArgs rrtn(LORTN, 127, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rrtn.raw);
+    MotorEvArgs glng(GALNG, 127, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, glng.raw);
+    MotorEvArgs grtn(GARTN, 127, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, grtn.raw);
+  }
+  else if (preSetTimer &gt;= 3000) {
+    static const uint8_t PROGMEM STEPSZ = 8;
+    float target = 127 + 80 * sin((preSetTimer - 3000) / 2500.0 * PI);
+
+    MotorEvArgs llng(UPLNG, target, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, llng.raw);
+    MotorEvArgs rlng(LOLNG, target, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rlng.raw);
+    MotorEvArgs glng(GALNG, target, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, glng.raw);
+  }
+
+  if (preSetTimer == 25000) {
+    static const uint8_t PROGMEM STEPSZ = 3;
+    MotorEvArgs grtn(GARTN, 255, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, grtn.raw);
+  }
+  else if (preSetTimer == 35000) {
+    static const uint8_t PROGMEM STEPSZ = 3;
+    MotorEvArgs grtn(GARTN, 127, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, grtn.raw);
+  }
+
+  if (preSetTimer == 37960) {
+    preSetTimer = 3000;
+  }
+  else {
+    preSetTimer += PRESETTIMERINCR;
+  }
+}
+
+void prog8(QMActive* recv, uint16_t&amp; preSetTimer) {
+  // Free-breath Gating base line shift
+
+  if (preSetTimer == 0) {
+    static const uint8_t PROGMEM STEPSZ = 2;
+    MotorEvArgs llng(UPLNG, 130, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, llng.raw);
+    MotorEvArgs lrtn(UPRTN, 127, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, lrtn.raw);
+    MotorEvArgs rlng(LOLNG, 130, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rlng.raw);
+    MotorEvArgs rrtn(LORTN, 127, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rrtn.raw);
+    MotorEvArgs glng(GALNG, 130, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, glng.raw);
+    MotorEvArgs grtn(GARTN, 127, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, grtn.raw);
+  }
+  else if (preSetTimer &gt;= 3000) {
+    static const uint8_t PROGMEM STEPSZ = 8;
+    float baseline = 130 + 30 * sin((preSetTimer - 3000) / 30000.0 * PI);
+    float target = baseline + 50 * sin((preSetTimer - 3000) / 3000.0 * PI);
+    MotorEvArgs llng(UPLNG, target, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, llng.raw);
+    MotorEvArgs rlng(LOLNG, target, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, rlng.raw);
+    MotorEvArgs glng(GALNG, target, STEPSZ);
+    QACTIVE_POST(recv, MOTOR_MOVE_ASOLUTE_SIG, glng.raw);
+  }
+
+  if (preSetTimer == 62960) {
+    preSetTimer = 3000;
+  }
+  else {
+    preSetTimer += PRESETTIMERINCR;
+  }
+}
+
+#elif
+#error Invalid model type
 #endif
 
 
 #endif</text>
   </file>
   <file name="devicedata.h">
-   <text>/* devicedata.h - Arduino software for the GRIS5A (C) and No2 (C) motion phantom
+   <text>/* devicedata.h - Arduino software for the GRIS5A (C), No2 (C) and No3 (C) motion phantom
  * Copyright (C) 2020 by Stefan Grimm
  */
 
@@ -2844,7 +3357,7 @@ struct DeviceDataHeader {
 #endif</text>
   </file>
   <file name="modeltraits.h">
-   <text>/* modeltraits.h - Arduino software for the GRIS5A (C) and No2 (C) motion phantom
+   <text>/* modeltraits.h - Arduino software for the GRIS5A (C), No2 (C) and No3 (C) motion phantom
  * Copyright (C) 2020 by Stefan Grimm
  */
 
@@ -2927,6 +3440,26 @@ const TORD PARAM         = 0b0000101010111111;
 const TORD OFFSET        = 0;
 const uint8_t DEVICEDATALENGTH = (3 * 4 + 3 * 3 + 6 * 1) * sizeof(Float32_t) + sizeof(DeviceDataHeader);
 
+#elif MODELTYPE == 5
+
+// No2
+// DKb: no
+// 3 x Lng Param Ord 3, Offset Ord 0
+// 3 x Rtn Param Ord 2, Offset Ord 0
+
+#define NO3
+#define SERIALIN
+#define MOTOROUT
+#define TORD uint16_t
+
+const uint8_t NUMSERVOS  = 6;
+const uint8_t DATASCHEMA = 1;
+const TORD PARAM         = 0b0000101010111111;
+const TORD OFFSET        = 0;
+const uint8_t DEVICEDATALENGTH = (3 * 4 + 3 * 3 + 6 * 1) * sizeof(Float32_t) + sizeof(DeviceDataHeader);
+
+#elif
+#error Invalid model type
 #endif
 
 #endif</text>

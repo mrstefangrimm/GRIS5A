@@ -1,4 +1,4 @@
-/* Gris5a.java - Dedicated Keyboard Processing 3.0 software for the GRIS5A (C) motion phantom
+/* Gris5a.java
  * Copyright (C) 2020 by Stefan Grimm
  *
  * This is free software: you can redistribute it and/or modify
@@ -12,8 +12,7 @@
  * GNU Lesser General Public License for more details.
 
  * You should have received a copy of the GNU Lesser General Public License
- * along with the SoftDKb software.  If not, see
- * <http://www.gnu.org/licenses/>.
+ * along with the software.  If not, see http://www.gnu.org/licenses/.
  */
  
 import processing.serial.*;

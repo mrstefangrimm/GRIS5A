@@ -1,4 +1,4 @@
-/* SoftDKb.pde - Dedicated Keyboard Processing 3.0 software for the GRIS5A (C) motion phantom //<>//
+/* SoftDKb.pde //<>//
  * Copyright (C) 2018 - 2020 by Stefan Grimm
  *
  * This is free software: you can redistribute it and/or modify
@@ -12,8 +12,7 @@
  * GNU Lesser General Public License for more details.
 
  * You should have received a copy of the GNU Lesser General Public License
- * along with the SoftDKb software.  If not, see
- * <http://www.gnu.org/licenses/>.
+ * along with the software.  If not, see http://www.gnu.org/licenses>.
  */
 
 import processing.serial.*;
@@ -44,7 +43,7 @@ void setup() {
   
   setPhantom(0);
 
-  if (args != null && args.length == 1) { //<>//
+  if (args != null && args.length == 1) {
     String portName = args[0];
     String[] comPorts = Serial.list();
     if (comPorts != null) {
@@ -160,6 +159,9 @@ void setPhantom(int model) {
   else if (model == 4) {
     phantom =  new No2(this, 100, 150, 700, 300);
   }
+  else if (model == 5) {
+    phantom =  new No3(this, 100, 150, 700, 300);
+  }
   else {
     phantom = new None(this, 100, 150, 700, 300);
   }
@@ -240,7 +242,7 @@ void serialEvent(Serial myPort) {
       else if (recvBuffer[0] == 'I') { led1 = false; led2 = false; led3 = true; led4 = false; }
       else if (recvBuffer[0] == 'J') { led1 = false; led2 = false; led3 = false; led4 = true; }
       else if (recvBuffer[0] == 'K') { freeMemory = getReceivedNumber(); }
-      else if (recvBuffer[0] == 'L') { model = getReceivedString(); setPhantom(Integer.parseInt(model));} //<>//
+      else if (recvBuffer[0] == 'L') { model = getReceivedString(); setPhantom(Integer.parseInt(model));}
       else if (recvBuffer[0] == 'M') { version = getReceivedString(); }
       else {
         int motor = recvBuffer[0] - '0';
