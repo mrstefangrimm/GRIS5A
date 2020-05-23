@@ -27,6 +27,8 @@ interface IPhantom {
   
   void setMotionState(int motor, int value);
   
+  void clearMotionState();
+  
   void onMousePressed(int x, int y);
   
 }

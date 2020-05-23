@@ -43,6 +43,12 @@ class No2 implements IPhantom {
     }
   }
   
+  public void clearMotionState() {
+    for (int motor = 0; motor < NUMSERVOS; motor++) {  
+      _positionBuffer[motor] = 0;
+    }
+  }
+  
   public void drawMotionControls() {
     // Left
     _parent.rect(150, 250, 40, 40);

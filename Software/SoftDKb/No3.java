@@ -43,6 +43,12 @@ class No3 implements IPhantom {
     }
   }
   
+  public void clearMotionState() {
+    for (int motor = 0; motor < NUMSERVOS; motor++) {  
+      _positionBuffer[motor] = 0;
+    }
+  }
+  
   public void drawMotionControls() {
     // Gating
     _parent.rect(150, 250, 40, 40);
@@ -90,15 +96,15 @@ class No3 implements IPhantom {
   boolean mousePressedGAL(int x, int y) { return ((x >= 100) && (x <= 140) && (y >= 300) && (y <= 340)); }
   boolean mousePressedGAR(int x, int y) { return ((x >= 200) && (x <= 240) && (y >= 300) && (y <= 340)); }
   boolean mousePressedGAB(int x, int y) { return ((x >= 150) && (x <= 190) && (y >= 350) && (y <= 390)); }
+  
+  boolean mousePressedUPT(int x, int y) { return ((x >= 350) && (x <= 390) && (y >= 350) && (y <= 390)); }
+  boolean mousePressedUPL(int x, int y) { return ((x >= 300) && (x <= 340) && (y >= 400) && (y <= 440)); }
+  boolean mousePressedUPR(int x, int y) { return ((x >= 400) && (x <= 440) && (y >= 400) && (y <= 440)); }
+  boolean mousePressedUPB(int x, int y) { return ((x >= 350) && (x <= 390) && (y >= 450) && (y <= 490)); }
 
-  boolean mousePressedUPT(int x, int y) { return ((x >= 350) && (x <= 390) && (y >= 150) && (y <= 190)); }
-  boolean mousePressedUPL(int x, int y) { return ((x >= 300) && (x <= 340) && (y >= 200) && (y <= 240)); }
-  boolean mousePressedUPR(int x, int y) { return ((x >= 400) && (x <= 440) && (y >= 200) && (y <= 240)); }
-  boolean mousePressedUPB(int x, int y) { return ((x >= 350) && (x <= 390) && (y >= 250) && (y <= 290)); }
-
-  boolean mousePressedLOT(int x, int y) { return ((x >= 350) && (x <= 390) && (y >= 350) && (y <= 390)); }
-  boolean mousePressedLOL(int x, int y) { return ((x >= 300) && (x <= 340) && (y >= 400) && (y <= 440)); }
-  boolean mousePressedLOR(int x, int y) { return ((x >= 400) && (x <= 440) && (y >= 400) && (y <= 440)); }
-  boolean mousePressedLOB(int x, int y) { return ((x >= 350) && (x <= 390) && (y >= 450) && (y <= 490)); }
+  boolean mousePressedLOT(int x, int y) { return ((x >= 350) && (x <= 390) && (y >= 150) && (y <= 190)); }
+  boolean mousePressedLOL(int x, int y) { return ((x >= 300) && (x <= 340) && (y >= 200) && (y <= 240)); }
+  boolean mousePressedLOR(int x, int y) { return ((x >= 400) && (x <= 440) && (y >= 200) && (y <= 240)); }
+  boolean mousePressedLOB(int x, int y) { return ((x >= 350) && (x <= 390) && (y >= 250) && (y <= 290)); }
 
 }

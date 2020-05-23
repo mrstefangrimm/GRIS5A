@@ -1,5 +1,5 @@
 /* SoftDKb.pde //<>//
- * Copyright (C) 2018 - 2020 by Stefan Grimm
+ * Copyright (C) 2018-2020 by Stefan Grimm
  *
  * This is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -147,6 +147,15 @@ void draw() {
   
   text("Put Device Data", 350, 750);
   rect(560, 715, 40, 40);
+  
+  text("Reset", 350, 790);
+  rect(560, 755, 40, 40);
+  
+  text("Start Pos. Stream", 630, 710);
+  rect(860, 675, 40, 40);
+  
+  text("Stop Pos. Stream", 630, 750);
+  rect(860, 715, 40, 40);
 }
 
 void setPhantom(int model) {  
@@ -225,7 +234,7 @@ void serialEvent(Serial myPort) {
       else if (readingPos == 3) {
         comPort.write(0x1B);
         sendBuffer = "0x1B"; // model
-      }
+      }      
     }    
   }
   else {    
@@ -318,7 +327,10 @@ void mousePressed() {
   else if (mousePressedVersion()) { comPort.write((4<<3) | 0x3); sendBuffer = "0x3 0100"; }
   else if (mousePressedGetDeviceData()) { comPort.write((5<<3) | 0x3); sendBuffer = "0x3 0101"; }
   else if (mousePressedPutDeviceData()) { selectInput("Select a device data file:", "fileSelected"); }
-
+  else if (mousePressedStartPositionStream()) { comPort.write((7<<3) | 0x3); sendBuffer = "0x3 0111"; }
+  else if (mousePressedStopPositionStream()) { comPort.write((8<<3) | 0x3); sendBuffer = "0x3 1000"; phantom.clearMotionState(); }
+  else if (mousePressedReset()) { comPort.write((9<<3) | 0x3); sendBuffer = "0x3 1001"; }
+  
   else if (mousePressedFMM()) { comPort.write((22<<3) | 0x1); sendBuffer = "0x1 0000 0000 0100 0000 0000 0000 0000 0000"; } 
   else if (mousePressedFPS()) { comPort.write((21<<3) | 0x1); sendBuffer = "0x1 0000 0000 0010 0000 0000 0000 0000 0000"; }   
   else if (mousePressedFRM()) { comPort.write((20<<3) | 0x1); sendBuffer = "0x1 0000 0000 0001 0000 0000 0000 0000 0000"; } 
@@ -354,3 +366,8 @@ boolean mousePressedVersion() { return ((mouseX >= 270) && (mouseX <= 310) && (m
 
 boolean mousePressedGetDeviceData() { return ((mouseX >= 560) && (mouseX <= 600) && (mouseY >= 675) && (mouseY <= 715)); }
 boolean mousePressedPutDeviceData() { return ((mouseX >= 560) && (mouseX <= 600) && (mouseY >= 715) && (mouseY <= 755)); }
+
+boolean mousePressedStartPositionStream() { return ((mouseX >= 860) && (mouseX <= 900) && (mouseY >= 675) && (mouseY <= 715)); }
+boolean mousePressedStopPositionStream() { return ((mouseX >= 860) && (mouseX <= 900) && (mouseY >= 715) && (mouseY <= 755)); }
+
+boolean mousePressedReset() { return ((mouseX >= 560) && (mouseX <= 600) && (mouseY >= 755) && (mouseY <= 795)); }

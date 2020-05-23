@@ -3,7 +3,7 @@
  <framework name="qpn"/>
  <package name="AOs" stereotype="0x02">
   <class name="DKbIn" superclass="qpn::QActive">
-   <operation name="shiftIn32" type="uint32_t" visibility="0x00" properties="0x00">
+   <operation name="shiftIn32" type="uint32_t" visibility="0x02" properties="0x00">
     <code>uint32_t myDataIn = 0;
 
 for (int i=31; i&gt;=0; i--)
@@ -155,15 +155,16 @@ digitalWrite(LATCHPIN_OUT, HIGH);</entry>
    </statechart>
   </class>
   <class name="MotorsOut" superclass="qpn::QActive">
-   <attribute name="servoPosition[NUMSERVOS]" type="uint8_t" visibility="0x00" properties="0x00"/>
-   <attribute name="target[NUMSERVOS]" type="uint8_t" visibility="0x00" properties="0x00"/>
-   <attribute name="stepSize[NUMSERVOS]" type="uint8_t" visibility="0x00" properties="0x00"/>
-   <attribute name="_sendPositionCounter" type="uint16_t" visibility="0x00" properties="0x00"/>
-   <attribute name="initializeCounter" type="uint8_t" visibility="0x00" properties="0x00"/>
-   <operation name="isInitialized" type="bool" visibility="0x00" properties="0x00">
+   <attribute name="servoPosition[NUMSERVOS]" type="uint8_t" visibility="0x02" properties="0x00"/>
+   <attribute name="target[NUMSERVOS]" type="uint8_t" visibility="0x02" properties="0x00"/>
+   <attribute name="stepSize[NUMSERVOS]" type="uint8_t" visibility="0x02" properties="0x00"/>
+   <attribute name="sendPositionCounter" type="uint16_t" visibility="0x02" properties="0x00"/>
+   <attribute name="initializeCounter" type="uint8_t" visibility="0x02" properties="0x00"/>
+   <attribute name="isPositionStreamActive" type="bool" visibility="0x02" properties="0x00"/>
+   <operation name="isInitialized" type="bool" visibility="0x02" properties="0x00">
     <code>return me-&gt;initializeCounter == NUMSERVOS;</code>
    </operation>
-   <operation name="isCalibrationMode" type="bool" visibility="0x00" properties="0x00">
+   <operation name="isCalibrationMode" type="bool" visibility="0x02" properties="0x00">
     <code>return impl.Calibration;</code>
    </operation>
    <statechart>
@@ -175,6 +176,7 @@ QActive_armX((QActive *)me, 0U,
 
 servoLib.begin();
 me-&gt;initializeCounter = 0;
+me-&gt;isPositionStreamActive = false;
 
 Serial.println(F(&quot;MotorOut Initialized&quot;));</action>
      <initial_glyph conn="6,7,5,3,18">
@@ -186,8 +188,7 @@ Serial.println(F(&quot;MotorOut Initialized&quot;));</action>
 // servoLib.write for 16 motors takes 9 ms
 // Serial print takes 0.2 ms
 // Meassured with the oscilloscope and digitalWrite(HIGH/LOW)</documentation>
-     <entry>//
-Serial.println(F(&quot;MotorsOut: Enter Active&quot;));</entry>
+     <entry>Serial.println(F(&quot;MotorsOut: Enter Active&quot;));</entry>
      <tran trig="MOTOR_STEP_FORWARD">
       <action>uint32_t par = Q_PAR(me);
 MotorEvArgs data(par);
@@ -199,7 +200,7 @@ if (pos &lt; 0) { pos = 0; }
 else if (pos &gt; 255) { pos = 255; }
 
 me-&gt;target[data.ServoNum] = pos;</action>
-      <tran_glyph conn="24,29,3,-1,21">
+      <tran_glyph conn="23,29,3,-1,21">
        <action box="0,-2,23,2"/>
       </tran_glyph>
      </tran>
@@ -215,8 +216,24 @@ if (pos &lt; 0) { pos = 0; }
 else if (pos &gt; 255) { pos = 255; }
 
 me-&gt;target[data.ServoNum] = pos;</action>
-      <tran_glyph conn="24,34,3,-1,21">
-       <action box="0,-2,22,2"/>
+      <tran_glyph conn="23,33,3,-1,21">
+       <action box="0,-3,22,2"/>
+      </tran_glyph>
+     </tran>
+     <tran trig="START_POSSTREAM">
+      <action>me-&gt;isPositionStreamActive = true;
+
+Serial.println(F(&quot;Starting stream of position values&quot;));</action>
+      <tran_glyph conn="23,36,3,-1,18">
+       <action box="0,-2,16,2"/>
+      </tran_glyph>
+     </tran>
+     <tran trig="STOP_POSSTREAM">
+      <action>me-&gt;isPositionStreamActive = false;
+
+Serial.println(F(&quot;Stopping stream of position values&quot;));</action>
+      <tran_glyph conn="23,39,3,-1,18">
+       <action box="0,-2,17,2"/>
       </tran_glyph>
      </tran>
      <state name="Simulation">
@@ -246,24 +263,24 @@ for (int n=0; n &lt; NUMSERVOS; n++) {
 }
 
 #ifdef SERIALIN
-if (!isMoving) {
-  if (me-&gt;_sendPositionCounter % NUMSERVOS == 0) {
-    int servo = (me-&gt;_sendPositionCounter / NUMSERVOS) - 1;
+if (!isMoving &amp;&amp; me-&gt;isPositionStreamActive) {
+  if (me-&gt;sendPositionCounter % NUMSERVOS == 0) {
+    int servo = (me-&gt;sendPositionCounter / NUMSERVOS) - 1;
     Serial.print(&quot;|&quot;);
     Serial.print(servo, HEX);
     Serial.print(me-&gt;servoPosition[servo]);
     Serial.print(&quot;|&quot;);
-    if (me-&gt;_sendPositionCounter == (NUMSERVOS * NUMSERVOS)) me-&gt;_sendPositionCounter = 0;
+    if (me-&gt;sendPositionCounter == (NUMSERVOS * NUMSERVOS)) me-&gt;sendPositionCounter = 0;
   }
-  me-&gt;_sendPositionCounter++;
+  me-&gt;sendPositionCounter++;
 }
 #endif</action>
-       <tran_glyph conn="27,58,3,-1,12">
+       <tran_glyph conn="26,58,3,-1,12">
         <action box="0,-2,10,2"/>
        </tran_glyph>
       </tran>
-      <tran trig="CALIBRATION_MODE" target="../../3">
-       <tran_glyph conn="52,54,1,3,12">
+      <tran trig="CALIBRATION_MODE" target="../../5">
+       <tran_glyph conn="51,54,1,3,12">
         <action box="0,-2,17,2"/>
        </tran_glyph>
       </tran>
@@ -278,11 +295,11 @@ if (data.Pos &gt;= 0 &amp;&amp; data.Pos &lt;= 255) {
 } else {
   me-&gt;target[data.ServoNum] = me-&gt;servoPosition[data.ServoNum];
 }</action>
-       <tran_glyph conn="27,51,3,-1,20">
+       <tran_glyph conn="26,51,3,-1,20">
         <action box="0,-2,23,2"/>
        </tran_glyph>
       </tran>
-      <state_glyph node="27,41,25,21">
+      <state_glyph node="26,41,25,21">
        <entry box="1,2,6,2"/>
       </state_glyph>
      </state>
@@ -320,27 +337,27 @@ for (int n=0; n &lt; NUMSERVOS; n++) {
 }
 
 #ifdef SERIALIN
-if (!isMoving) {
-  if (me-&gt;_sendPositionCounter % 10 == 0) {
-    int servo = (me-&gt;_sendPositionCounter / 10) - 1;
+if (!isMoving &amp;&amp; me-&gt;isPositionStreamActive) {
+  if (me-&gt;sendPositionCounter % 10 == 0) {
+    int servo = (me-&gt;sendPositionCounter / 10) - 1;
     Serial.print(&quot;|&quot;);
     Serial.print(servo);
     Serial.print(me-&gt;servoPosition[servo] * 2 + 100);
     Serial.print(&quot;|&quot;);
-    if (me-&gt;_sendPositionCounter == (NUMSERVOS * 10)) me-&gt;_sendPositionCounter = 0;
+    if (me-&gt;sendPositionCounter == (NUMSERVOS * 10)) me-&gt;sendPositionCounter = 0;
   }
-  me-&gt;_sendPositionCounter++;
+  me-&gt;sendPositionCounter++;
 }
 #endif</action>
-       <tran_glyph conn="64,58,3,-1,12">
+       <tran_glyph conn="63,58,3,-1,12">
         <action box="0,-2,10,2"/>
        </tran_glyph>
       </tran>
-      <state_glyph node="64,44,18,18">
+      <state_glyph node="63,44,18,18">
        <entry box="1,2,6,2"/>
       </state_glyph>
      </state>
-     <state_glyph node="24,21,60,44">
+     <state_glyph node="23,21,60,44">
       <entry box="1,2,6,2"/>
      </state_glyph>
     </state>
@@ -353,18 +370,16 @@ if (!isMoving) {
        <guard brief="is initialized">MotorsOut_isInitialized(me)</guard>
        <action>QActive_armX((QActive *)me, 0U,
   MOTORSENDINTERVAL,
-  MOTORSENDINTERVAL);
-
-Serial.println(F(&quot;MotorsOut: Enter Active&quot;));</action>
-       <choice target="../../../../1/2">
+  MOTORSENDINTERVAL);</action>
+       <choice target="../../../../1/4">
         <guard brief="else"/>
-        <choice_glyph conn="57,29,4,0,7,-8,5">
+        <choice_glyph conn="57,29,4,0,7,-9,5">
          <action box="0,3,10,2"/>
         </choice_glyph>
        </choice>
-       <choice target="../../../../1/3">
+       <choice target="../../../../1/5">
         <guard brief="isCalibrationMode">MotorsOut_isCalibrationMode(me)</guard>
-        <choice_glyph conn="57,29,5,0,17,15">
+        <choice_glyph conn="57,29,5,0,16,15">
          <action box="1,0,15,2"/>
         </choice_glyph>
        </choice>
@@ -398,6 +413,8 @@ me-&gt;initializeCounter++;</action>
   <class name="SerialIn" superclass="qpn::QActive">
    <attribute name="remainingBytes" type="uint8_t" visibility="0x00" properties="0x00"/>
    <attribute name="rwByteCounter" type="uint16_t" visibility="0x00" properties="0x00"/>
+   <attribute name="txtCmdLineInput[11]" type="char" visibility="0x02" properties="0x00"/>
+   <attribute name="txtCmdLineInputPos" type="uint8_t" visibility="0x00" properties="0x00"/>
    <operation name="processRemainingBytes" type="void" visibility="0x00" properties="0x00">
     <code>while (me-&gt;remainingBytes &gt; 1 &amp;&amp; Serial.available() &gt; 1) {
   uint8_t tmpLow = Serial.read();
@@ -435,7 +452,7 @@ Serial.println(F(&quot;SerialIn Initialized&quot;));</action>
       <action box="0,-2,10,2"/>
      </initial_glyph>
     </initial>
-    <state name="Receive">
+    <state name="ApiMode">
      <tran trig="Q_TIMEOUT">
       <action>// process unfinished command
 if (me-&gt;remainingBytes != 0) {
@@ -500,16 +517,26 @@ else if (Serial.available() &gt; 0) {
         case PUT_DEVICEDATA:
           QACTIVE_POST((QMActive*)&amp;AO_Application, PUT_DEVICEDATA_SIG, 0L);
           break;
+        case START_POSITIONSTREAM:
+          // Debug: Serial.println(F(&quot;Start position stream&quot;));
+          QACTIVE_POST((QMActive*)&amp;AO_MotorsOut, START_POSSTREAM_SIG, 0L);
+          break;
+        case STOP_POSITIONSTREAM:
+          // Debug: Serial.println(F(&quot;Stop position stream&quot;));
+          QACTIVE_POST((QMActive*)&amp;AO_MotorsOut, STOP_POSSTREAM_SIG, 0L);
+          break;
+        case RESET:
+          Serial.print(F(&quot;Ciau&quot;));
+          resetFunc();
+          break;
       }
     }
     else if (input.getCmd() == TXT) {
-      if (serin == '\'') {
-        Serial.println(&quot;'&quot;);
-      }
+      QACTIVE_POST((QMActive*)me, ENTER_TEXTMODE_SIG, 0L);
     }
   }
 }</action>
-      <tran_glyph conn="32,13,3,-1,12">
+      <tran_glyph conn="32,10,3,-1,12">
        <action box="0,-2,10,2"/>
       </tran_glyph>
      </tran>
@@ -522,9 +549,17 @@ me-&gt;rwByteCounter = 0;</action>
      </tran>
      <tran trig="GET_DEVICEDATA" target="../../3">
       <action>Serial.println(F(&quot;Go GetDeviceData&quot;));
-me-&gt;rwByteCounter = 0;</action>
+me-&gt;rwByteCounter = 0;
+//Debug: Serial.println(DEVICEDATALENGTH); Serial.println(sizeof(DeviceDataHeader));</action>
       <tran_glyph conn="46,16,2,0,16">
        <action box="0,1,16,2"/>
+      </tran_glyph>
+     </tran>
+     <tran trig="ENTER_TEXTMODE" target="../../4">
+      <action>memset(me-&gt;txtCmdLineInput, 0, 11);
+me-&gt;txtCmdLineInputPos = 0;</action>
+      <tran_glyph conn="48,11,1,3,23,16,2">
+       <action box="0,-2,10,2"/>
       </tran_glyph>
      </tran>
      <state_glyph node="32,4,16,12"/>
@@ -632,20 +667,89 @@ else {
       <entry box="1,2,6,2"/>
      </state_glyph>
     </state>
-    <state_diagram size="80,53"/>
+    <state name="TextMode">
+     <entry>Serial.println(F(&quot;Enter TextMode&quot;));</entry>
+     <tran trig="Q_TIMEOUT">
+      <action>if (Serial.available() &gt; 0) {
+  int serin = Serial.read();
+  //Debug: Serial.println(serin, HEX);
+
+  if (isAlphaNumeric(serin) || serin == ' ') {
+    if (me-&gt;txtCmdLineInputPos &lt; 11) {
+      me-&gt;txtCmdLineInput[me-&gt;txtCmdLineInputPos] = serin;
+      me-&gt;txtCmdLineInputPos++;
+    }
+  }
+  else if (serin == 0b1101) {
+    Serial.println(&quot;Enter pressed&quot;);
+    uint8_t cmd = 0;
+    uint8_t arg1 = 0;
+    uint8_t arg2 = 0;
+
+    if (me-&gt;txtCmdLineInput[0] == 'x') {
+      // cmd
+      cmd = (me-&gt;txtCmdLineInput[1] - '0') * 10;
+      cmd += (me-&gt;txtCmdLineInput[2] - '0');
+      Serial.println(cmd);
+
+      // arg1
+      me-&gt;txtCmdLineInputPos = 4;
+      if (isAlphaNumeric(me-&gt;txtCmdLineInput[me-&gt;txtCmdLineInputPos])) {
+        arg1 = (me-&gt;txtCmdLineInput[me-&gt;txtCmdLineInputPos] - '0');
+        me-&gt;txtCmdLineInputPos++;
+        if (isAlphaNumeric(me-&gt;txtCmdLineInput[me-&gt;txtCmdLineInputPos])) {
+          arg1 *= 10;
+          arg1 += (me-&gt;txtCmdLineInput[me-&gt;txtCmdLineInputPos] - '0');
+          me-&gt;txtCmdLineInputPos++;
+        }
+        Serial.println(arg1);
+
+        // arg2
+        me-&gt;txtCmdLineInputPos++;
+        if (isAlphaNumeric(me-&gt;txtCmdLineInput[me-&gt;txtCmdLineInputPos])) {
+          arg2 = (me-&gt;txtCmdLineInput[me-&gt;txtCmdLineInputPos] - '0');
+          me-&gt;txtCmdLineInputPos++;
+          if (isAlphaNumeric(me-&gt;txtCmdLineInput[me-&gt;txtCmdLineInputPos])) {
+            arg2 *= 10;
+            arg2 += (me-&gt;txtCmdLineInput[me-&gt;txtCmdLineInputPos] - '0');
+            me-&gt;txtCmdLineInputPos++;
+          }
+          Serial.println(arg2);
+        }
+      }
+    }
+    for (int n=0; n &lt; me-&gt;txtCmdLineInputPos; n++) {
+      Serial.print(me-&gt;txtCmdLineInput[n]);
+    }
+    memset(me-&gt;txtCmdLineInput, 0, 11);
+    me-&gt;txtCmdLineInputPos = 0;
+    // Clear buffer; required when working with YAT
+    do {
+    } while (Serial.read() &gt; 0);
+  }
+}</action>
+      <tran_glyph conn="73,24,3,-1,14">
+       <action box="0,-2,10,2"/>
+      </tran_glyph>
+     </tran>
+     <state_glyph node="73,17,22,19">
+      <entry box="1,2,6,2"/>
+     </state_glyph>
+    </state>
+    <state_diagram size="100,53"/>
    </statechart>
   </class>
   <class name="Application" superclass="qpn::QActive">
-   <attribute name="speed" type="uint8_t" visibility="0x00" properties="0x00"/>
-   <attribute name="currentPreSet" type="uint8_t" visibility="0x00" properties="0x00"/>
-   <attribute name="preSetTimer" type="uint16_t" visibility="0x00" properties="0x00"/>
-   <operation name="isCurrentPreSet" type="bool" visibility="0x00" properties="0x00">
+   <attribute name="speed" type="uint8_t" visibility="0x02" properties="0x00"/>
+   <attribute name="currentPreSet" type="uint8_t" visibility="0x02" properties="0x00"/>
+   <attribute name="preSetTimer" type="uint16_t" visibility="0x02" properties="0x00"/>
+   <operation name="isCurrentPreSet" type="bool" visibility="0x02" properties="0x00">
     <code>Serial.println(F(&quot;PreSet isCurrentPreSet&quot;));
 
 ProgramChangeEvArgs args(Q_PAR(me));
 return me-&gt;currentPreSet == args.ProgNo;</code>
    </operation>
-   <operation name="isDeviceDataValid" type="bool" visibility="0x00" properties="0x00">
+   <operation name="isDeviceDataValid" type="bool" visibility="0x02" properties="0x00">
     <code>Serial.print(F(&quot;Check EEPROM &quot;));
 
 uint8_t model;
@@ -983,7 +1087,7 @@ me-&gt;speed = args.ProgNo;</action>
 #define MAJORVERSION 1
 #define MINORVERSION 0
 #define IFVERSION    1
-#define BUILDVERSION 1
+#define BUILDVERSION 2
 
 //#define Q_PARAM_SIZE 2
 
@@ -994,6 +1098,13 @@ me-&gt;speed = args.ProgNo;</action>
 #include &quot;constants.h&quot;
 #include &quot;devicedata.h&quot;
 
+#include &lt;avr/wdt.h&gt; 
+// Global reset function
+void resetFunc() {
+  cli();                 // Clear interrupts
+  wdt_enable(WDTO_15MS); // Set the Watchdog to 15ms
+  while(1);              // Enter an infinite loop
+}
 
 #ifdef MOTOROUT
 #include &quot;_Adafruit_PWMServoDriver.h&quot;
@@ -1625,7 +1736,10 @@ enum Signals {
   MOTOR_MOVE_ASOLUTE_SIG,
   DKBIN_DISPATCH_SIG,
   GET_DEVICEDATA_SIG,
-  PUT_DEVICEDATA_SIG
+  PUT_DEVICEDATA_SIG,
+  START_POSSTREAM_SIG,
+  STOP_POSSTREAM_SIG,
+  ENTER_TEXTMODE_SIG
 };
 
 #ifdef GRIS5A
@@ -1674,7 +1788,10 @@ enum SerialInCommandExt {
   GET_MODEL = 3,
   GET_VERSION = 4,
   GET_DEVICEDATA = 5,
-  PUT_DEVICEDATA = 6
+  PUT_DEVICEDATA = 6,
+  START_POSITIONSTREAM = 7,
+  STOP_POSITIONSTREAM = 8,
+  RESET = 9
 };
 
 struct SerialInEvArgs {
@@ -3442,7 +3559,7 @@ const uint8_t DEVICEDATALENGTH = (3 * 4 + 3 * 3 + 6 * 1) * sizeof(Float32_t) + s
 
 #elif MODELTYPE == 5
 
-// No2
+// No3
 // DKb: no
 // 3 x Lng Param Ord 3, Offset Ord 0
 // 3 x Rtn Param Ord 2, Offset Ord 0

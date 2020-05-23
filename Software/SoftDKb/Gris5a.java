@@ -43,6 +43,12 @@ class Gris5a implements IPhantom {
     }
   }
   
+  public void clearMotionState() {
+    for (int motor = 0; motor < NUMSERVOS; motor++) {  
+      _positionBuffer[motor] = 0;
+    }
+  }
+  
   public void drawMotionControls() {
     // left upper
     _parent.rect(_ctrlX +  50, _ctrlY +   0, 40, 40);

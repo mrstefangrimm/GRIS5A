@@ -37,6 +37,9 @@ class None implements IPhantom {
   public void setMotionState(int motor, int value) {
   }
   
+  public void clearMotionState() {
+  }
+  
   public void drawMotionControls() {
     _parent.text("Loading...", _ctrlX + 150, _ctrlY + 200);
   }
