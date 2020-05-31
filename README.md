@@ -5,68 +5,26 @@ The name "Gris" "5A" comes from its color (gray) and the 5 axes.
 ![No2 Motion Phantom](GRIS5A-Photo-Small-BW.png "")
 
 ## Project History
-The project was launched in 2017 and has been added to github in 2018.
-
-## File structure
-This motion phantom is a electromechanical device which is controlled by an Arduino and has an input device.
-The repository has the sub folders:
-
-- Mechanics
-- Hardware
-- Software
+The project was launched in 2017 and has been added to github in 2018. In 2020, the software that is shared with other projects has been moved to its own repository named Phaso.
 
 ## Construction
 
 A detailed description how to build this phantom is published on *[Instructables.com](https://www.instructables.com/id/Marker-Motion-X-Ray-Imaging-Phantom/)*.
 
-## Tool Chain and Software libraries
+## Manufacturing Tool Chain
 
-GRIS5A is built with open source tools and open source libraries.
-
-### Mechanics
+### Mechanical Design
 
 Tool | License 
 ---- | -------
 SketchUp | SketchUp Shop 
 Ultimaker Cura | GPL
 
-### Hardware
+### Hardware Design
 
 Tool | License 
 ---- | -------
 Fritzing | GPL
-
-### Software
-
-Application | License 
------------ | -------
-mophapp | GPL
-MophDroid | LGPL 
-SoftDKb | LGPL
-ViphApp  | LGPL
-
-Tool | License 
----- | -------
-Arduino IDE | GPL
-avrdude | GPL
-QM | GPL
-Processing | GPL
-gcc | GPL
-VS2017 community | Microsoft license 
-Android Studio | Google license 
-
-Libraries
-
-Library | Licence
-------- | -------
-prfServo | LGPL
-mophlib | LGPL, BSD
-Arduino.h | LGPL
-qpn.h | GPL
-Processing Core | LPGL
-.NET 4.6.2 | Microsoft license 
-Helix toolkit | MIT
-Android SDK | Google license 
 
 ## License
 

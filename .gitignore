@@ -1,8 +1,3 @@
-packages/
-.vs
-bin/
-obj/
-lib/
-*.db
-/Software/SoftDKb/res
-/Software/SoftDKb/data
+/MechanicalDesign/GRIS5A/SketchUp/Export
+/MechanicalDesign/GRIS5A/SketchUp/Archive
+/MechanicalDesign/Common/SketchUp/Export
