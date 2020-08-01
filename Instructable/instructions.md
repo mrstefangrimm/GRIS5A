@@ -2,33 +2,21 @@
 
 ![fullphantom](./fullphantom.jpg)
 
-![markermotion3d](./markermotion3d.gif)
+In the field of medical imaging, so called imaging phantoms are used  to evaluate, analyze, and tune the performance of various imaging  devices (Source: Wikipedia). 
 
-![patientmotion](./patientmotion.gif)
+Markers, or fiducial markers, are small, highly visible objects implanted in the patient’s body and used as “landmarks”.  Markers are implanted in  organs like the liver, the prostate, the pancreas or even the lung.  Markers in medical imaging are used to correlate images or to track  motion. This specially developed imaging  phantom simulates marker motion based on respiratory motion.
 
-![patientrespiratorygating](./patientrespiratorygating.gif)
+The idea for this phantom came when I studied marker motion. In a prostate, markers are implanted to correlate images. The markers do  not move during the image acquisition unless the patient moves. It is  possible that the markers slowly move over days which leads to different topologies. Markers in a liver move up and down with the respiratory  motion. Markers in the liver move as a group whereas in the lung, marker may move in different directions when the patient breathes.
 
-In medical imaging, motion is not wanted. You may know that if you  ever got a CT or MRI. You lay there, in horrible pains, on the MRI  scanner and after an hour or so, the therapist comes in and says: “*Please, do not move!*”. But that is a different story. This story is about an imaging phantom  that simulates motion in a human body. More precisely, it simulates [motion of marker implants](https://github.com/mrstefangrimm/GRIS5A/blob/master/Instructable/patientmotion.gif).
+On an X-Ray image, the material and the density define what is a  bone, a liver or a lung. Wood for example is similar to a lung. The four freely movable cylinders are made of wood and are used to simulate motion of the markers. The metal markers have a much higher density (> 10000 times higher) than wood and are clearly visible on an X-Ray image.
 
-*“(An) imaging phantom […] is a specially designed object that is scanned or  imaged in the field of medical imaging to evaluate, analyze, and tune  the performance of various imaging devices.”*
+This short animation gives you an idea how this phantom would look like on X-Ray images: https://youtu.be/ula48AN3Xuc
 
-Source:  [wikipedia](https://en.wikipedia.org/wiki/Imaging_phantom). There is also a [nice video on youtube](https://www.youtube.com/watch?v=6xDVQZrojcM).
+To generate the motion, the phantom uses five [LnR-Actuators](https://www.instructables.com/id/Linear-and-Rotation-Actuator/), an Arduino micro controller and an Adafruit Servo Shield. The micro controller is  required because you cannot be in the room when you acquire X-Ray  images. The phantom can be either be remote controlled from a PC over an USB cable, or you can start one of the pre-programmed motion patterns and use the phantom stand-alone.
 
-Markers, or fiducial markers, are small, highly visible objects implanted in the patient’s body and used as “landmarks”.  Markers are implanted in  organs like the liver, the prostate, the pancreas or even the lung.  Markers in medical imaging are used to correlate images or to track  motion. 
+This phantom is suitable to evaluate and tune the performance of medical devices. A field of application could be the development of motion tracking and marker detection and matching algorithms. With the used materials, imaging dosimetry is not possible. 
 
-Because these markers are easy to detect, there are  computer programs able to correlate images based on the implanted  markers or track the marker positions.
-
-Markers implanted in the prostate, the liver or the lung lead to [different motion patterns](https://github.com/mrstefangrimm/GRIS5A/blob/master/Instructable/patientrespiratorygating.gif).
-
-In a prostate, markers are implanted to correlate images. The markers do  not move during the image acquisition unless the patient moves. It is  possible that the markers slowly move over days which leads to different topologies. Markers in a liver move up and down with the respiratory  motion. Markers in the liver move as a group whereas in the lung, marker may move in different directions when the patient breathes.
-
-Is it possible to build a imaging phantom that simulates markers implanted in a prostate, a liver  or the lung? Is it possible that this imaging  phantom is realistic enough to evaluate, analyze, and tune the  performance of various imaging devices?
-
-Commercially available  motion phantoms are not specially built for marker motion patterns and  are more general purpose respiratory phantoms. To simulate realistic  marker motion, organ deformation and different marker topologies, each  marker has to be moved individually and in three dimensions. To achieve  that, each marker is placed on a wooden cylinder which itself is placed  in a cylindrical bore in a wooden block. By rotating and moving the  cylinders, the [markers individually move in three dimensions](https://github.com/mrstefangrimm/GRIS5A/blob/master/Instructable/markermotion3d.gif).
-
-To drive the cylinders, this phantom uses four [LnR-Actuators](https://www.instructables.com/id/Linear-and-Rotation-Actuator/), an Arduino micro controller and an Adafruit Servo Shield. The micro  controller is required because you cannot be in the room when you  acquire X-Ray images. The Arduino is programmed with different motion  patterns. You start one of the motion patterns and leave the room before the irradiation starts.
-
-Wood has not the same density (or  Hounsfield units) as human tissue. The HU value of wood is around -500  whereas human tissue is around 50 to 150 HU. This phantom is suitable to evaluate and tune the performance of a medical device but not for  Imaging Dosimetry. The used electronic devices are not tested for rad  hardness which means the lifetime is shortened when exposed to X-Ray. I  read a rad hard ATmegaS128 CPU cost around $3000; a new Arduino cost  $30.
+The direct material costs are approximately USD 250.
 
 ### Supplies:
 
@@ -38,111 +26,125 @@ Wood has not the same density (or  Hounsfield units) as human tissue. The HU val
 
 5 [LnR-Actuator](https://www.instructables.com/id/Linear-and-Rotation-Actuator/)
 
-1 Wooden block (l/w/h) 100 x 120 x 180mm
+4 Metal marker d1 x l4 mm, created from paper clip
 
-4 wooden cylinders (d/l) 30 x 100 mm
+9 Screw M2 x l10
 
-4 metal marker (d/l) 1 x 3 mm
+4 Screw M2 x l20
 
-1 wooden rod with 8 mm diameter
+1 Wooden block l100 x w120 x h180 mm
 
-1 wood rod with 6 mm diameter
+4 Wooden cylinders  d30 x l100 mm
 
-Windows 10 x64 PC 
+4 Wooden dowel d6 x l25 mm
 
-3D Printer, Standing drill and drills for wood: 30mm, 8mm and 6mm
+2 Wooden dowel d8 x l166 mm
 
-## Step 1: Phantom Body
+2 Wooden dowel d8 x l110 mm
+
+1 Windows PC with Java 8 runtime and .NET Framework 4.6.2
+
+1 3D Printer
+
+1 Standing drill and drills for wood: d30mm, d8mm and d6mm
+
+
+
+Legend: l:length, d:diameter, w: width, h:heigth
+
+## Step 1: 3D Printed Parts
+
+PLA, default 20% infill: Cmn-FlangeClip.stl, Cmn-FrontClip.stl, Cmn-GatingPlatform.stl, MMXIP-Back.stl, MMXIP-Flange.stl, MMXIP-FlangeCylinder.stl, MMXIP-Front.stl, MMXIP-GatingBase.stl, MMXIP-GatingBottom.stl, MMXIP-GatingTop.stl
+
+## Step 2: Build the Phantom Body
 
 ![phantombody](./phantombody.jpg)
 
-If you print the front plate from the next  step you have a template for where to put the holes in the wooden block. The four 30 mm holes build a square of 50 mm. I had no problems to bore these holes but I had to clean the walls with sand paper afterwards.
+Use the printed *MMXIP-Front* as a template for the bores. Bore the four d30 mm holes. I had no problems to bore these holes but I had to clean the walls with sand paper afterwards. Bore two d8 x 6 mm holes.
 
-The two wooden rods (8 x 120 mm) are used to connect the wooden block to the actuator assembly and maintain the distance.
+Insert two wooden dowels d8 x l110 mm into the 8mm holes and attach a *Cmn-FrontClip*.
 
-The four cylinders of 30 mm diameter have a flange with a wooden handle (6 x 20 mm). The flange needs a M4 inner thread.
+## Step 3: Assemble the four Cylinders
 
-## Step 2: Actuator Assembly
+Cut a M4 thread into the two d3.3 mm holes in the *MMXIP-Flange*. Bore a hole of d6 x 6 mm diameter into the front of the cylinder. Insert a dowel d6 x 25 mm and add a *MMXIP-Flange*. Fixate it with some glue.
 
-![actuatorsdisassembled](./actuatorsdisassembled.jpg)
+To add the markers at the correct, position, insert the cylinders into the phantom body and align the cylinders such that the flanges are horizontally. On each cylinder, make a mark with a pencil towards the center of the phantom and add the metal markers as shown on the picture in the step above.
 
-![actuatorsdisassembled](./actuatorsdisassembled.jpg)
+## Step 4: Assemble the Actuator
 
-The LnR-Actuators have two round knobs on each side. The LnR-Actuators can simply be plugged into the front and the  back plate. To wooden rods (8 x 175 mm) which are screwed to the front  and back plate, pull and hold the actuator assembly together.
+![actuatorparts](./actuatorparts.jpg)
 
-The flange is not directly glued to the rod of the LnR-Actuator so that it is possible to disassemble the device.
+![actuatorassembled](./actuatorassembled.jpg)
 
-## Step 3: Gating Platform
+To build the actuator assembly, fixate two wooden dowels d8 x l166 mm to the *MMXIP-Back* with two screws M2 x l20 mm. Plug-in the four LnR-Actuators and add the *MMXIP-Front*. Add a *Cmn-FlangeClip* to each of the LnR-Actuator shafts but do not fixate it yet.
+
+Plug-in the assembled phantom body into the actuator assembly. First screw the *MMXIP-Flange* to the cylinders and use plastic screws M4 x l20 mm to fixated it. Connect the flange-clip with the flange. Align the cylinders and then fixate the flange clips with some glue to the actuator shafts.
+
+## Step 5: Add the Gating Platform
 
 ![gatingplatformparts](./gatingplatformparts.jpg)
 
 ![gatingplatformmounted](./gatingplatformmounted.jpg)
 
-The gating platform is needed to simulate breathing motion in up/down  direction. The gating baseplate is screwed to the actuators with two M2 x 10 mm screws.
+To build the Gating assembly, add the *MMXIP-GatingBottom* and the *MMXIP-GatingTop* to the *MMXIP-GatingBase* with screws M2 x l10 mm and add it the the actuator assembly with two screws M2 x l10 mm. Add the *Cmn-GatingPlatform* and fixate it with a screw M2 x l10 mm.
 
-## Step 4: Micro Controller
+## Step 6: Add the Micro Controller
 
 ![arduinoandservoshield](./arduinoandservoshield.jpg)
 
 ![microcontrollermounted](./microcontrollermounted.jpg)
 
-The control unit is an Arduino and an Adafruit Servo shield. Four distance rings prevent the micro controller board  from touching the back plate.
+Use four distance rings to prevent the micro controller board  from touching the back panel. Fixate the Arduino with four screws M2 x l10 mm on the *MMXIP-Back* and attach the Adafruit Servo Shield.
 
-The order how to connect the servo  motors is as follows and must be maintained: LUR, LUL, LLR, LLL, RLL,  RLR, RUL, RUR, GAL, GAR.
+Connect the servos to the servo  shield in this order: Rotary (short cable) Lower, Upper, Gating. Longitudinal (long cable) Lower, Upper, Gating.
 
-LUR: Left Upper Rotary servo motor
+Connect the servos to the servo  shield in this order: LUR, LUL, LLR, LLL, RLL,  RLR, RUL, RUR, GAL, GAR.
 
-RLL: Right Lower Longitudinal servo motor
+LUR: Left Upper Rotary servo motor, LUL: Left Upper Longitudinal, LLR: Left Lower Rotary, ...,  RLL: Right Lower Longitudinal, GAL: GAting Longitudinal, ...
 
-GAL: Gating Longitudinal servo motor
+## Step 7: Install the Firmware and Calibrate
 
-and so on.
+![uploadfirmware](./uploadfirmware.jpg)
 
-## Step 5: Software and Calibration
+Download the package.zip (e.g. package_v0.0.1.1.zip) of the latest release from [github](https://github.com/mrstefangrimm/Phaso/releases/). The download includes the required scripts and the software to control the phantom. Unzip the package into a local folder, e.g. C:\Tools\MotionPhantom. 
 
-![softwareupload](./softwareupload.jpg)
+Connect the phantom to your PC before the next steps.
 
-![softwareupload](./calibration1.jpg)
+In the download is a PowerShell script that uploads the firmware and write the calibration data to the EEPROM. To execute the script, open a PowerShell and change the directory to the target folder. Then type in: .\setup.ps1 and hit <Enter>. 
 
-![softwareupload](./calibration2.jpg)
+- The script now lists one or more COM ports. Enter the phantom's port (e.g. COM13).
 
-![softwareupload](./calibration3.jpg)
+- For the model, enter: 3
 
-![softwareupload](./calibration4.jpg)
+- Confirm the firmware upload with: y
 
-First you need to download these [binaries](https://github.com/mrstefangrimm/GRIS5A/blob/master/Instructable/MarkerMotionPhantom.zip). The compressed file contains the Arduino program mophapp.hex, avrdude  to upload it and a Windows application called SoftDKb.win64.exe.
+  The script uses avrdude to upload the firmware. After the upload, the firmware is active.
 
-To install the software on the Arduino, connect the phantom to your  computer and check the port in the Device Manager. Change the COM port  in the files "upload_mophapp.bat" and "start_softdkb.bat". To upload,  double-click the file "upload_mophapp.bat".
+- Confirm the EEPROM update with: y
 
-Start the application with the file "start_softdkb.bat". SoftDKB is the software version of the **d**edicated **k**ey**b**oard I will explain later. With the buttons that look like the buttons on a gamepad the motors can be moved.
+  The script writes the default calibration to the EEPROM.
 
-When you start the application for the first time, the yellow bulb in the  upper right corner "lights up". Before you can use the phantom, the axes have to be calibrated. I briefly explain the required 2-point  calibration: First move the motor to the zero position and read the  value (e.g. -2 cm =>  1 : 470). Move motor to the full extended  position (e.g. +2 cm => 1: 216). The calibration values for this  motor are 470 and -0.9921875 ((216-470) / 256).
+- Confirm to run a test with: y
 
-Evaluate the  calibration values for all the motors and replace the values in the file devicedata.txt with your own values. I know this is a bit a pain but it is inevitable. Click on "Put Device Data" and select your file. You are two clicks away from using the phantom!
+  The test ends with the output: Complete, and resets the firmware.
 
-## Step 6: Use the Phantom
+The phantom is ready for use.
 
-https://youtu.be/l14pO0ekk0s
-
-![DKb](./DKb.jpg)
-
-SoftDKb is a Java based application to control the phantom. It has its name and its look from the hardware version; the **D**edicated **K**ey**b**oard. The advantage of the DKb is that the USB port is not occupied.
-
-The SoftDKb has far more functionality than the hardware version. It cannot only start the phantom, it is also used to calibrate the phantom and  get information on memory consumption and the software version.
-
-The cylinders can be moved with the "arrow keys" in **M**anual mode. The buttons 1 - 8 are used to set the step size.
-
-In **P**reset mode, the buttons 1 - 8 are used to start one of the stored motion  pattern. The "arrow keys" have no function in this mode.
-
-In the **R**emote mode, the phantom can be controlled by other application such as the Virtual Marker Phantom.
-
-## Step 7: ... and More
+## Step 8: Remote Control It With the Virtual Phantom Application
 
 https://youtu.be/4L0OvpXcFAo
 
-An imaging phantom is nothing you need at  home. Imaging phantoms are used in hospitals and in companies that build medical devices.
+The Virtual Phantom Application is a .NET based application and part of the downloaded package (\Virms.NET\ViphApp.exe). The application simulates X-Ray imaging. And it is possible to connect and control a phantom with the application.
 
-I would be surprised if anyone is interested to  build this device (this is my excuse for the short instructions :-)).  Please do not hesitate to leave a comment or contact me if you want more details on a specific subject.
+When you start the program, the Marker Phantom is already selected.
 
-In the movie, I use another  application I called the Virtual Marker Phantom. This application has  two "X-Ray views" where you can see how the markers move within the  wooden block. This application is not released yet.
+If the phantom is plugged-in, the port should be listed. Select the port and press "Connect".
+
+On the right control panel, it is possible to either control the motion axes individually or start a program.
+
+
+
+If you plan to write your on software: This programming interface is completely documented in this [Wiki](https://github.com/mrstefangrimm/Phaso/wiki).
+
+
 
