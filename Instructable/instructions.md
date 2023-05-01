@@ -1,6 +1,9 @@
 # Marker Motion X-Ray Imaging Phantom
 
 ![fullphantom](./fullphantom.jpg)
+https://youtu.be/TMkLDR-dig4
+https://youtu.be/PLr7lDx5VoA
+https://youtu.be/z_6X1krTg_E
 
 In the field of medical imaging, so called imaging phantoms are used  to evaluate, analyze, and tune the performance of various imaging  devices (Source: Wikipedia). 
 
@@ -10,9 +13,10 @@ The idea for this phantom came when I studied marker motion. In a prostate, mark
 
 On an X-Ray image, the material and the density define what is a  bone, a liver or a lung. Wood for example is similar to a lung. The four freely movable cylinders are made of wood and are used to simulate motion of the markers. The metal markers have a much higher density (> 10000 times higher) than wood and are clearly visible on an X-Ray image.
 
-This short animation gives you an idea how this phantom would look like on X-Ray images: https://youtu.be/ula48AN3Xuc
+This short animation demonstrates some motion patterns of the Marker Motion X-Ray Imaging Phantom in simulation and reality:
+https://youtu.be/S2i1PQueZQw
 
-To generate the motion, the phantom uses five [LnR-Actuators](https://www.instructables.com/id/Linear-and-Rotation-Actuator/), an Arduino micro controller and an Adafruit Servo Shield. The micro controller is  required because you cannot be in the room when you acquire X-Ray  images. The phantom can be either be remote controlled from a PC over an USB cable, or you can start one of the pre-programmed motion patterns and use the phantom stand-alone.
+To generate the motion, the phantom uses five [LnR-Actuators](https://www.instructables.com/id/Linear-and-Rotation-Actuator/), an Arduino micro controller and an Adafruit Servo Shield. The phantom can be remote controlled from a Windows PC or Android Device over an USB cable.
 
 This phantom is suitable to evaluate and tune the performance of medical devices. A field of application could be the development of motion tracking and marker detection and matching algorithms. With the used materials, imaging dosimetry is not possible. 
 
@@ -38,19 +42,25 @@ The direct material costs are approximately USD 250.
 
 4 Wooden dowel d6 x l25 mm
 
+1 Wooden dowel d6 x l42 mm
+
 2 Wooden dowel d8 x l166 mm
 
 2 Wooden dowel d8 x l110 mm
+
+3 Graphite lead of a pencil d2 x l12 mm
+
+8 Graphite lead of a pencil d2 x l5 mm
 
 1 Windows PC with Java 8 runtime and .NET Framework 4.6.2
 
 1 3D Printer
 
-1 Standing drill and drills for wood: d30mm, d8mm and d6mm
+1 Standing drill and drills for wood: d30, d8, d6 and d2 mm
 
 
 
-Legend: l:length, d:diameter, w: width, h:heigth
+Legend: l:length, d:diameter, w: width, h:height
 
 ## Step 1: 3D Printed Parts
 
@@ -59,16 +69,32 @@ PLA, default 20% infill: Cmn-FlangeClip.stl, Cmn-FrontClip.stl, Cmn-GatingPlatfo
 ## Step 2: Build the Phantom Body
 
 ![phantombody](./phantombody.jpg)
+![phantombody](./phantombody-explosion.jpg)
+![phantombody](./phantombody-cylinderholes.jpg)
+![phantombody](./phantombody-pencillead.jpg)
+![phantombody](./phantombody-leftside.jpg)
 
-Use the printed *MMXIP-Front* as a template for the bores. Bore the four d30 mm holes. I had no problems to bore these holes but I had to clean the walls with sand paper afterwards. Bore two d8 x 6 mm holes.
+The "phantom body" is the wooden cube as seen in the images above. It has 4 bores that allow the cylinders to rotate and move back and forth. In the center of the four cylinder bores is a 6 mm hole filled with graphite from a pencil lead (this is clearly visible on an x-ray and represents the target).
 
-Insert two wooden dowels d8 x l110 mm into the 8mm holes and attach a *Cmn-FrontClip*.
+Markings on the sides and top of the phantom help align the phantom with the laser. On the left and right side are four pins made from a pencil lead as rigid markers visible on x-rays.
+
+First, use a pencil to mark where you need to drill. The center of the 4 cylinder bores is at a height of 79 mm. the distance from cylinder to cylinder bore is 50 mm. The holes for the distance holders are at a height of 8 mm and the distance between them is 70 mm.
+
+The depth of the center hole is 54 mm. It is filled with 12 mm  graphite closed with a wooden rod (42 mm). The depth for the 2 holes for the distance holders is 10 mm.
+
+It is up to you where and if you want to add the graphite pins on the left and right side. However, the markings for the lasers should be on the same height as the target.
+
+
 
 ## Step 3: Assemble the four Cylinders
+
+![cylinders](./cylinders.jpg)
 
 Cut a M4 thread into the two d3.3 mm holes in the *MMXIP-Flange*. Bore a hole of d6 x 6 mm diameter into the front of the cylinder. Insert a dowel d6 x 25 mm and add a *MMXIP-Flange*. Fixate it with some glue.
 
 To add the markers at the correct, position, insert the cylinders into the phantom body and align the cylinders such that the flanges are horizontally. On each cylinder, make a mark with a pencil towards the center of the phantom and add the metal markers as shown on the picture in the step above.
+
+
 
 ## Step 4: Assemble the Actuator
 
