@@ -1,6 +1,9 @@
 # Marker Motion X-Ray Imaging Phantom
 
 ![fullphantom](./fullphantom.jpg)
+
+![MPR](./mpr.jpg)
+
 https://youtu.be/TMkLDR-dig4
 https://youtu.be/PLr7lDx5VoA
 https://youtu.be/z_6X1krTg_E
